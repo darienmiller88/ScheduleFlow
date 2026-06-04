@@ -13,16 +13,14 @@ Schedule before wednesday @ noon. Instead of having to remember to send their ex
 * [Docker](https://www.docker.com/)
 
 ## Features
-This version will still retain the following features from v1:
 
-* Single player Jeopardy. Client can add and remove Users to a specific ADAPT location, and add and subtract points to them.
-* Tournament/Team jeopardy mode where the client can choose the host location for the game, and which teams are playing.
-* The ability to save games, both single player and team jeopardy.
-* Viewing games, which will include the winner of the game, and the total and average amount of points earned during the game.
+* Users can set Month, Day and Time for the email to be sent out, in which one email will be sent out every week at that specific date.
+* Users can upload their schedule, and have that be sent out based on the time set, or sent manually with a "Send Now" button.
+* Oauth using microsoft 365 to connect the app to our outlook accounts so the emails sent out on behalf of the coworkers work email.
 
 ### Requirements:
 
-* Clone repo using `git clone https://github.com/darienmiller88/JeopardyScoreBoard-V2`
+* Clone repo using `git clone https://github.com/darienmiller88/ScheduleFlow.git`
 * Migrate the necessary information to your local `.env` as described in the `.env_sample` file
 * Install the Go migrate CLI tool:
   * **Windows (using Scoop):** `scoop install migrate`
