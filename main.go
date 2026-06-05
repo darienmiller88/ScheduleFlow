@@ -7,10 +7,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+	"ScheduleFlow/Backend/database"
 )
 
 func main() {
 	godotenv.Load()
+	database.ConnectToMongoDB()
 
 	router := chi.NewRouter()
 
