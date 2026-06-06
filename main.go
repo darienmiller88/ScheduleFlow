@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"ScheduleFlow/Backend/database"
+	"ScheduleFlow/Backend/controllers"
 )
 
 func main() {
@@ -16,9 +17,10 @@ func main() {
 
 	router := chi.NewRouter()
 
-	router.Get("/", func(response http.ResponseWriter, request *http.Request) {
-		fmt.Fprintln(response, "Hello, World!")
-	})
+	indexController := &controllers.IndexController{}
+	indexController.RegisterRoutes()
+	
+	router.Mount("/", indexController.Router)
 
 	port := os.Getenv("PORT")
 
