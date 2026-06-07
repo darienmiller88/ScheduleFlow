@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+
 	"ScheduleFlow/Backend/database"
 	"ScheduleFlow/Backend/controllers"
 )
@@ -16,9 +17,7 @@ func main() {
 	database.ConnectToMongoDB()
 
 	router := chi.NewRouter()
-
-	indexController := &controllers.IndexController{}
-	indexController.RegisterRoutes()
+	indexController := controllers.NewIndexController()
 	
 	router.Mount("/", indexController.Router)
 
