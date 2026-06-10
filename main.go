@@ -18,9 +18,12 @@ func main() {
 
 	router := chi.NewRouter()
 	indexController := controllers.NewIndexController()
-	
-	router.Mount("/", indexController.Router)
 
+	router.Mount("/", indexController.Router)
+	router.Get("/", func(response http.ResponseWriter, request *http.Request) {
+		fmt.Fprintln(response, "Hello, World!")
+	})
+	
 	port := os.Getenv("PORT")
 
 	fmt.Println("Server is running on port:", port)

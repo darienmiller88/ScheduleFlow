@@ -1,9 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
 )
 
@@ -21,8 +18,9 @@ func NewIndexController() *IndexController {
 	return c
 }
 
+// registerRoutes sets up the routes for the IndexController by mounting all sub-routes in controllers.
 func (c *IndexController) registerRoutes() {
-	c.Router.Get("/", func(response http.ResponseWriter, request *http.Request) {
-		fmt.Fprintln(response, "Hello, World!")
-	})
+	vc := NewViewsController()
+
+	c.Router.Mount("/views", vc.Router)
 }
