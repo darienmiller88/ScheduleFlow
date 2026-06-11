@@ -1,4 +1,4 @@
-FROM golang:1.25 AS build-stage
+FROM golang:1.26 AS build-stage
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o scheduleflow .
 
 
 # This is the run stage now, pulling from gcr
-FROM gcr.io/distroless/static-debian12 
+FROM gcr.io/distroless/base-debian12
 
 # Create a new directory for the run time image
 WORKDIR /app
