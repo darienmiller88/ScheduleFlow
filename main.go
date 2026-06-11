@@ -20,7 +20,7 @@ func main() {
 	indexController := controllers.NewIndexController()
 
 	router.Mount("/", indexController.Router)
-	router.Get("/", func(response http.ResponseWriter, request *http.Request) {
+	router.Get("/hello-world", func(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprintln(response, "Hello, World!")
 	})
 	

@@ -22,5 +22,5 @@ func NewIndexController() *IndexController {
 func (c *IndexController) registerRoutes() {
 	vc := NewViewsController()
 
-	c.Router.Mount("/views", vc.Router)
+	c.Router.Mount("/", vc.Router)
 }

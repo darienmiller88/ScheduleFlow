@@ -4,8 +4,11 @@ go 1.26.1
 
 require (
 	github.com/go-chi/chi/v5 v5.3.0 // indirect
+	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.17.6 // indirect
+	github.com/lib/pq v1.12.3 // indirect
+	github.com/netresearch/go-cron v0.15.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.2.0 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
