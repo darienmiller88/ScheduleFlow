@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -15,7 +14,7 @@ type ViewsController struct {
 
 func NewViewsController() *ViewsController {
 	c := &ViewsController{
-		Router: chi.NewRouter(),
+		Router:    chi.NewRouter(),
 		templates: template.Must(template.ParseGlob("templates/*.html")),
 	}
 
@@ -25,14 +24,13 @@ func NewViewsController() *ViewsController {
 }
 
 func (v *ViewsController) registerViewRoutes() {
-	v.Router.Get("/home", v.HomePage)
+	v.Router.Get("/home", v.homePage)
 }
 
-func (v *ViewsController) HomePage(response http.ResponseWriter, request *http.Request) {
+func (v *ViewsController) homePage(response http.ResponseWriter, request *http.Request) {
 	err := v.templates.ExecuteTemplate(response, "home.html", nil)
-	
+
 	if err != nil {
-		fmt.Println("Error rendering template:", err)
 		http.Error(response, "Error rendering template", http.StatusInternalServerError)
 	}
 }
