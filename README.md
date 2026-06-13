@@ -11,6 +11,7 @@ Schedule before wednesday @ noon. Instead of having to remember to send their ex
 * [MongoDB](https://www.mongodb.com/) 
 * [Railway](https://railway.com)
 * [Docker](https://www.docker.com/)
+* [Resend](https://resend.com/)
 
 ## Features
 
