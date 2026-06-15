@@ -21,7 +21,7 @@ func main() {
 
 	router.Mount("/", indexController.Router)
 	router.Get("/hello-world", func(response http.ResponseWriter, request *http.Request) {
-		fmt.Fprintln(response, "Hello, World!")
+		fmt.Fprintln(response, "Hello World!")
 	})
 	
 	port := os.Getenv("PORT")
