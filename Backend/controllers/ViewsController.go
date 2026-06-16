@@ -3,6 +3,7 @@ package controllers
 import (
 	"html/template"
 	"net/http"
+	"path/filepath"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -13,14 +14,22 @@ type ViewsController struct {
 }
 
 func NewViewsController() *ViewsController {
-	c := &ViewsController{
-		Router:    chi.NewRouter(),
-		templates: template.Must(template.ParseGlob("templates/*.html")),
+	partialFiles, err := filepath.Glob("./templates/partials/*.html")
+
+	if err != nil {
+		panic(err)
 	}
 
-	c.registerViewRoutes()
+	partialFiles = append(partialFiles, "./templates/home.html")
 
-	return c
+	vc := &ViewsController{
+		Router:    chi.NewRouter(),
+		templates: template.Must(template.ParseFiles(partialFiles...)),
+	}
+
+	vc.registerViewRoutes()
+
+	return vc
 }
 
 func (v *ViewsController) registerViewRoutes() {
