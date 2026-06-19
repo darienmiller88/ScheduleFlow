@@ -4,19 +4,27 @@ import (
 	"fmt"
 	"os"
 
-	"go.mongodb.org/mongo-driver/v2/mongo"
-	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
-var Client *mongo.Client
+var DB *sqlx.DB
 
-func ConnectToMongoDB() {
-	client, err := mongo.Connect(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
+func ConnectToPostgreSQL() {
+	db, err := sqlx.Connect("postgres", os.Getenv("DATABASE_URL"))
 
 	if err != nil {
 		panic(err)
 	}
 
-	Client = client
-	fmt.Println("Connected to MongoDB!")
+	err = db.Ping()
+	
+	if err != nil {
+		fmt.Println("db connection fail:", err)
+	}else{
+		fmt.Println("Connection established! :)")
+	}
+
+	DB = db
+	fmt.Println("Connected to PostgreSQL!")
 }

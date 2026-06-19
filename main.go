@@ -14,7 +14,7 @@ import (
 
 func main() {
 	godotenv.Load()
-	database.ConnectToMongoDB()
+	database.ConnectToPostgreSQL()
 
 	router := chi.NewRouter()
 	indexController := controllers.NewIndexController()
