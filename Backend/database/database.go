@@ -26,5 +26,4 @@ func ConnectToPostgreSQL() {
 	}
 
 	DB = db
-	fmt.Println("Connected to PostgreSQL!")
 }
