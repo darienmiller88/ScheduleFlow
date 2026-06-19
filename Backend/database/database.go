@@ -11,8 +11,6 @@ import (
 var DB *sqlx.DB
 
 func ConnectToPostgreSQL() {
-	fmt.Println("database url:", os.Getenv("DATABASE_URL"))
-
 	db, err := sqlx.Connect("postgres", os.Getenv("DATABASE_URL"))
 
 	if err != nil {
