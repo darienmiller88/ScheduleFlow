@@ -1,0 +1,2 @@
+ALTER TABLE supervisors DROP CONSTRAINT supervisors_first_name_key;
+ALTER TABLE supervisors DROP CONSTRAINT supervisors_last_name_key;
