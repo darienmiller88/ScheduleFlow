@@ -6,17 +6,17 @@ CREATE TABLE IF NOT EXISTS specialists (
     first_name    VARCHAR(30) NOT NULL UNIQUE,
     last_name     VARCHAR(30) NOT NULL UNIQUE,
     email         VARCHAR(100) NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
+    password_hash TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS supervisors (
-    id            SERIAL PRIMARY KEY,
-    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    id         SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-    first_name    VARCHAR(30) NOT NULL UNIQUE,
-    last_name     VARCHAR(30) NOT NULL UNIQUE,
-    email         VARCHAR(100) NOT NULL UNIQUE,
+    first_name VARCHAR(30) NOT NULL UNIQUE,
+    last_name  VARCHAR(30) NOT NULL UNIQUE,
+    email      VARCHAR(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS schedules (

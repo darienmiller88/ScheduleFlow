@@ -1,0 +1,2 @@
+ALTER TABLE specialists DROP CONSTRAINT specialists_first_name_key;
+ALTER TABLE specialists DROP CONSTRAINT specialists_last_name_key;
