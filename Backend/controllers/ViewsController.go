@@ -30,7 +30,7 @@ func NewViewsController() *ViewsController {
 
 func (v *ViewsController) registerViewRoutes() {
 	v.Router.Get("/home", v.homePage)
-	v.Router.Get("/login", v.loginPage)
+	v.Router.Get("/", v.loginPage)
 }
 
 func (v *ViewsController) homePage(response http.ResponseWriter, request *http.Request) {
