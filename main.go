@@ -12,7 +12,6 @@ import (
 	"ScheduleFlow/Backend/controllers"
 )
 
-//testing redeploy
 func main() {
 	godotenv.Load()
 	database.ConnectToPostgreSQL()
