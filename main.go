@@ -21,6 +21,10 @@ func main() {
 
 	router.Mount("/", indexController.Router)
 	
+	//Serve static files along the "/static" route
+	fs := http.FileServer(http.Dir("static"))
+	router.Handle("/static/*", http.StripPrefix("/static/", fs))
+
 	port := os.Getenv("PORT")
 
 	fmt.Println("Server is running on port:", port)
