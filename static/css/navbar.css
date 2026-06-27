@@ -1,3 +1,19 @@
 nav{
-    border: 2px solid black;
+    display: flex;
+    align-items: center;
+
+    border-bottom: 2px solid lightgray;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    padding: 20px 40px;
+}
+
+nav img{
+    width: 50px;
+    height: 40px;
+}
+
+nav .nav-title{
+    font-size: 30px;
+    font-weight: bold;
+    margin-left: 20px;
 }

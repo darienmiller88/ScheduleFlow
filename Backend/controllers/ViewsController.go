@@ -33,6 +33,7 @@ func (v *ViewsController) registerViewRoutes() {
 	v.Router.Get("/", v.loginPage)
 }
 
+
 func (v *ViewsController) homePage(response http.ResponseWriter, request *http.Request) {
 	err := v.templates.ExecuteTemplate(response, "home.html", nil)
 
