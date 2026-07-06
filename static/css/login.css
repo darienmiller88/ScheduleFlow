@@ -7,20 +7,40 @@
 form{
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
+    border: none;
+    box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.1);
+    padding: 0 clamp(1rem, 4vw, 2.5rem);
+    border-radius: 0.5rem;
     width: 50vw;
     margin: auto;
 }
 
 main{
     display: flex;
+    background-color: rgb(245, 245, 245);
 }
 
 form .sign-up-wrapper{
     display: flex;
     justify-content: center;
+    border-bottom: 0.1rem solid lightgray;
 }
 
 form .sign-up-wrapper button{
-    padding: 0.5rem 1rem;
+    font-size: clamp(0.8rem, 0.7rem + 1vw, 1.2rem);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+        'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+    padding: 0.75rem 1rem;
+    background-color: transparent;
+    border: none;
+    margin: 0 0.8rem;
+}
+
+form .sign-up-wrapper button span{
+    display: block;
+    height: 0.17rem;
+    background-color: #1F51FF;
+    transition: width 0.3s ease-in-out;
+    margin-top: 0.8rem;
 }
