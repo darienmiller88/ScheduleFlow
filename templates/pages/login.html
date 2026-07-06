@@ -11,20 +11,21 @@
     </head>
     <body>
         {{ template "navbar" . }}
-        <h1>log in now</h1>
-
-        <form action="/login" method="POST">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-
-            <button type="submit">Log In</button>
-        </form>
+        
+        <main>
+            <form action="/login" method="POST">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+    
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+    
+                <button type="submit">Log In</button>
+            </form>
+        </main>
 
         <footer>
-
+            This is my footer
         </footer>
 
         <!-- Alpine plugins -->

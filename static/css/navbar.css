@@ -19,3 +19,7 @@ nav .nav-title {
     font-weight: bold;
     margin-left: clamp(0.5rem, 2vw, 1.25rem);
 }
+
+nav:hover{
+    cursor: pointer;
+}
