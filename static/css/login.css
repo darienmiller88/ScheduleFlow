@@ -7,11 +7,14 @@
 form{
     display: flex;
     flex-direction: column;
+
     border: none;
     box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.1);
-    padding: 0 clamp(1rem, 4vw, 2.5rem);
     border-radius: 0.5rem;
-    width: 50vw;
+    background-color: white;
+
+    width: 90vw;       /* Default width on mobile */
+    max-width: 35rem; /* The hard stop so it never gets too wide on desktop */
     margin: auto;
 }
 
@@ -23,7 +26,7 @@ main{
 form .sign-up-wrapper{
     display: flex;
     justify-content: center;
-    border-bottom: 0.1rem solid lightgray;
+    border-bottom: 0.08rem solid lightgray;
 }
 
 form .sign-up-wrapper button{
@@ -37,10 +40,26 @@ form .sign-up-wrapper button{
     margin: 0 0.8rem;
 }
 
+form .sign-up-wrapper button:hover{
+    cursor: pointer;
+}
+
 form .sign-up-wrapper button span{
     display: block;
     height: 0.17rem;
     background-color: #1F51FF;
     transition: width 0.3s ease-in-out;
-    margin-top: 0.8rem;
+    margin-top: 0.95rem;
+}
+
+form .credentials{
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1rem, 4vw, 2.5rem);
+    border-bottom: 0.08rem solid lightgray;
+}
+
+form .form-footer{
+    text-align: center;
+    padding: clamp(0.6rem, 1.5vw, 1.5rem);
 }
