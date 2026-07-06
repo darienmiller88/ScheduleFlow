@@ -1,3 +1,9 @@
+.page-wrapper{
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+}
+
 form{
     display: flex;
     flex-direction: column;
@@ -6,3 +12,15 @@ form{
     margin: auto;
 }
 
+main{
+    display: flex;
+}
+
+form .sign-up-wrapper{
+    display: flex;
+    justify-content: center;
+}
+
+form .sign-up-wrapper button{
+    padding: 0.5rem 1rem;
+}

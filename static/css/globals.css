@@ -31,11 +31,13 @@ nav:hover{
 
 /* Footer styles */
 footer {
-    position: fixed;
+    /* position: fixed;
     left: 0;
-    bottom: 0;
-    width: 100%;
+    bottom: 0; */
+    /* width: 100vw; */
 
+    font-weight: bold;
+    font-size: clamp(0.75rem, 0.5rem + 1vw, 1rem);
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
         'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     
