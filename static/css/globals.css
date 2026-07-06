@@ -1,3 +1,8 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+
 nav {
     display: flex;
     align-items: center;
@@ -26,8 +31,16 @@ nav:hover{
 
 /* Footer styles */
 footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+        'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    
     background-color: #f8f9fa;
     border-top: 0.125rem solid lightgray;
-    padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 4vw, 2.5rem);
+    padding: clamp(1.25rem, 2.5vw, 3.25rem) clamp(1rem, 4vw, 2.5rem);
     text-align: center;
 }
