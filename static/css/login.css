@@ -26,12 +26,28 @@ main{
     background-color: rgb(245, 245, 245);
 }
 
-/* Sign Up Wrapper */
+
+/****************************
+Sign Up Wrapper
+******************************/
 
 form .sign-up-wrapper{
     display: flex;
     justify-content: center;
     border-bottom: 0.08rem solid lightgray;
+}
+
+form .sign-up-wrapper span{
+    display: block;
+    height: 0.17rem;
+    background-color: transparent;
+    font-weight: bold;
+    transition: width 0.3s ease-in-out;
+    margin-top: 0.9rem;
+}
+
+form .sign-up-wrapper .active span{
+    background-color: #1F51FF;
 }
 
 form .sign-up-wrapper button{
@@ -47,14 +63,14 @@ form .sign-up-wrapper button:hover{
 }
 
 form .sign-up-wrapper button span{
-    display: block;
-    height: 0.17rem;
-    background-color: #1F51FF;
-    transition: width 0.3s ease-in-out;
-    margin-top: 0.95rem;
+    
 }
 
-/* Credentials */
+
+
+/*********************************
+Credentials 
+*********************************/
 
 form .credentials{
     display: flex;
@@ -115,7 +131,9 @@ form .credentials button:hover{
 }
 
 
-/* Forgot Password */
+/************************ 
+Forgot Password 
+*************************/
 form .forgot-password{
     text-align: right;
     margin-bottom: clamp(0.5rem, 1vw, 1.2rem);
@@ -128,7 +146,9 @@ form .forgot-password:hover{
 }
 
 
-/* Form Divider */
+/**************************
+Form Divider
+****************************/
 form .form-divider {
     display: flex;
     align-items: center;
