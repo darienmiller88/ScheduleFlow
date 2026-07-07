@@ -85,7 +85,34 @@ form .form-footer{
     padding: clamp(0.6rem, 1.5vw, 1.5rem);
 }
 
+form .credentials button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(0.5rem, 0.8vw, 0.7rem);
+    font-size: clamp(0.8rem, 0.7rem + 1vw, 1.2rem);
+    color: white;
+    border: none;
+    border-radius: 0.6rem;
+}
 
+form .credentials .sign-in-btn{
+    background-color: #1F51FF;
+}
+
+form .credentials .microsoft-btn{
+    background-color: #2F2F2F;
+}
+
+form .credentials .microsoft-btn img{ 
+    width: 1.2rem;
+    height: auto;
+    margin-right: 0.5rem;
+}
+
+form .credentials button:hover{
+    cursor: pointer;
+}
 
 
 /* Forgot Password */
@@ -93,8 +120,13 @@ form .forgot-password{
     text-align: right;
     margin-bottom: clamp(0.5rem, 1vw, 1.2rem);
     color: #1F51FF;
-    font-size: clamp(0.75rem, 0.7rem + 1vw, 1rem);
+    font-size: clamp(0.85rem, 0.7rem + 1vw, 1rem);
 }
+
+form .forgot-password:hover{
+    cursor: pointer;
+}
+
 
 /* Form Divider */
 form .form-divider {
@@ -124,4 +156,16 @@ form .form-divider {
 
 .form-divider::after {
     margin-left: 1rem;
+}
+
+/* Form footer */
+
+.form-footer{
+    font-size: clamp(0.75rem, 0.7rem + 1vw, 1rem);
+    color: #666666;
+}
+
+.form-footer a{
+    color: #1F51FF;
+    text-decoration: none;
 }

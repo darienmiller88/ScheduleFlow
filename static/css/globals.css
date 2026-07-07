@@ -14,15 +14,17 @@ nav {
 }
 
 nav img {
-    width: 3.125rem;
-    height: 2.5rem;
+    width: 3rem;
+    height: 2.4rem;
 }
 
 nav .nav-title {
-    /* Smoothly scales between 24px and 30px based on screen size */
-    font-size: clamp(1.3rem, 1.2rem + 1.5vw, 1.775rem); 
+    /* Mobile: ~1.2rem (19px) | Tablet: scales fluidly | Desktop: caps at 1.675rem (26.8px) */
+    font-size: clamp(1.2rem, 0.8rem + 1.8vw, 1.675rem); 
     font-weight: bold;
-    margin-left: clamp(0.5rem, 2vw, 1.25rem);
+
+    /* Mobile: locks at 0.5rem | Tablet: scales fluidly | Desktop: caps at 1.25rem */
+    margin-left: clamp(0.5rem, -0.2rem + 3vw, 1.25rem);
 }
 
 nav:hover{
