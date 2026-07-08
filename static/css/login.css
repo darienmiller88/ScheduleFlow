@@ -83,7 +83,7 @@ Credentials
 form .credentials{
     display: flex;
     flex-direction: column;
-    padding: clamp(1rem, 4vw, 2.5rem);
+    padding: clamp(0.8rem, 3vw, 2rem);
     border-bottom: 0.08rem solid lightgray;
 }
 
@@ -96,7 +96,7 @@ form .credentials .form-group label{
 }
 
 form .credentials .form-group input{
-    width: 98%;
+    width: 95%;
     margin-top: clamp(0.25rem, 0.5vw, 0.5rem);
     font-size: clamp(1rem, 0.7rem + 1vw, 1.1rem);
     padding: clamp(0.5rem, 0.8vw, 0.7rem);
