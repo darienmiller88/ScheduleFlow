@@ -37,6 +37,23 @@ form .sign-up-wrapper{
     border-bottom: 0.08rem solid lightgray;
 }
 
+/* default styles for button */
+form .sign-up-wrapper button{
+    color:rgb(111, 111, 111);
+    font-size: clamp(0.8rem, 0.7rem + 1vw, 1.2rem); 
+    padding: 0.75rem 1rem;
+    background-color: transparent;
+    border: none;
+    margin: 0 0.8rem;
+    transition: 0.3s;
+}
+
+form .sign-up-wrapper button:hover{
+    cursor: pointer;
+    background-color: #dedada;
+}
+
+/* Default styles for span */
 form .sign-up-wrapper span{
     display: block;
     height: 0.17rem;
@@ -46,25 +63,16 @@ form .sign-up-wrapper span{
     margin-top: 0.9rem;
 }
 
+
+/* styles for when sign in/sign up is active */
+form .sign-up-wrapper .active{
+    color: black;
+}
+
 form .sign-up-wrapper .active span{
     background-color: #1F51FF;
 }
 
-form .sign-up-wrapper button{
-    font-size: clamp(0.8rem, 0.7rem + 1vw, 1.2rem); 
-    padding: 0.75rem 1rem;
-    background-color: transparent;
-    border: none;
-    margin: 0 0.8rem;
-}
-
-form .sign-up-wrapper button:hover{
-    cursor: pointer;
-}
-
-form .sign-up-wrapper button span{
-    
-}
 
 
 
@@ -105,11 +113,17 @@ form .credentials button{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(0.5rem, 0.8vw, 0.7rem);
+    padding: 0.7rem;
     font-size: clamp(0.8rem, 0.7rem + 1vw, 1.2rem);
     color: white;
     border: none;
     border-radius: 0.6rem;
+    transition: 0.3s;
+}
+
+form .credentials button:hover{
+    cursor: pointer;
+    background-color: #a79f9f;
 }
 
 form .credentials .sign-in-btn{
@@ -123,12 +137,9 @@ form .credentials .microsoft-btn{
 form .credentials .microsoft-btn img{ 
     width: 1.2rem;
     height: auto;
-    margin-right: 0.5rem;
+    margin-right: 0.8rem;
 }
 
-form .credentials button:hover{
-    cursor: pointer;
-}
 
 
 /************************ 
@@ -185,7 +196,12 @@ form .form-divider {
     color: #666666;
 }
 
-.form-footer a{
+.form-footer span{
     color: #1F51FF;
     text-decoration: none;
+}
+
+.form-footer span:hover{
+    cursor: pointer;
+    text-decoration: underline;
 }

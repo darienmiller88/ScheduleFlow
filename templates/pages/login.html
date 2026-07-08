@@ -13,19 +13,21 @@
             {{ template "navbar" . }}
             
             <main>
-                <form action="/login" method="POST">
+                <form x-data="{ activeTab: 'signIn' }">
                     <div class="sign-up-wrapper">
-                        <button class="active">
+                        <button :class="{ 'active': activeTab === 'signIn' }" @click="activeTab = 'signIn'" type="button">
                             Sign In
                             <span class="underline"></span>
                         </button>
-                        <button>
+                        
+                        <button :class="{ 'active': activeTab === 'signUp' }" @click="activeTab = 'signUp'" type="button">
                             Sign Up
                             <span class="underline"></span>
                         </button>
                     </div>
-    
-                    <div class="credentials">
+                    
+                    <!-- Sign In Credentials -->
+                    <div class="credentials" x-show="activeTab === 'signIn'">
                         <div class="form-group">
                             <label for="email">Email Address</label><br/>
                             <input type="email" id="email" name="email" placeholder="you@adaptcn.org" required>
@@ -47,9 +49,24 @@
                             Sign in with Microsoft
                         </button>
                     </div>
+
+                    <!-- Sign Up Credentials -->
+                    <div class="credentials" x-show="activeTab === 'signUp'">
+                        <div class="form-group">
+                            <label for="email">Email Address</label><br/>
+                            <input type="email" id="email" name="email" placeholder="you@adaptcn.org" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label><br/>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+
+                        <button type="submit" class="sign-in-btn">Sign Up</button>
+                    </div>
     
                     <div class="form-footer">
-                        Don't have an account? <a>Sign up</a>
+                        Already have an account? <span>Sign in</span>
                     </div>
     
                 </form>
