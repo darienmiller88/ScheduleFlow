@@ -83,7 +83,7 @@ Credentials
 form .credentials{
     display: flex;
     flex-direction: column;
-    padding: clamp(0.8rem, 3vw, 2rem);
+    padding: clamp(0.8rem, 3vw, 1.7rem);
     border-bottom: 0.08rem solid lightgray;
 }
 

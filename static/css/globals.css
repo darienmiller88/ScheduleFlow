@@ -11,7 +11,7 @@ nav {
     justify-content: space-between; /* Keeps brand left and profile items right */
     border-bottom: 0.125rem solid lightgray;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 4vw, 2.5rem);
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 4vw, 2.5rem);
     background-color: #ffffff;
 }
 
@@ -41,7 +41,14 @@ nav .user-info .nav-item {
     margin-left: 1.5rem;
     display: flex;
     align-items: center;
+    transition: color 0.3s ease-in-out;
 }
+
+nav .user-info .nav-item:hover {
+    cursor: pointer;
+    color: #007bff; /* Bootstrap primary blue */
+}
+
 
 nav .user-info .acronym {
     width: 2.5rem;
@@ -60,7 +67,7 @@ nav .user-info .acronym {
 nav .user-info .username, 
 nav .user-info .settings-icon, 
 nav .user-info .sign-out-icon {
-    font-size: clamp(0.8rem, 0.8rem + 1vw, 1.1rem);
+    font-size: clamp(0.8rem, 0.8rem + 1vw, 1.2rem);
     font-weight: bold;
     color: #333;
     cursor: pointer;
@@ -160,6 +167,6 @@ footer {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
     border-top: 0.125rem solid lightgray;
-    padding: clamp(1.25rem, 2vw, 2rem) clamp(1rem, 4vw, 2.5rem);
+    padding: clamp(1.25rem, 2vw, 1.7rem) clamp(1rem, 4vw, 2.5rem);
     text-align: center;
 }
