@@ -13,6 +13,34 @@ nav {
     padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 4vw, 2.5rem);
 }
 
+nav .user-info {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+nav .user-info .acronym {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: clamp(0.8rem, 0.8rem + 1vw, 1rem);
+}
+
+nav .user-info .nav-item {
+    margin-left: 1rem;
+}
+
+nav .user-info .username, nav .user-info .settings-icon, nav .user-info .sign-out-icon {
+    font-size: clamp(0.8rem, 0.8rem + 1vw, 1.3rem);
+    font-weight: bold;
+}
+
 nav img {
     width: 3rem;
     height: 2.4rem;
