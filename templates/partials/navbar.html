@@ -1,17 +1,33 @@
 {{ define "navbar" }}
-<nav>
-    <img src="../../static/img/logo.png" alt="logo">
-    <div class="nav-title">ScheduleFlow</div>
+<nav x-data="{ mobileMenuOpen: false }">
+    <div class="nav-left-brand">
+        <img src="../../static/img/logo.png" alt="logo">
+        <div class="nav-title">ScheduleFlow</div>
+    </div>
 
-    <div class="user-info">
+    <button class="menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle Navigation">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="user-info desktop-only">
         <div class="nav-item acronym">JD</div>
-        <div class="nav-item username">Joh Doe</div>
+        <div class="nav-item username">John Doe</div>
         <div class="nav-item settings-icon">
             <i class="bi bi-gear"></i>
         </div> 
         <div class="nav-item sign-out-icon">
             <i class="bi bi-box-arrow-right"></i>
         </div>
+    </div>
+
+    <div class="mobile-menu" x-show="mobileMenuOpen" x-transition @click.outside="mobileMenuOpen = false" x-cloak>
+        <div class="mobile-user-profile">
+            <div class="acronym">JD</div>
+            <div class="username">John Doe</div>
+        </div>
+        <hr>
+        <a href="/settings" class="mobile-nav-item"><i class="bi bi-gear"></i> Settings</a>
+        <button hx-post="/logout" class="mobile-nav-item"><i class="bi bi-box-arrow-right"></i> Sign Out</button>
     </div>
 </nav>
 {{ end }}

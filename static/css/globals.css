@@ -1,22 +1,46 @@
-body{
+body {
     margin: 0;
     padding: 0;
 }
 
+/* Base Layout Config */
 nav {
+    position: relative; /* Essential for aligning the mobile drawer container */
     display: flex;
     align-items: center;
-
+    justify-content: space-between; /* Keeps brand left and profile items right */
     border-bottom: 0.125rem solid lightgray;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-        'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 4vw, 2.5rem);
+    background-color: #ffffff;
 }
 
+.nav-left-brand {
+    display: flex;
+    align-items: center;
+}
+
+nav img {
+    width: 3rem;
+    height: 2.4rem;
+}
+
+nav .nav-title {
+    font-size: clamp(1.2rem, 0.8rem + 1.8vw, 1.675rem); 
+    font-weight: bold;
+    margin-left: clamp(0.5rem, -0.2rem + 3vw, 1.25rem);
+}
+
+/* Desktop Navigation Layout View */
 nav .user-info {
     display: flex;
     align-items: center;
-    margin-left: auto;
+}
+
+nav .user-info .nav-item {
+    margin-left: 1.5rem;
+    display: flex;
+    align-items: center;
 }
 
 nav .user-info .acronym {
@@ -30,42 +54,110 @@ nav .user-info .acronym {
     justify-content: center;
     font-weight: bold;
     font-size: clamp(0.8rem, 0.8rem + 1vw, 1rem);
+    margin-left: 0;
 }
 
-nav .user-info .nav-item {
-    margin-left: 1rem;
-}
-
-nav .user-info .username, nav .user-info .settings-icon, nav .user-info .sign-out-icon {
-    font-size: clamp(0.8rem, 0.8rem + 1vw, 1.3rem);
+nav .user-info .username, 
+nav .user-info .settings-icon, 
+nav .user-info .sign-out-icon {
+    font-size: clamp(0.8rem, 0.8rem + 1vw, 1.1rem);
     font-weight: bold;
-}
-
-nav img {
-    width: 3rem;
-    height: 2.4rem;
-}
-
-nav .nav-title {
-    /* Mobile: ~1.2rem (19px) | Tablet: scales fluidly | Desktop: caps at 1.675rem (26.8px) */
-    font-size: clamp(1.2rem, 0.8rem + 1.8vw, 1.675rem); 
-    font-weight: bold;
-
-    /* Mobile: locks at 0.5rem | Tablet: scales fluidly | Desktop: caps at 1.25rem */
-    margin-left: clamp(0.5rem, -0.2rem + 3vw, 1.25rem);
-}
-
-nav:hover{
+    color: #333;
     cursor: pointer;
 }
 
-/* Footer styles */
+/* Mobile Toggle Hamburger Styles */
+.menu-toggle {
+    display: none; /* Hidden by default on desktop monitors */
+    background: none;
+    border: none;
+    font-size: 1.875rem; /* ~30px icon size */
+    cursor: pointer;
+    color: #333;
+}
+
+/* [x-cloak] rule prevents layout flash on slow connections */
+[x-cloak] { display: none !important; }
+
+/* ==========================================================================
+   RESPONSIVE MEDIA BREAKPOINT (Mobile & Tablet Layouts)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important; /* Drops the wide profile strip */
+    }
+
+    .menu-toggle {
+        display: block; /* Reveals hamburger button */
+    }
+
+    /* Mobile Dropdown Overlay Menu Container */
+    .mobile-menu {
+        position: absolute;
+        top: 100%; /* Drops it cleanly below the bottom border of the nav */
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        border-bottom: 2px solid lightgray;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05); /* Clean drop-shadow pattern */
+        padding: 1rem 1.5rem;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+    }
+
+    .mobile-user-profile {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0;
+    }
+
+    .mobile-user-profile .acronym {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .mobile-user-profile .username {
+        margin-left: 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .mobile-menu hr {
+        border: 0;
+        border-top: 1px solid #eee;
+        margin: 1rem 0;
+    }
+
+    .mobile-nav-item {
+        background: none;
+        border: none;
+        text-align: left;
+        padding: 0.75rem 0;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #333;
+        text-decoration: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem; /* Aligns bootstrap icons perfectly to text margins */
+    }
+}
+
+/* Footer layout stays global */
 footer {
     font-weight: bold;
     font-size: clamp(0.75rem, 0.5rem + 1vw, 1rem);
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-        'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
     border-top: 0.125rem solid lightgray;
     padding: clamp(1.25rem, 2vw, 2rem) clamp(1rem, 4vw, 2.5rem);
