@@ -3,3 +3,134 @@
     grid-template-rows: auto 1fr auto;
     height: 100vh;
 }
+
+main{
+    display: grid;
+    grid-template-columns: 30% 48% auto;
+    padding: 2rem 1rem; 
+    gap: 1.5rem;
+}
+
+.upload-schedule{
+    background-color: #ffffff;
+    border: 1px solid lightgray;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid black;
+}
+
+
+.schedule-stats{
+    background-color: #ffffff;
+    border: 1px solid lightgray;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid black;
+}
+
+/* Container Card Styling */
+.schedule-container {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.03); /* Subtle all-side shadow */
+    border: 1px solid black;
+    padding: 2rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;
+}
+
+.schedule-title {
+    font-size: 1.35rem;
+    color: #1a1a1a;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-weight: bold;
+}
+
+/* Table Wrapper for Horizontal Mobile Scrolling */
+.table-responsive {
+    width: 100%;
+    overflow-y: auto;
+    max-height: clamp(25rem, 60vh, 50rem); 
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid red; /* Light gray border for visual separation */
+}
+
+/* Core Table Structural Layout */
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.schedule-table th {
+    color: #8a94a6;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f4f5f7;
+}
+
+.schedule-table td {
+    padding: 1.15rem 0;
+    color: #333333;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #f4f5f7;
+    white-space: nowrap; /* Prevents dates wrapping into vertical blocks */
+}
+
+/* Badge Layouts & Dynamic Hex Codes */
+.status-badge {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.status-badge.sent {
+    background-color: #def7ec;
+    color: #03543f;
+}
+
+.status-badge.updated {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.scheduled {
+    background-color: #e1effe;
+    color: #1e429f;
+}
+
+/* Actions Column Alignment & Icon Interactivity */
+.schedule-table td.actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 1.15rem;
+    color: #8a94a6;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.action-btn:hover {
+    color: #4b5563; /* Subtle darkening color shift on interaction hover */
+}
+
+@media (max-width: 768px){
+    main{
+        display: flex;
+        flex-direction: column;
+        padding: 0.5rem;
+    }
+}

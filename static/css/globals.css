@@ -44,11 +44,12 @@ nav .user-info .nav-item {
     transition: color 0.3s ease-in-out;
 }
 
-nav .user-info .nav-item:hover {
+nav .user-info .username:hover, 
+nav .user-info .settings-icon:hover, 
+nav .user-info .sign-out-icon:hover {
     cursor: pointer;
     color: #007bff; /* Bootstrap primary blue */
 }
-
 
 nav .user-info .acronym {
     width: 2.5rem;
@@ -167,6 +168,6 @@ footer {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
     border-top: 0.125rem solid lightgray;
-    padding: clamp(1.25rem, 2vw, 1.7rem) clamp(1rem, 4vw, 2.5rem);
+    padding: clamp(1.25rem, 2vw, 2rem) clamp(1rem, 4vw, 2.5rem);
     text-align: center;
 }
