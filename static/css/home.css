@@ -9,6 +9,8 @@ main{
     grid-template-columns: 30% 48% auto;
     padding: 2rem 1rem; 
     gap: 1.5rem;
+
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;
 }
 
 .upload-schedule{
@@ -16,6 +18,66 @@ main{
     border-radius: 0.5rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
     padding: 1rem;
+}
+
+.upload-schedule form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.upload-schedule form button{
+    background-color: #50C878;
+    border: none;
+    color: white;
+    padding: 0.75rem 1rem;
+    width: 95%;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.upload-schedule form button:hover{
+    background-color: #3da96f;
+}
+
+.upload-schedule form .file-types{
+    color: rgb(102, 102, 102);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.upload-icon{
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.upload-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    padding: clamp(3rem, 4vw, 5rem) clamp(2.5rem, 3vw, 3.5rem);
+    background-color: rgb(245, 244, 246);
+    color: black;
+    border-radius: 0.5rem;
+    border: 3px dotted #dcdfe3;
+    transition: 0.3s ease-in-out;
+
+    cursor: pointer;
+}
+
+.upload-btn:hover {
+    background-color: #e0e2e8;
+}
+
+#file-name {
+    margin-left: 1rem;
+    color: #666;
 }
 
 
@@ -32,10 +94,9 @@ main{
     border-radius: 0.5rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
     padding: 1.4rem;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;
 }
 
-.schedule-title {
+.schedule-title, .upload-title, .schedule-stats-title {
     font-size: 1.35rem;
     color: #1a1a1a;
     margin: 1.5rem 0;

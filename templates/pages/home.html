@@ -14,11 +14,29 @@
             {{ template "navbar" . }}
     
             <main>
-                <div class="upload-schedule">
-                    <h2>Upload Schedule</h2>
+                <div class="upload-schedule" x-data="{ fileName: '' }">
+                    <div class="upload-title">Upload Schedule</div>
                     <form action="/upload" method="post" enctype="multipart/form-data">
-                        <input type="file" name="schedule" accept=".xlsx">
-                        <button type="submit">Upload</button>
+                        <label for="schedule-upload" class="upload-btn">
+                            <div class="upload-icon">
+                                <i class="bi bi-cloud-upload"></i>
+                            </div>
+                            Drag excel file here or click to browse
+                            <span class="file-types">.xlsx,.xls</span>
+                        </label>
+
+                        <span x-text="fileName"></span>
+
+                        <input
+                            id="schedule-upload"
+                            type="file"
+                            name="schedule"
+                            accept=".xlsx"
+                            hidden
+                            @change="fileName = $event.target.files[0]?.name || 'No schedule selected'"
+                        >
+
+                        <button type="submit">Send Now</button>
                     </form>
                 </div>
                 <div class="schedule-container">
@@ -130,7 +148,7 @@
                     </div>
                 </div>
                 <div class="schedule-stats">
-                    <h2>Schedule Statistics</h2>
+                    <div class="schedule-stats-title">Schedule Statistics</div>
                     <p>Total Schedules: 3</p>
                     <p>Active Schedules: 2</p>
                 </div>
