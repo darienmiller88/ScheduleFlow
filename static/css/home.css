@@ -13,27 +13,24 @@ main{
 
 .upload-schedule{
     background-color: #ffffff;
-    border: 1px solid lightgray;
     border-radius: 0.5rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
     padding: 1rem;
-    border: 1px solid black;
 }
 
 
 .schedule-stats{
     background-color: #ffffff;
-    border: 1px solid lightgray;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
     border-radius: 0.5rem;
     padding: 1rem;
-    border: 1px solid black;
 }
 
 /* Container Card Styling */
 .schedule-container {
     background: #ffffff;
     border-radius: 0.5rem;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.03); /* Subtle all-side shadow */
-    border: 1px solid black;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
     padding: 1.4rem;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;
 }
@@ -41,8 +38,7 @@ main{
 .schedule-title {
     font-size: 1.35rem;
     color: #1a1a1a;
-    margin-top: 0;
-    margin-bottom: 2rem;
+    margin: 1.5rem 0;
     font-weight: bold;
 }
 
@@ -128,6 +124,7 @@ main{
     background: none;
     border: none;
     padding: 0;
+    margin: 0.3rem;
     font-size: 1.15rem;
     color: #8a94a6;
     cursor: pointer;
