@@ -65,7 +65,7 @@ main{
     background-color: rgb(245, 244, 246);
     color: black;
     border-radius: 0.5rem;
-    border: 3px dotted #dcdfe3;
+    border: 0.15rem dotted rgb(130, 132, 128);
     transition: 0.3s ease-in-out;
 
     cursor: pointer;
@@ -86,6 +86,10 @@ main{
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
     border-radius: 0.5rem;
     padding: 1rem;
+}
+
+.schedule-stats p{
+    font-weight: bold;
 }
 
 /* Container Card Styling */

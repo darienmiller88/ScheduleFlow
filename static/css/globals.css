@@ -87,6 +87,45 @@ nav .user-info .sign-out-icon {
 /* [x-cloak] rule prevents layout flash on slow connections */
 [x-cloak] { display: none !important; }
 
+/* Toast Styles */
+.toast-success {
+    display: flex;
+    align-items: center;
+    
+    /* Box matching design geometry */
+    background-color: #def7ec; /* Soft green alert fill */
+    border-left: 4px solid #0e9f6e; /* Hard solid accent border banner line */
+    border-radius: 0 4px 4px 0; /* Slightly softens the right-side corners */
+    
+    /* Layout constraints */
+    padding: 1rem 1.25rem;
+    width: 95%; /* Responsive container fluidity */
+    
+    /* Typography style configuration */
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;
+    box-sizing: border-box;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Precise spacing between icon vector and text string */
+}
+
+.success-icon {
+    color: #0e9f6e; /* Deep green icon matching left solid border line */
+    font-size: 1.25rem; /* ~20px icon rendering scale */
+    display: inline-flex;
+    align-items: center;
+}
+
+.toast-message {
+    color: #03543f; /* Deep corporate green text for contrast accessibility */
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
 /* ==========================================================================
    RESPONSIVE MEDIA BREAKPOINT (Mobile & Tablet Layouts)
    ========================================================================== */
