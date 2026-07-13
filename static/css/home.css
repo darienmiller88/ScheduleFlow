@@ -34,7 +34,7 @@ main{
     border-radius: 0.5rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.03); /* Subtle all-side shadow */
     border: 1px solid black;
-    padding: 2rem;
+    padding: 1.4rem;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;
 }
 
@@ -48,12 +48,15 @@ main{
 
 /* Table Wrapper for Horizontal Mobile Scrolling */
 .table-responsive {
-    width: 100%;
+     width: 100%;
     overflow-y: auto;
-    max-height: clamp(25rem, 60vh, 50rem); 
+    max-height: clamp(27rem, 55vh, 50rem);
     -webkit-overflow-scrolling: touch;
-    border: 1px solid red; /* Light gray border for visual separation */
 }
+
+/* .schedule-dates{
+    border: 1px solid red;
+} */
 
 /* Core Table Structural Layout */
 .schedule-table {
@@ -78,10 +81,21 @@ main{
     white-space: nowrap; /* Prevents dates wrapping into vertical blocks */
 }
 
+.schedule-table td:first-child {
+    white-space: normal;
+    min-width: 7rem;
+}
+
+.schedule-table td:nth-child(2) {
+    white-space: normal;
+    min-width: 7rem;
+}
+
 /* Badge Layouts & Dynamic Hex Codes */
 .status-badge {
     display: inline-block;
     padding: 0.35rem 0.85rem;
+    margin-right: 0.5rem;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: bold;
@@ -104,7 +118,7 @@ main{
 }
 
 /* Actions Column Alignment & Icon Interactivity */
-.schedule-table td.actions {
+.schedule-table td.actions td.status-badge {
     display: flex;
     gap: 1rem;
     align-items: center;
@@ -127,7 +141,8 @@ main{
     color: #4b5563; /* Subtle darkening color shift on interaction hover */
 }
 
-@media (max-width: 768px){
+/* For ipad pro */
+@media (max-width: 1024px){
     main{
         display: flex;
         flex-direction: column;
