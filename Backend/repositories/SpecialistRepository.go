@@ -54,6 +54,7 @@ func (s *specialistRepository) AddSpecialist(specialist models.Specialist) model
 			}
 		}
 
+		//Return 500 for any other general DB error
 		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
 	}
 
@@ -101,6 +102,8 @@ func (s *specialistRepository) GetSpecialistById(id int) models.Result[models.Sp
 
 // Updates a specialist in the DB with the information provided in the specialist parameter. Returns the updated specialist.
 func (s *specialistRepository) UpdateSpecialist(specialist models.Specialist) models.Result[models.Specialist] {
+	
+	
 	return models.Result[models.Specialist]{}
 }	
 
