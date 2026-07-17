@@ -15,7 +15,17 @@ const (
 	GetSpecialistById    string = `SELECT * FROM specialists WHERE id = $1`
 
 	// Query to update a specialist's information in the database by their ID
-	UpdateSpecialist     string = `UPDATE specialists SET name = $1, email = $2, password = $3 WHERE id = $4`
+	UpdateSpecialist     string = `
+		UPDATE specialists 
+		SET 
+			updated_at = NOW(),
+			first_name = $1, 
+			last_name = $2,
+			email = $3, 
+			password = $4 
+		WHERE 
+			id = $5
+	`
 
 	// Query to delete a specialist from the database by their ID if they choose to close their account.
 	DeleteSpecialist     string = `DELETE FROM specialists WHERE id = $1`

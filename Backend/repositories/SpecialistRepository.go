@@ -6,6 +6,7 @@ import (
 	"ScheduleFlow/Backend/utils"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
@@ -102,12 +103,47 @@ func (s *specialistRepository) GetSpecialistById(id int) models.Result[models.Sp
 
 // Updates a specialist in the DB with the information provided in the specialist parameter. Returns the updated specialist.
 func (s *specialistRepository) UpdateSpecialist(specialist models.Specialist) models.Result[models.Specialist] {
-	
-	
-	return models.Result[models.Specialist]{}
+	_, err := s.db.Exec(
+		constants.UpdateSpecialist, 
+		specialist.FirstName, 
+		specialist.LastName, 
+		specialist.Email, 
+		specialist.Password,
+		specialist.ID,
+	)
+
+	if err != nil {
+		if pgErr, ok := err.(*pq.Error); ok {
+			switch string(pgErr.Code) {
+				case "23505": // unique_violation
+					return utils.GetResult(
+						fmt.Errorf("specialist email '%s' already exists", specialist.Email),
+						http.StatusConflict,
+						models.Specialist{},
+					)
+			}
+		}
+
+		//Return 500 for any other general DB error
+		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
+	}
+
+	return utils.GetResult(nil, int(http.StatusOK), specialist)
 }	
 
 // Deletes a specialist from the DB using their ID. Returns true if the deletion was successful, false otherwise.
 func (s *specialistRepository) DeleteSpecialist(id int) models.Result[bool] {
 	return models.Result[bool]{}
+}
+
+func (s *specialistRepository) getPlayerNameInitials(playerName string) string {
+	
+		//Name is validated before insertion, so it SHOULD have exactly 2 parts, ex -> jane doe
+		fields := strings.Fields(playerName)
+
+		//Extract the first char from the first name and last
+		firstNameInitial, lastNameInitial := string([]rune(fields[0])[0]), string([]rune(fields[1])[0])
+
+		//combine both initials and return it as: (J)ane (D)oe -> JD
+		return strings.ToUpper(firstNameInitial + lastNameInitial)
 }

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"regexp"
 	"testing"
@@ -115,4 +116,77 @@ func TestAddSpecialist_DatabaseFailure(t *testing.T) {
 	assert.Equal(t, models.Specialist{}, result.ResultData)
 
 	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+
+/////////////////////////
+// UPDATE tests
+////////////////////////
+
+func TestUpdateSpecialist_Success(t *testing.T){
+	mock, repo   := setupSpecialistRepo(t)
+	specialistID := 1
+	specialist   := models.Specialist{
+		ID: specialistID,
+		FirstName: "fred",
+		LastName: "Burger",
+		Password: "fyfbhcunde",
+		Email: "fred@ucpnyc.org",
+	}
+
+	mock.ExpectExec(regexp.QuoteMeta(constants.UpdateSpecialist)).
+		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password, specialistID). 
+		WillReturnResult(sqlmock.NewResult(int64(specialistID), 1))
+
+	result := repo.UpdateSpecialist(specialist)
+
+	assert.Nil(t, result.Err)
+	assert.Equal(t, http.StatusOK, result.StatusCode)
+	assert.Equal(t, specialist, result.ResultData)
+}
+
+func TestUpdateSpecialist_DuplicateEmail(t *testing.T){
+	mock, repo   := setupSpecialistRepo(t)
+	specialistID := 1
+	specialist   := models.Specialist{
+		ID: specialistID,
+		FirstName: "fred",
+		LastName: "Burger",
+		Password: "fyfbhcunde",
+		Email: "fred@ucpnyc.org",
+	}
+
+	pgErr := &pq.Error{
+		Code: "23505",
+	}
+
+	mock.ExpectExec(regexp.QuoteMeta(constants.UpdateSpecialist)).
+		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password, specialistID). 
+		WillReturnError(pgErr)
+
+	result := repo.UpdateSpecialist(specialist)
+
+	assert.NotNil(t, result.Err)
+	assert.Equal(t, http.StatusConflict, result.StatusCode)
+}
+
+func TestUpdateSpecialist_DatabaseFailure(t *testing.T){
+	mock, repo   := setupSpecialistRepo(t)
+	specialistID := 1
+	specialist   := models.Specialist{
+		ID: specialistID,
+		FirstName: "fred",
+		LastName: "Burger",
+		Password: "fyfbhcunde",
+		Email: "fred@ucpnyc.org",
+	}
+
+	mock.ExpectExec(regexp.QuoteMeta(constants.UpdateSpecialist)).
+		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password, specialistID). 
+		WillReturnError(fmt.Errorf("Database error"))
+
+	result := repo.UpdateSpecialist(specialist)
+
+	assert.NotNil(t, result.Err)
+	assert.Equal(t, http.StatusInternalServerError, result.StatusCode)
 }
