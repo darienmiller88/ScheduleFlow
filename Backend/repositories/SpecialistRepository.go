@@ -53,11 +53,11 @@ func (s *specialistRepository) AddSpecialist(specialist models.Specialist) model
 					)
 			}
 		}
-		
+
 		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
 	}
 
-	return utils.GetResult(nil, http.StatusOK, specialist)
+	return utils.GetResult(nil, http.StatusCreated, specialist)
 }
 
 // Retrieves the password of a specialist from the DB using the email provided by the specialists. Returns the password as a string.
