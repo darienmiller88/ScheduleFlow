@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"regexp"
 	"testing"
+	"time"
 
 	"ScheduleFlow/Backend/constants"
 	"ScheduleFlow/Backend/models"
@@ -195,3 +196,61 @@ func TestUpdateSpecialist_DatabaseFailure(t *testing.T){
 /////////////////////////
 // GET tests
 ////////////////////////
+func TestGetSpecialistById_success(t *testing.T){
+	mock, repo   := setupSpecialistRepo(t)
+	specialistId := 1
+	rows         := sqlmock.NewRows([]string{
+			"id",
+			"created_at",
+			"updated_at",
+			"first_name", 
+			"last_name", 
+			"email", 
+			"password_hash",
+		}).
+		AddRow(specialistId, time.Now(), time.Now(), "Darien", "Miller", "da.liier@ucpnyc.org", "t5frvrd$#v")
+		
+	mock.ExpectQuery(regexp.QuoteMeta(constants.GetSpecialistById)).WithArgs(1).WillReturnRows(rows)
+
+	result := repo.GetSpecialistById(specialistId)
+
+	assert.Nil(t, result.Err)
+	assert.Equal(t, http.StatusOK, result.StatusCode)
+	assert.Equal(t, "Darien", result.ResultData.FirstName)
+}
+
+func TestGetSpecialistById_DatabaseError(t *testing.T){
+	mock, repo   := setupSpecialistRepo(t)
+	specialistId := 1
+		
+	mock.ExpectQuery(regexp.QuoteMeta(constants.GetSpecialistById)).
+		WithArgs(specialistId).
+		WillReturnError(fmt.Errorf("Database error"))
+
+	result := repo.GetSpecialistById(specialistId)
+
+	assert.NotNil(t, result.Err)
+	assert.Equal(t, http.StatusInternalServerError, result.StatusCode)
+}
+
+func TestGetSpecialistById_IDNotFound(t *testing.T){
+	mock, repo   := setupSpecialistRepo(t)
+	specialistId := 1
+	rows         := sqlmock.NewRows([]string{
+			"id",
+			"created_at",
+			"updated_at",
+			"first_name", 
+			"last_name", 
+			"email", 
+			"password_hash",
+		}).
+		AddRow(specialistId, time.Now(), time.Now(), "Darien", "Miller", "da.liier@ucpnyc.org", "t5frvrd$#v")
+		
+	mock.ExpectQuery(regexp.QuoteMeta(constants.GetSpecialistById)).WithArgs(112).WillReturnRows(rows)
+
+	result := repo.GetSpecialistById(specialistId)
+
+	assert.NotNil(t, result.Err)
+	assert.Equal(t, http.StatusNotFound, result.StatusCode)
+}

@@ -94,6 +94,11 @@ func (s *specialistRepository) GetSpecialistById(id int) models.Result[models.Sp
 
 	err := s.db.Get(&specialist, constants.GetSpecialistById, id)
 
+	//If the specialist model is empty after marshalling the sql response into it, the id does not exist.
+	if specialist == (models.Specialist{}) {
+		return utils.GetResult(err, http.StatusNotFound, specialist)
+	}
+
 	if err != nil {
 		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
 	}

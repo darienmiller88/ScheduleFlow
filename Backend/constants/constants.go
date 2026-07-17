@@ -3,7 +3,7 @@ package constants
 const (
 
 	// Query to add a new specialist to the database
-	AddSpecialist        string = `INSERT INTO specialists (first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING id`
+	AddSpecialist        string = `INSERT INTO specialists (first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4) RETURNING id`
 
 	// Query to retrieve a specialist's password from the database by their email
 	GetPasswordByEmail   string = `SELECT password FROM specialists WHERE email = $1`
