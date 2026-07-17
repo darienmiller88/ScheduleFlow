@@ -34,6 +34,9 @@ func setupSpecialistRepo(t *testing.T) (sqlmock.Sqlmock, *specialistRepository) 
 	return mock, repo
 }
 
+/////////////////////////
+// INSERT tests
+////////////////////////
 func TestAddNewSpecialist_Success(t *testing.T) {
 	mock, repo := setupSpecialistRepo(t)
 	specialist := models.Specialist{
@@ -63,6 +66,8 @@ func TestAddNewSpecialist_Success(t *testing.T) {
 	assert.Equal(t, specialist.LastName, result.ResultData.LastName)
 	assert.Equal(t, specialist.Email, result.ResultData.Email)
 	assert.Equal(t, specialist.Password, result.ResultData.Password)
+
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 // Tests for a specialist beign added with an email that is already taken
@@ -144,6 +149,8 @@ func TestUpdateSpecialist_Success(t *testing.T){
 	assert.Nil(t, result.Err)
 	assert.Equal(t, http.StatusOK, result.StatusCode)
 	assert.Equal(t, specialist, result.ResultData)
+
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestUpdateSpecialist_DuplicateEmail(t *testing.T){
@@ -217,6 +224,8 @@ func TestGetSpecialistById_success(t *testing.T){
 	assert.Nil(t, result.Err)
 	assert.Equal(t, http.StatusOK, result.StatusCode)
 	assert.Equal(t, "Darien", result.ResultData.FirstName)
+
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestGetSpecialistById_DatabaseError(t *testing.T){
@@ -253,4 +262,62 @@ func TestGetSpecialistById_IDNotFound(t *testing.T){
 
 	assert.NotNil(t, result.Err)
 	assert.Equal(t, http.StatusNotFound, result.StatusCode)
+}
+
+
+////////////////////////
+// DELETE Tests
+///////////////////////
+
+func TestDeleteSpecialist_Success(t *testing.T) {
+	mock, repo := setupSpecialistRepo(t)
+	mockResult := sqlmock.NewResult(0, 1)
+
+	mock.ExpectExec(regexp.QuoteMeta(constants.DeleteSpecialist)).
+		WithArgs(1).
+		WillReturnResult(mockResult)
+
+	result := repo.DeleteSpecialist(1)
+
+	require.NoError(t, result.Err)
+	assert.Equal(t, http.StatusOK, result.StatusCode)
+	assert.True(t, result.ResultData)
+
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestDeleteSpecialist_NotFound(t *testing.T) {
+	mock, repo := setupSpecialistRepo(t)
+	mockResult := sqlmock.NewResult(0, 0)
+	id         := 99
+
+	mock.ExpectExec(regexp.QuoteMeta(constants.DeleteSpecialist)).
+		WithArgs(id).
+		WillReturnResult(mockResult)
+
+	result := repo.DeleteSpecialist(id)
+
+	require.Error(t, result.Err)
+	assert.Equal(t, http.StatusNotFound, result.StatusCode)
+	assert.False(t, result.ResultData)
+	assert.Contains(t, result.Err.Error(), fmt.Sprintf("specialist with id %d not found", id))
+
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestDeleteSpecialist_DatabaseError(t *testing.T) {
+	mock, repo := setupSpecialistRepo(t)
+
+	mock.ExpectExec(regexp.QuoteMeta(constants.DeleteSpecialist)).
+		WithArgs(1).
+		WillReturnError(errors.New("database unavailable"))
+
+	result := repo.DeleteSpecialist(1)
+
+	require.Error(t, result.Err)
+	assert.Equal(t, http.StatusInternalServerError, result.StatusCode)
+	assert.False(t, result.ResultData)
+	assert.EqualError(t, result.Err, "database unavailable")
+
+	require.NoError(t, mock.ExpectationsWereMet())
 }

@@ -96,7 +96,7 @@ func (s *specialistRepository) GetSpecialistById(id int) models.Result[models.Sp
 
 	//If the specialist model is empty after marshalling the sql response into it, the id does not exist.
 	if specialist == (models.Specialist{}) {
-		return utils.GetResult(err, http.StatusNotFound, specialist)
+		return utils.GetResult(fmt.Errorf("specialist with id %d not found", id), http.StatusNotFound, specialist)
 	}
 
 	if err != nil {
@@ -138,7 +138,17 @@ func (s *specialistRepository) UpdateSpecialist(specialist models.Specialist) mo
 
 // Deletes a specialist from the DB using their ID. Returns true if the deletion was successful, false otherwise.
 func (s *specialistRepository) DeleteSpecialist(id int) models.Result[bool] {
-	return models.Result[bool]{}
+	sqlResult, err :=  s.db.Exec(constants.DeleteSpecialist, id)
+
+	if err != nil {
+		return utils.GetResult(err, http.StatusInternalServerError, false)
+	}
+
+	if rowsAffected, _ := sqlResult.RowsAffected(); rowsAffected == 0 {
+		return utils.GetResult(fmt.Errorf("specialist with id %d not found", id), http.StatusNotFound, false)
+	}
+
+	return utils.GetResult(nil, http.StatusOK, true)
 }
 
 func (s *specialistRepository) getPlayerNameInitials(playerName string) string {
