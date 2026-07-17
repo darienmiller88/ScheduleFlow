@@ -190,3 +190,8 @@ func TestUpdateSpecialist_DatabaseFailure(t *testing.T){
 	assert.NotNil(t, result.Err)
 	assert.Equal(t, http.StatusInternalServerError, result.StatusCode)
 }
+
+
+/////////////////////////
+// GET tests
+////////////////////////

@@ -141,8 +141,11 @@ func (s *specialistRepository) getPlayerNameInitials(playerName string) string {
 		//Name is validated before insertion, so it SHOULD have exactly 2 parts, ex -> jane doe
 		fields := strings.Fields(playerName)
 
+		//Convert the first and last names into runes so the first character could be extracted 
+		firstName, lastName := []rune(fields[0]), []rune(fields[1])
+
 		//Extract the first char from the first name and last
-		firstNameInitial, lastNameInitial := string([]rune(fields[0])[0]), string([]rune(fields[1])[0])
+		firstNameInitial, lastNameInitial := string(firstName[0]), string(lastName[0])
 
 		//combine both initials and return it as: (J)ane (D)oe -> JD
 		return strings.ToUpper(firstNameInitial + lastNameInitial)
