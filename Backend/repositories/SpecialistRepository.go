@@ -4,11 +4,14 @@ import (
 	"ScheduleFlow/Backend/constants"
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/utils"
+	"fmt"
 	"net/http"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 )
 
+// Interface for the SpecialistRepository. Defines the methods that can be used to interact with the specialists table in the database.
 type SpecialistRepository interface {
 	UpdateSpecialist(specialist models.Specialist) models.Result[models.Specialist]
 	AddSpecialist(specialist models.Specialist)    models.Result[models.Specialist]
@@ -40,6 +43,17 @@ func (s *specialistRepository) AddSpecialist(specialist models.Specialist) model
 	).Scan(&specialist.ID)
 
 	if err != nil {
+		if pgErr, ok := err.(*pq.Error); ok {
+			switch string(pgErr.Code) {
+				case "23505": // unique_violation
+					return utils.GetResult(
+						fmt.Errorf("specialist email '%s' already exists", specialist.Email),
+						http.StatusConflict,
+						models.Specialist{},
+					)
+			}
+		}
+		
 		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
 	}
 
@@ -49,39 +63,34 @@ func (s *specialistRepository) AddSpecialist(specialist models.Specialist) model
 // Retrieves the password of a specialist from the DB using the email provided by the specialists. Returns the password as a string.
 func (s *specialistRepository) GetPasswordByEmail(email string) models.Result[string] {
 	var password string
-	err := s.db.QueryRow(constants.GetPasswordByEmail, email).Scan(&password)
+
+	err := s.db.Get(&password, constants.GetPasswordByEmail, email)
+
 	if err != nil {
 		return utils.GetResult(err, http.StatusInternalServerError, "")
 	}
+
 	return utils.GetResult(nil, http.StatusOK, password)
 }
 
 // Retrieves a specialist from the DB using their email. Returns the specialist as a models.Specialist.
 func (s *specialistRepository) GetSpecialistByEmail(email string) models.Result[models.Specialist] {
 	var specialist models.Specialist
-	err := s.db.QueryRow(constants.GetSpecialistByEmail, email).Scan(
-		&specialist.ID,
-		&specialist.FirstName,
-		&specialist.LastName,
-		&specialist.Email,
-		&specialist.Password,
-	)
+	
+	err := s.db.Get(&specialist, constants.GetSpecialistByEmail, email)
+
 	if err != nil {
 		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
 	}
+
 	return utils.GetResult(nil, http.StatusOK, specialist)
 }
 
 // Retrieves a specialist from the DB using their ID. Returns the specialist as a models.Specialist.
 func (s *specialistRepository) GetSpecialistById(id int) models.Result[models.Specialist] {
 	var specialist models.Specialist
-	err := s.db.QueryRow(constants.GetSpecialistById, id).Scan(
-		&specialist.ID,
-		&specialist.FirstName,
-		&specialist.LastName,
-		&specialist.Email,
-		&specialist.Password,
-	)
+
+	err := s.db.Get(&specialist, constants.GetSpecialistById, id)
 
 	if err != nil {
 		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})

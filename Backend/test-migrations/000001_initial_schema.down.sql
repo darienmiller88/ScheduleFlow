@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS schedules;
+DROP TABLE IF EXISTS supervisors;
+DROP TABLE IF EXISTS specialists;
