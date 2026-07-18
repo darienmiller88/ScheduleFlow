@@ -4,6 +4,8 @@ import (
 	"ScheduleFlow/Backend/constants"
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/utils"
+	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -94,15 +96,18 @@ func (s *specialistRepository) GetSpecialistById(id int) models.Result[models.Sp
 
 	err := s.db.Get(&specialist, constants.GetSpecialistById, id)
 
-	//If the specialist model is empty after marshalling the sql response into it, the id does not exist.
-	if specialist == (models.Specialist{}) {
-		return utils.GetResult(fmt.Errorf("specialist with id %d not found", id), http.StatusNotFound, specialist)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return utils.GetResult(
+				fmt.Errorf("specialist with id %d not found", id),
+				http.StatusNotFound,
+				models.Specialist{},
+			)
+		}
+
+		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{},)
 	}
 
-	if err != nil {
-		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
-	}
-	
 	return utils.GetResult(nil, http.StatusOK, specialist)
 }	
 
@@ -133,7 +138,7 @@ func (s *specialistRepository) UpdateSpecialist(specialist models.Specialist) mo
 		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
 	}
 
-	return utils.GetResult(nil, int(http.StatusOK), specialist)
+	return utils.GetResult(nil, http.StatusOK, specialist)
 }	
 
 // Deletes a specialist from the DB using their ID. Returns true if the deletion was successful, false otherwise.

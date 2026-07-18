@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -244,20 +245,9 @@ func TestGetSpecialistById_DatabaseError(t *testing.T){
 
 func TestGetSpecialistById_IDNotFound(t *testing.T){
 	mock, repo   := setupSpecialistRepo(t)
-	specialistId := 1
-	rows         := sqlmock.NewRows([]string{
-			"id",
-			"created_at",
-			"updated_at",
-			"first_name", 
-			"last_name", 
-			"email", 
-			"password_hash",
-		}).
-		AddRow(specialistId, time.Now(), time.Now(), "Darien", "Miller", "da.liier@ucpnyc.org", "t5frvrd$#v")
+	specialistId := 112
 		
-	mock.ExpectQuery(regexp.QuoteMeta(constants.GetSpecialistById)).WithArgs(112).WillReturnRows(rows)
-
+	mock.ExpectQuery(regexp.QuoteMeta(constants.GetSpecialistById)).WithArgs(specialistId).WillReturnError(sql.ErrNoRows)
 	result := repo.GetSpecialistById(specialistId)
 
 	assert.NotNil(t, result.Err)
