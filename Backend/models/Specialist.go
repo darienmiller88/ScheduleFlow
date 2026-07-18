@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"time"
@@ -72,26 +73,26 @@ func (s *Specialist) validatePassword() error {
 	}
 
 	if !upper.MatchString(s.Password) {
-		return fmt.Errorf("Password must have at least one uppercase letter")
+		return errors.New("Password must have at least one uppercase letter")
 	}
 
 	if !lower.MatchString(s.Password) {
-		return fmt.Errorf("Password must have at least one lowecase letter")
+		return errors.New("Password must have at least one lowecase letter")
 	}
 
 	if !number.MatchString(s.Password) {
-		return fmt.Errorf("Password must have at least one number")
+		return errors.New("Password must have at least one number")
 	}
 
 	if !symbol.MatchString(s.Password) {
-		return fmt.Errorf("Password must have at least one symbol: !@#$%^&*()_-+={}[]|\\\\:;\"'<,>.?/")
+		return errors.New(`password must have at least one symbol: !@#$%^&*()_-+={}[]|\\:;"'<,>.?/`)
 	}
 
 	return nil
 }
 
 func (s *Specialist) validateEmail() error {
-	if emailRegex.MatchString(s.Email) {
+	if !emailRegex.MatchString(s.Email) {
 		return fmt.Errorf("email must be a valid @ucpnyc.org email address")
 	}
 
@@ -99,11 +100,11 @@ func (s *Specialist) validateEmail() error {
 }
 
 func (s *Specialist) validateFirstAndLastName() error {
-	if len(s.FirstName) < minimumLen {
-		return fmt.Errorf("%s is too short, it must be at least %d characters long", s.FirstName, minimumLen)
+	if len(s.FirstName) < minimumLen || len(s.FirstName) > maximumLen{
+		return fmt.Errorf("%s must be between %d and %d characters long", s.FirstName, minimumLen, maximumLen)
 	}
 
-	if len(s.LastName) < minimumLen {
+	if len(s.LastName) < minimumLen || len(s.LastName) > maximumLen {
 		return fmt.Errorf("%s is too short, it must be at least %d characters long", s.FirstName, minimumLen)
 	}
 
