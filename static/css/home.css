@@ -1,11 +1,5 @@
 .page-wrapper{
     display: grid;
-    grid-template-rows: auto 1fr auto;
-    height: 100vh;
-}
-
-main{
-    display: grid;
     grid-template-columns: 30% 48% auto;
     padding: 2rem 1rem; 
     gap: 1.5rem;
@@ -205,7 +199,7 @@ main{
 
 /* For ipad pro */
 @media (max-width: 1024px){
-    main{
+    .page-wrapper{
         display: flex;
         flex-direction: column;
         padding: 0.5rem;

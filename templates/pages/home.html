@@ -1,167 +1,150 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/x-icon" href="../../static/img/logo.png">
-        <link rel="stylesheet" href="../../static/css/globals.css">
-        <link rel="stylesheet" href="../../static/css/home.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">        
-        <title>Home</title>
-    </head>
-    <body>
-        <div class="page-wrapper">
-            {{ template "navbar" . }}
-    
-            <main>
-                <div class="upload-schedule" x-data="{ fileName: '' }">
-                    <div class="upload-title">Upload Schedule</div>
-                    <form action="/upload" method="post" enctype="multipart/form-data">
-                        <label for="schedule-upload" class="upload-btn">
-                            <div class="upload-icon">
-                                <i class="bi bi-cloud-upload"></i>
-                            </div>
-                            Drag excel file here or click to browse
-                            <span class="file-types">.xlsx,.xls</span>
-                        </label>
+{{ define "title" }}Home{{ end }}
 
-                        <span x-text="fileName"></span>
+{{ define "css" }}
+    <link rel="stylesheet" href="/static/css/home.css"/>
+{{ end }}
 
-                        <input
-                            id="schedule-upload"
-                            type="file"
-                            name="schedule"
-                            accept=".xlsx"
-                            hidden
-                            @change="fileName = $event.target.files[0]?.name || 'No schedule selected'"
-                        >
-
-                        <button type="submit">Send Now</button>
-                        {{ template "toast" . }}
-                    </form>
-                </div>
-                <div class="schedule-container">
-                    <h2 class="schedule-title">Recent Schedules</h2>
-                
-                    <div class="table-responsive">
-                        <table class="schedule-table">
-                            <thead>
-                                <tr>
-                                    <th>Week Of</th>
-                                    <th>Uploaded</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="schedule-dates">
-                                <tr>
-                                    <td>Dec 16-22, 2024</td>
-                                    <td>Dec 15, 2024 4:30 PM</td>
-                                    <td><span class="status-badge sent">Sent</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Dec 9-15, 2024</td>
-                                    <td>Dec 8, 2024 3:45 PM</td>
-                                    <td><span class="status-badge sent">Sent</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Dec 2-8, 2024</td>
-                                    <td>Dec 1, 2024 5:15 PM</td>
-                                    <td><span class="status-badge sent">Sent</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nov 25-Dec 1, 2024</td>
-                                    <td>Nov 24, 2024 4:20 PM</td>
-                                    <td><span class="status-badge updated">Updated</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nov 25-Dec 1, 2024</td>
-                                    <td>Nov 24, 2024 4:20 PM</td>
-                                    <td><span class="status-badge updated">Updated</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nov 25-Dec 1, 2024</td>
-                                    <td>Nov 24, 2024 4:20 PM</td>
-                                    <td><span class="status-badge updated">Updated</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nov 18-24, 2024</td>
-                                    <td>Nov 17, 2024 5:00 PM</td>
-                                    <td><span class="status-badge sent">Sent</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nov 11-17, 2024</td>
-                                    <td>Nov 10, 2024 4:45 PM</td>
-                                    <td><span class="status-badge sent">Sent</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nov 4-10, 2024</td>
-                                    <td>Nov 3, 2024 3:30 PM</td>
-                                    <td><span class="status-badge sent">Sent</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Oct 28-Nov 3, 2024</td>
-                                    <td>Oct 27, 2024 5:10 PM</td>
-                                    <td><span class="status-badge scheduled">Scheduled</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                        <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+{{ define "content"}}
+    <div class="page-wrapper">
+        <div class="upload-schedule" x-data="{ fileName: '' }">
+            <div class="upload-title">Upload Schedule</div>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="schedule-upload" class="upload-btn">
+                    <div class="upload-icon">
+                        <i class="bi bi-cloud-upload"></i>
                     </div>
-                </div>
-                <div class="schedule-stats">
-                    <div class="schedule-stats-title">Schedule Statistics</div>
-                    <p>Total Schedules: 3</p>
-                    <p>Sent Schedules: 5</p>
-                    <p>Pending Schedules: 1</p>
-                </div>
-            </main>
-    
-            {{ template "footer" . }}
-        </div>
+                    Drag excel file here or click to browse
+                    <span class="file-types">.xlsx,.xls</span>
+                </label>
 
-        <!-- Alpine plugins -->
-        <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
-    </body>
-</html>
+                <span x-text="fileName"></span>
+
+                <input
+                    id="schedule-upload"
+                    type="file"
+                    name="schedule"
+                    accept=".xlsx"
+                    hidden
+                    @change="fileName = $event.target.files[0]?.name || 'No schedule selected'"
+                >
+
+                <button type="submit">Send Now</button>
+                {{ template "toast" . }}
+            </form>
+        </div>
+        <div class="schedule-container">
+            <h2 class="schedule-title">Recent Schedules</h2>
+        
+            <div class="table-responsive">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Week Of</th>
+                            <th>Uploaded</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="schedule-dates">
+                        <tr>
+                            <td>Dec 16-22, 2024</td>
+                            <td>Dec 15, 2024 4:30 PM</td>
+                            <td><span class="status-badge sent">Sent</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dec 9-15, 2024</td>
+                            <td>Dec 8, 2024 3:45 PM</td>
+                            <td><span class="status-badge sent">Sent</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dec 2-8, 2024</td>
+                            <td>Dec 1, 2024 5:15 PM</td>
+                            <td><span class="status-badge sent">Sent</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nov 25-Dec 1, 2024</td>
+                            <td>Nov 24, 2024 4:20 PM</td>
+                            <td><span class="status-badge updated">Updated</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nov 25-Dec 1, 2024</td>
+                            <td>Nov 24, 2024 4:20 PM</td>
+                            <td><span class="status-badge updated">Updated</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nov 25-Dec 1, 2024</td>
+                            <td>Nov 24, 2024 4:20 PM</td>
+                            <td><span class="status-badge updated">Updated</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nov 18-24, 2024</td>
+                            <td>Nov 17, 2024 5:00 PM</td>
+                            <td><span class="status-badge sent">Sent</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nov 11-17, 2024</td>
+                            <td>Nov 10, 2024 4:45 PM</td>
+                            <td><span class="status-badge sent">Sent</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nov 4-10, 2024</td>
+                            <td>Nov 3, 2024 3:30 PM</td>
+                            <td><span class="status-badge sent">Sent</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Oct 28-Nov 3, 2024</td>
+                            <td>Oct 27, 2024 5:10 PM</td>
+                            <td><span class="status-badge scheduled">Scheduled</span></td>
+                            <td class="actions">
+                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
+                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="schedule-stats">
+            <div class="schedule-stats-title">Schedule Statistics</div>
+            <p>Total Schedules: 3</p>
+            <p>Sent Schedules: 5</p>
+            <p>Pending Schedules: 1</p>
+        </div>
+    </div>
+{{ end }}

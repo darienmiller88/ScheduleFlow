@@ -1,107 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/x-icon" href="../../static/img/logo.png">
-        <link rel="stylesheet" href="../../static/css/globals.css">
-        <link rel="stylesheet" href="../../static/css/login.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">        
-        <title>Sign up | ScheduleFlow</title>
-    </head>
-    <body>
-        <div class="page-wrapper">
-            {{ template "navbar" . }}
+{{ define "title" }}Login{{ end }}
+
+{{ define "css" }}
+    <link rel="stylesheet" href="/static/css/login.css"/>
+{{ end }}
+
+{{ define "content" }}
+    <div class="page-wrapper">
+        <form x-data="{ activeTab: 'signIn' }">
+            <div class="sign-up-wrapper">
+                <button :class="{ 'active': activeTab === 'signIn' }" @click="activeTab = 'signIn'" type="button">
+                    Sign In
+                    <span class="underline"></span>
+                </button>
+                
+                <button :class="{ 'active': activeTab === 'signUp' }" @click="activeTab = 'signUp'" type="button">
+                    Sign Up
+                    <span class="underline"></span>
+                </button>
+            </div>
             
-            <main>
-                <form x-data="{ activeTab: 'signIn' }">
-                    <div class="sign-up-wrapper">
-                        <button :class="{ 'active': activeTab === 'signIn' }" @click="activeTab = 'signIn'" type="button">
-                            Sign In
-                            <span class="underline"></span>
-                        </button>
-                        
-                        <button :class="{ 'active': activeTab === 'signUp' }" @click="activeTab = 'signUp'" type="button">
-                            Sign Up
-                            <span class="underline"></span>
-                        </button>
-                    </div>
-                    
-                    <!-- Sign In Credentials -->
-                    <div class="credentials" x-show="activeTab === 'signIn'">
-                        <div class="form-group">
-                            <label for="email">Email Address</label><br/>
-                            <input type="email" id="email" name="email" placeholder="you@adaptcn.org" required>
-                        </div>
+            <!-- Sign In Credentials -->
+            <div class="credentials" x-show="activeTab === 'signIn'">
+                <div class="form-group">
+                    <label for="email">Email Address</label><br/>
+                    <input type="email" id="email" name="email" placeholder="you@adaptcn.org" required>
+                </div>
 
-                        <div class="form-group">
-                            <label for="password">Password</label><br/>
-                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                        </div>
+                <div class="form-group">
+                    <label for="password">Password</label><br/>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
 
-                        <div class="forgot-password">
-                            <a>Forgot password?</a>
-                        </div>
+                <div class="forgot-password">
+                    <a>Forgot password?</a>
+                </div>
 
-                        <button type="submit" class="sign-in-btn">Sign In</button>
-                        <div class="form-divider">or</div>
-                        <button type="submit" class="microsoft-btn">
-                            <img src="../../static/img/microsoft-logo.png" alt="Microsoft Logo" class="microsoft-logo">
-                            Sign in with Microsoft
-                        </button>
-                    </div>
+                <button type="submit" class="sign-in-btn">Sign In</button>
+                <div class="form-divider">or</div>
+                <button type="submit" class="microsoft-btn">
+                    <img src="../../static/img/microsoft-logo.png" alt="Microsoft Logo" class="microsoft-logo">
+                    Sign in with Microsoft
+                </button>
+            </div>
 
-                    <!-- Sign Up Credentials -->
-                    <div class="credentials" x-show="activeTab === 'signUp'">
-                        <div class="form-group">
-                            <label for="first-name">First Name</label><br/>
-                            <input type="text" min-length="2" max-length="30" id="first-name" name="first-name" placeholder="Enter your first name" required>
-                        </div>
+            <!-- Sign Up Credentials -->
+            <div class="credentials" x-show="activeTab === 'signUp'">
+                <div class="form-group">
+                    <label for="first-name">First Name</label><br/>
+                    <input type="text" min-length="2" max-length="30" id="first-name" name="first-name" placeholder="Enter your first name" required>
+                </div>
 
-                        <div class="form-group">
-                            <label for="last-name">Last Name</label><br/>
-                            <input type="text" min-length="2" max-length="30" id="last-name" name="last-name" placeholder="Enter your last name" required>
-                        </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name</label><br/>
+                    <input type="text" min-length="2" max-length="30" id="last-name" name="last-name" placeholder="Enter your last name" required>
+                </div>
 
-                        <div class="form-group">
-                            <label for="email">Email Address</label><br/>
-                            <input 
-                                type="email"
-                                id="email"
-                                name="email" 
-                                placeholder="you@adaptcn.org" 
-                                pattern="^[a-zA-Z0-9._%+-]+@ucpnyc\.org$"
-                                title="Please use your official @ucpnyc.org email address." 
-                                required
-                            >
-                        </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label><br/>
+                    <input 
+                        type="email"
+                        id="email"
+                        name="email" 
+                        placeholder="you@adaptcn.org" 
+                        pattern="^[a-zA-Z0-9._%+-]+@ucpnyc\.org$"
+                        title="Please use your official @ucpnyc.org email address." 
+                        required
+                    >
+                </div>
 
-                        <div class="form-group">
-                            <label for="password">Password</label><br/>
-                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                        </div>
+                <div class="form-group">
+                    <label for="password">Password</label><br/>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
 
-                        <button type="submit" class="sign-in-btn">Sign Up</button>
-                    </div>
-    
-                    <!-- Question to sign up if don't have an account -->
-                    <div class="form-footer" x-show="activeTab === 'signIn'">
-                        Don't have an account? <span @click="activeTab = 'signUp'">Sign up</span>
-                    </div>
-                    
-                    <!-- Question to sign in if already have an account -->
-                    <div class="form-footer" x-show="activeTab === 'signUp'">
-                        Already have an account? <span @click="activeTab = 'signIn'">Sign in</span>
-                    </div>
-    
-                </form>
-            </main>
-    
-            {{ template "footer" . }}
-        </div>
+                <button type="submit" class="sign-in-btn">Sign Up</button>
+            </div>
 
-        <!-- Alpine plugins -->
-        <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    </body>
-</html>
+            <!-- Question to sign up if don't have an account -->
+            <div class="form-footer" x-show="activeTab === 'signIn'">
+                Don't have an account? <span @click="activeTab = 'signUp'">Sign up</span>
+            </div>
+            
+            <!-- Question to sign in if already have an account -->
+            <div class="form-footer" x-show="activeTab === 'signUp'">
+                Already have an account? <span @click="activeTab = 'signIn'">Sign in</span>
+            </div>
+
+        </form>
+    </div>
+{{ end }}

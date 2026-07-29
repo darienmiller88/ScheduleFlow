@@ -92,7 +92,7 @@ func TestSpecialist_validateFirstAndLastName(t *testing.T) {
 		{"Last Name Too Long", "Darien", strings.Repeat("A", 21), true},
 		{"Minimum Boundary", "Da", "Mi", false},
 		{"Maximum Boundary", strings.Repeat("A", 20), strings.Repeat("B", 20), false},
-	}
+	} 
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

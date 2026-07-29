@@ -1,13 +1,33 @@
-{{ define "base" }}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ template "title" . }}</title>
-</head>
-<body>
-    
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/static/img/logo.png" type="image/x-icon">
+        <link rel="stylesheet" href="/static/css/bootstrap-icons.min.css">        
+        <link rel="stylesheet" href="/static/css/base.css">
+        {{ template "css" . }}
+        
+        <title>{{ template "title" . }}</title>
+    </head>
+    <body>
+        <!-- Include navbar partial -->
+        {{ template "navbar" . }}
+        
+        <main id="main-content" class="container">
+            <!-- Pages will insert their content here -->
+            {{ template "content" . }}
+        </main>
+        
+        <!-- Potential footer, i'll see lol -->
+        {{ template "footer" . }}
+
+
+        <!-- HTMX import-->
+        <script src="/static/js/htmx.min.js"></script>
+        
+        <!-- Alpine Plugins -->
+        <script defer src="/static/js/alpine.min.persist.js"></script>
+        <script defer src="/static/js/alpine.min.js"></script>
+    </body>
 </html>
-{{ end }}
