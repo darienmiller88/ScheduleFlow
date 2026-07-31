@@ -48,7 +48,7 @@ type Specialist struct {
 	Password  string `db:"password_hash"`
 
 	//Not a db field, will hold the first letter of the first and last name, ex -> (D)arien (M)iller = DM
-	PlayerNameAbbrev string
+	PlayerNameAbbrev string `db:"name_abbrev"`
 }
 
 func (s *Specialist) Validate() error {

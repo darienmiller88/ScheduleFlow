@@ -1,0 +1,1 @@
+ALTER TABLE specialists DROP COLUMN name_abbrev;

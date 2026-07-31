@@ -11,6 +11,7 @@ import (
 
 type SpecialistService interface {
 	AddNewSpecialist(specialist models.Specialist) models.Result[models.Specialist]
+	DeleteSpecialist(specialistId int)             models.Result[models.Specialist]
 }
 
 type specialistService struct {
@@ -24,6 +25,9 @@ func NewSpecialistService(repo repositories.SpecialistRepository) SpecialistServ
 }
 
 func (s *specialistService) AddNewSpecialist(specialist models.Specialist) models.Result[models.Specialist]{
+	
+	//Validate the specialist to ensure the first and last names are the appropiate length, the password
+	//has the desired length and number of symbols and numbers, and that the email ends in "@ucpnyc.org"
 	if err := specialist.Validate(); err != nil{
 		return utils.GetResult(err, http.StatusUnprocessableEntity, specialist)
 	}
@@ -38,6 +42,10 @@ func (s *specialistService) AddNewSpecialist(specialist models.Specialist) model
 		return utils.GetResult(result.Err, result.StatusCode, result.ResultData)
 	}
     
+	return models.Result[models.Specialist]{}
+}
+
+func (s *specialistService) DeleteSpecialist(specialistId int) models.Result[models.Specialist]{
 	return models.Result[models.Specialist]{}
 }
  

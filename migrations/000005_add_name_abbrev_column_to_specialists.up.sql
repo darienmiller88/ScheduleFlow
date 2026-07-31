@@ -1,0 +1,1 @@
+ALTER TABLE specialists ADD COLUMN name_abbrev VARCHAR(3) NOT NULL;
