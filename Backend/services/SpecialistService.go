@@ -37,12 +37,8 @@ func (s *specialistService) AddNewSpecialist(specialist models.Specialist) model
 
 
     result := s.repo.AddSpecialist(specialist)
-
-    if result.Err != nil{
-		return utils.GetResult(result.Err, result.StatusCode, result.ResultData)
-	}
     
-	return models.Result[models.Specialist]{}
+	return result
 }
 
 func (s *specialistService) DeleteSpecialist(specialistId int) models.Result[models.Specialist]{

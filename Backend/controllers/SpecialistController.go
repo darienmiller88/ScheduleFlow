@@ -3,6 +3,7 @@ package controllers
 import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/services"
+	"errors"
 	"html/template"
 	"net/http"
 
@@ -24,13 +25,18 @@ func NewSpecialistController(specialistService services.SpecialistService) *Spec
 }
 
 func (s *SpecialistController) registerSpecialistRoutes(){
-	s.Router.Post("/", s.addNewSpecialist)
+	s.Router.Post("/signup", s.signup)
 }
 
-func (s *SpecialistController) addNewSpecialist(res http.ResponseWriter, req *http.Request){
-	req.Body = http.MaxBytesReader(res, req.Body, 1 << 20) // limit to 1 megabyte
-
+func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request){
 	if err := req.ParseForm(); err != nil{
+		var maxBytesErr *http.MaxBytesError
+		
+		if errors.As(err, &maxBytesErr) {
+			http.Error(res, "Request payload too large", http.StatusRequestEntityTooLarge)
+			return
+		}
+
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -42,5 +48,12 @@ func (s *SpecialistController) addNewSpecialist(res http.ResponseWriter, req *ht
 		Password:  req.FormValue("password"),
 	}
 
-	s.specialistService.AddNewSpecialist(specialist)
+	result := s.specialistService.AddNewSpecialist(specialist)
+
+	if result.Err != nil{
+		http.Error(res, result.Err.Error(), result.StatusCode)
+		return
+	} 
+
+	//add cookie, and redirect to home page.
 }

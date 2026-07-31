@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 
-	"ScheduleFlow/Backend/database"
 	"ScheduleFlow/Backend/controllers"
+	"ScheduleFlow/Backend/database"
+
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
@@ -18,6 +21,12 @@ func main() {
 
 	router := chi.NewRouter()
 	indexController := controllers.NewIndexController()
+
+	//Set up middlewares
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.Logger)
+	router.Use(middleware.RequestSize(1 << 20))
+	router.Use(middleware.Timeout(45 * time.Second))
 
 	router.Mount("/", indexController.Router)
 	
