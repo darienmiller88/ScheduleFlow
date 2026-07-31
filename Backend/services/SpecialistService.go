@@ -1,10 +1,12 @@
 package services
 
 import (
+	"net/http"
 	"strings"
 
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/repositories"
+	"ScheduleFlow/Backend/utils"
 )
 
 type SpecialistService interface {
@@ -22,10 +24,21 @@ func NewSpecialistService(repo repositories.SpecialistRepository) SpecialistServ
 }
 
 func (s *specialistService) AddNewSpecialist(specialist models.Specialist) models.Result[models.Specialist]{
+	if err := specialist.Validate(); err != nil{
+		return utils.GetResult(err, http.StatusUnprocessableEntity, specialist)
+	}
+
+	//hash password, create new row in email verification table with a code (hashed), and expiry (15 minutes)
+	// and finally send confirmation email to work email with this code attached.
+
+
+    result := s.repo.AddSpecialist(specialist)
+
+    if result.Err != nil{
+		return utils.GetResult(result.Err, result.StatusCode, result.ResultData)
+	}
     
-    
-    s.repo.AddSpecialist(specialist)
-    return models.Result[models.Specialist]{}
+	return models.Result[models.Specialist]{}
 }
  
 func (s *specialistService) getPlayerNameInitials(playerName string) string {

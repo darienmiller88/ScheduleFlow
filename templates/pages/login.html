@@ -6,6 +6,7 @@
 
 {{ define "content" }}
     <div class="page-wrapper">
+
         <form x-data="{ activeTab: 'signIn' }">
             <div class="sign-up-wrapper">
                 <button :class="{ 'active': activeTab === 'signIn' }" @click="activeTab = 'signIn'" type="button">
@@ -25,16 +26,16 @@
                     <label for="email">Email Address</label><br/>
                     <input type="email" id="email" name="email" placeholder="you@adaptcn.org" required>
                 </div>
-
+    
                 <div class="form-group">
                     <label for="password">Password</label><br/>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
-
+    
                 <div class="forgot-password">
                     <a>Forgot password?</a>
                 </div>
-
+    
                 <button type="submit" class="sign-in-btn">Sign In</button>
                 <div class="form-divider">or</div>
                 <button type="submit" class="microsoft-btn">
@@ -42,19 +43,19 @@
                     Sign in with Microsoft
                 </button>
             </div>
-
+    
             <!-- Sign Up Credentials -->
             <div class="credentials" x-show="activeTab === 'signUp'">
                 <div class="form-group">
                     <label for="first-name">First Name</label><br/>
                     <input type="text" min-length="2" max-length="30" id="first-name" name="first-name" placeholder="Enter your first name" required>
                 </div>
-
+    
                 <div class="form-group">
                     <label for="last-name">Last Name</label><br/>
                     <input type="text" min-length="2" max-length="30" id="last-name" name="last-name" placeholder="Enter your last name" required>
                 </div>
-
+    
                 <div class="form-group">
                     <label for="email">Email Address</label><br/>
                     <input 
@@ -67,15 +68,15 @@
                         required
                     >
                 </div>
-
+    
                 <div class="form-group">
                     <label for="password">Password</label><br/>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
-
+    
                 <button type="submit" class="sign-in-btn">Sign Up</button>
             </div>
-
+    
             <!-- Question to sign up if don't have an account -->
             <div class="form-footer" x-show="activeTab === 'signIn'">
                 Don't have an account? <span @click="activeTab = 'signUp'">Sign up</span>
@@ -85,7 +86,7 @@
             <div class="form-footer" x-show="activeTab === 'signUp'">
                 Already have an account? <span @click="activeTab = 'signIn'">Sign in</span>
             </div>
-
+    
         </form>
     </div>
 {{ end }}

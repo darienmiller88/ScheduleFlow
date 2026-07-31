@@ -17,23 +17,21 @@ type ViewsController struct {
 
 func NewViewsController() *ViewsController {
 	partials, _ := filepath.Glob("./templates/partials/*.html")
-	pages, _ := filepath.Glob("./templates/pages/*.html")
-
+	pages, _    := filepath.Glob("./templates/pages/*.html")
+  
 	tmplMap := make(map[string]*template.Template)
 
 	for _, page := range pages {
 		// Get page name without extension (e.g., "home", "login")
 		name := strings.TrimSuffix(filepath.Base(page), ".html")
 
-		fmt.Println("name:", name)
-
-		// // Build file slice specifically for THIS page: base + partials + page
-		// files := append([]string{base, page}, partials...)
-
-		// // Parse the isolated template set for this page
-		// tmplMap[name] = template.Must(template.ParseFiles(files...))
+		// Build file slice specifically for THIS page: base + partials + page
 		files := []string{"templates/Base.html"}
+
+		// Parse the isolated template set for this page
 		files = append(files, partials...)
+
+		//add the page to the files to be parsed
 		files = append(files, fmt.Sprintf("templates/pages/%s.html", name))
 
 		tmplMap[name] = template.Must(template.ParseFiles(files...))

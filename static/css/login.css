@@ -1,5 +1,6 @@
 form{
     display: flex;
+    justify-content: center;
     flex-direction: column;
 
      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
@@ -10,13 +11,16 @@ form{
     border-radius: 0.8rem;
     background-color: white;
 
-    width: 90vw;       /* Default width on mobile */
+    width: 85vw;       /* Default width on mobile */
     max-width: 35rem; /* The hard stop so it never gets too wide on desktop */
     margin: auto;
 }
 
 .page-wrapper{
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
     background-color: rgb(245, 245, 245);
 }
 
