@@ -7,6 +7,10 @@ import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/repositories"
 	"ScheduleFlow/Backend/utils"
+
+	"golang.org/x/crypto/bcrypt"
+	// "github.com/resend/resend-go/v3"
+	// "github.com/alexedwards/scs/v2"
 )
 
 type SpecialistService interface {
@@ -34,7 +38,13 @@ func (s *specialistService) AddNewSpecialist(specialist models.Specialist) model
 
 	//hash password, create new row in email verification table with a code (hashed), and expiry (15 minutes)
 	// and finally send confirmation email to work email with this code attached.
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(specialist.Password), 10)
 
+	if err != nil{
+		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
+	}
+
+	specialist.Password = string(hashedPassword)
 
     result := s.repo.AddSpecialist(specialist)
     
@@ -44,18 +54,8 @@ func (s *specialistService) AddNewSpecialist(specialist models.Specialist) model
 func (s *specialistService) DeleteSpecialist(specialistId int) models.Result[models.Specialist]{
 	return models.Result[models.Specialist]{}
 }
- 
-func (s *specialistService) getPlayerNameInitials(playerName string) string {
-        
-		//Name is validated before insertion, so it SHOULD have exactly 2 parts, ex -> jane doe
-		fields := strings.Fields(playerName)
 
-		//Convert the first and last names into runes so the first character could be extracted 
-		firstName, lastName := []rune(fields[0]), []rune(fields[1])
-
-		//Extract the first char from the first name and last
-		firstNameInitial, lastNameInitial := string(firstName[0]), string(lastName[0])
-
-		//combine both initials and return it as: (J)ane (D)oe -> JD
-		return strings.ToUpper(firstNameInitial + lastNameInitial)
+//Method to combine both initials and return it as: (J)ane (D)oe -> JD
+func (s *specialistService) getPlayerNameInitials(firstName string, lastName string) string {        
+		return strings.ToUpper(string(firstName[0]) + string(lastName[0]))
 }

@@ -13,12 +13,20 @@ import (
 	"ScheduleFlow/Backend/database"
 
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/alexedwards/scs/v2"
 )
+
+var sessionManager *scs.SessionManager
 
 func main() {
 	godotenv.Load()
 	database.ConnectToPostgreSQL()
 
+	// Initialize a new session manager and configure the session lifetime.
+	sessionManager = scs.New()
+	sessionManager.Lifetime = 24 * time.Hour
+
+	//Initialize router
 	router := chi.NewRouter()
 	indexController := controllers.NewIndexController()
 
@@ -28,6 +36,7 @@ func main() {
 	router.Use(middleware.RequestSize(1 << 20))
 	router.Use(middleware.Timeout(45 * time.Second))
 
+	//Mount index router, which has all other controllers mounted on it
 	router.Mount("/", indexController.Router)
 	
 	//Serve static files along the "/static" route
@@ -37,5 +46,5 @@ func main() {
 	port := os.Getenv("PORT")
 
 	fmt.Println("Server is running on port:", port)
-	http.ListenAndServe(fmt.Sprintf(":%s", port), router)
+	http.ListenAndServe(fmt.Sprintf(":%s", port), sessionManager.LoadAndSave(router))
 }

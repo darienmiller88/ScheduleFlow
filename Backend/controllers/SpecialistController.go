@@ -33,7 +33,7 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		var maxBytesErr *http.MaxBytesError
 		
 		if errors.As(err, &maxBytesErr) {
-			http.Error(res, "Request payload too large", http.StatusRequestEntityTooLarge)
+			http.Error(res, "Request payload too large. Must be 1 mb and under", http.StatusRequestEntityTooLarge)
 			return
 		}
 
@@ -44,8 +44,8 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 	specialist := models.Specialist{
 		FirstName: req.FormValue("first-name"),
 		LastName:  req.FormValue("last-name"),
-		Email:     req.FormValue("email"),
 		Password:  req.FormValue("password"),
+		Email:     req.FormValue("email"),
 	}
 
 	result := s.specialistService.AddNewSpecialist(specialist)

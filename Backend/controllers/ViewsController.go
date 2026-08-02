@@ -28,7 +28,7 @@ func NewViewsController() *ViewsController {
 		// Build file slice specifically for THIS page: base + partials + page
 		files := []string{"templates/Base.html"}
 
-		// Parse the isolated template set for this page
+		// append the partial files to the build
 		files = append(files, partials...)
 
 		//add the page to the files to be parsed
