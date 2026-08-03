@@ -15,12 +15,12 @@ import (
 
 // Interface for the SpecialistRepository. Defines the methods that can be used to interact with the specialists table in the database.
 type SpecialistRepository interface {
-	UpdateSpecialist(specialist models.Specialist) models.Result[models.Specialist]
-	AddSpecialist(specialist models.Specialist) models.Result[models.Specialist]
-	GetSpecialistByEmail(email string) models.Result[models.Specialist]
-	GetPasswordByEmail(email string) models.Result[string]
-	GetSpecialistById(id int) models.Result[models.Specialist]
-	DeleteSpecialist(id int) models.Result[bool]
+	UpdateSpecialistDB(specialist models.Specialist) models.Result[models.Specialist]
+	AddSpecialistDB(specialist models.Specialist) models.Result[models.Specialist]
+	GetSpecialistByEmailDB(email string) models.Result[models.Specialist]
+	GetPasswordByEmailDB(email string) models.Result[string]
+	GetSpecialistByIdDB(id int) models.Result[models.Specialist]
+	DeleteSpecialistDB(id int) models.Result[bool]
 }
 
 // Implementation of the SpecialistRepository interface using sql
@@ -35,7 +35,7 @@ func NewSpecialistRepository(db *sqlx.DB) SpecialistRepository {
 }
 
 // Adds a new specialists to the DB with the credientials provided in the specialist parameter. Returns the newly created specialist.
-func (s *specialistRepository) AddSpecialist(specialist models.Specialist) models.Result[models.Specialist] {
+func (s *specialistRepository) AddSpecialistDB(specialist models.Specialist) models.Result[models.Specialist] {
 	err := s.db.QueryRow(
 		constants.AddSpecialist,
 		specialist.FirstName,
@@ -64,7 +64,7 @@ func (s *specialistRepository) AddSpecialist(specialist models.Specialist) model
 }
 
 // Retrieves the password of a specialist from the DB using the email provided by the specialists. Returns the password as a string.
-func (s *specialistRepository) GetPasswordByEmail(email string) models.Result[string] {
+func (s *specialistRepository) GetPasswordByEmailDB(email string) models.Result[string] {
 	var password string
 
 	err := s.db.Get(&password, constants.GetPasswordByEmail, email)
@@ -77,7 +77,7 @@ func (s *specialistRepository) GetPasswordByEmail(email string) models.Result[st
 }
 
 // Retrieves a specialist from the DB using their email. Returns the specialist as a models.Specialist.
-func (s *specialistRepository) GetSpecialistByEmail(email string) models.Result[models.Specialist] {
+func (s *specialistRepository) GetSpecialistByEmailDB(email string) models.Result[models.Specialist] {
 	var specialist models.Specialist
 
 	err := s.db.Get(&specialist, constants.GetSpecialistByEmail, email)
@@ -90,7 +90,7 @@ func (s *specialistRepository) GetSpecialistByEmail(email string) models.Result[
 }
 
 // Retrieves a specialist from the DB using their ID. Returns the specialist as a models.Specialist.
-func (s *specialistRepository) GetSpecialistById(id int) models.Result[models.Specialist] {
+func (s *specialistRepository) GetSpecialistByIdDB(id int) models.Result[models.Specialist] {
 	var specialist models.Specialist
 
 	err := s.db.Get(&specialist, constants.GetSpecialistById, id)
@@ -111,7 +111,7 @@ func (s *specialistRepository) GetSpecialistById(id int) models.Result[models.Sp
 }
 
 // Updates a specialist in the DB with the information provided in the specialist parameter. Returns the updated specialist.
-func (s *specialistRepository) UpdateSpecialist(specialist models.Specialist) models.Result[models.Specialist] {
+func (s *specialistRepository) UpdateSpecialistDB(specialist models.Specialist) models.Result[models.Specialist] {
 	_, err := s.db.Exec(
 		constants.UpdateSpecialist,
 		specialist.FirstName,
@@ -141,7 +141,7 @@ func (s *specialistRepository) UpdateSpecialist(specialist models.Specialist) mo
 }
 
 // Deletes a specialist from the DB using their ID. Returns true if the deletion was successful, false otherwise.
-func (s *specialistRepository) DeleteSpecialist(id int) models.Result[bool] {
+func (s *specialistRepository) DeleteSpecialistDB(id int) models.Result[bool] {
 	sqlResult, err := s.db.Exec(constants.DeleteSpecialist, id)
 
 	if err != nil {

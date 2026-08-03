@@ -22,9 +22,9 @@ func main() {
 	godotenv.Load()
 	database.ConnectToPostgreSQL()
 
-	// Initialize a new session manager and configure the session lifetime.
+	// Initialize a new session manager and configure the session lifetime for one week.
 	sessionManager = scs.New()
-	sessionManager.Lifetime = 24 * time.Hour
+	sessionManager.Lifetime = 168 * time.Hour
 
 	//Initialize router
 	router := chi.NewRouter()
@@ -33,6 +33,7 @@ func main() {
 	//Set up middlewares
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Logger)
+	router.Use(middleware.ClientIPFromRemoteAddr)
 	router.Use(middleware.RequestSize(1 << 20))
 	router.Use(middleware.Timeout(45 * time.Second))
 

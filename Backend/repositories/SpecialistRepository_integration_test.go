@@ -21,7 +21,7 @@ func TestAddValidPlayer_IntegrationTest_Ok(t *testing.T) {
 		Email: "dr.milr@ucpnyc.org",
 	}
 
-	result := specialistRepository.AddSpecialist(specialist)
+	result := specialistRepository.AddSpecialistDB(specialist)
 
 	assert.Equal(t, nil, result.Err)
 	assert.Equal(t, http.StatusCreated, result.StatusCode)
@@ -43,13 +43,13 @@ func TestAddDuplicateSpecialist_IntegrationTest_Conflict(t *testing.T) {
 	}
 
 	// Insert succeeds
-	firstResult := repo.AddSpecialist(specialist)
+	firstResult := repo.AddSpecialistDB(specialist)
 
 	require.NoError(t, firstResult.Err)
 	require.Equal(t, http.StatusCreated, firstResult.StatusCode)
 
 	// Insert same email again
-	secondResult := repo.AddSpecialist(specialist)
+	secondResult := repo.AddSpecialistDB(specialist)
 
 	require.Error(t, secondResult.Err)
 
@@ -66,7 +66,7 @@ func TestGetSpecialistById_IntegrationTest_Success(t *testing.T) {
 	repo := NewSpecialistRepository(db)
 
 	//The db is seeded with three specialists, so pick the first one.
-	result := repo.GetSpecialistById(1)
+	result := repo.GetSpecialistByIdDB(1)
 
 	assert.Nil(t, result.Err)
 	assert.Equal(t, http.StatusOK, result.StatusCode)
@@ -77,7 +77,7 @@ func TestGetSpecialistById_IntegrationTest_Success(t *testing.T) {
 func TestGetSpecialistById_IntegrationTest_NotFound(t *testing.T) {
 	repo := NewSpecialistRepository(db)
 
-	result := repo.GetSpecialistById(0)
+	result := repo.GetSpecialistByIdDB(0)
 
 	assert.NotNil(t, result.Err)
 	assert.Equal(t, http.StatusNotFound, result.StatusCode)
@@ -98,12 +98,12 @@ func TestUpdateSpecialistById_IntegrationTest_Success(t *testing.T){
 		Email:     "newemail@ucpnyc.org",
 	}
 
-	result := repo.AddSpecialist(specialist)
+	result := repo.AddSpecialistDB(specialist)
 
 	result.ResultData.FirstName = "Marky"
 	result.ResultData.LastName = "Greg"
 
-	updateResult := repo.UpdateSpecialist(result.ResultData)
+	updateResult := repo.UpdateSpecialistDB(result.ResultData)
 
 	assert.Nil(t, updateResult.Err)
 	assert.Equal(t, http.StatusOK, updateResult.StatusCode)
@@ -120,7 +120,7 @@ func TestUpdateSpecialistById_IntegrationTest_DuplicateEmail(t *testing.T) {
 		Email:     "existing@ucpnyc.org",
 	}
 
-	firstResult := repo.AddSpecialist(first)
+	firstResult := repo.AddSpecialistDB(first)
 	require.NoError(t, firstResult.Err)
 	require.Equal(t, http.StatusCreated, firstResult.StatusCode)
 
@@ -132,14 +132,14 @@ func TestUpdateSpecialistById_IntegrationTest_DuplicateEmail(t *testing.T) {
 		Email:     "newemail22@ucpnyc.org",
 	}
 
-	secondResult := repo.AddSpecialist(second)
+	secondResult := repo.AddSpecialistDB(second)
 	require.NoError(t, secondResult.Err)
 	require.Equal(t, http.StatusCreated, secondResult.StatusCode)
 
 	// Attempt to update second specialist to use first specialist's email
 	secondResult.ResultData.Email = firstResult.ResultData.Email
 
-	updateResult := repo.UpdateSpecialist(secondResult.ResultData)
+	updateResult := repo.UpdateSpecialistDB(secondResult.ResultData)
 
 	require.Error(t, updateResult.Err)
 	assert.Equal(t, http.StatusConflict, updateResult.StatusCode)
@@ -163,13 +163,13 @@ func TestDeleteSpecialist_IntegrationTest_Ok(t *testing.T) {
 		Email:     "deleteme@adaptcn.org",
 	}
 
-	createResult := repo.AddSpecialist(specialist)
+	createResult := repo.AddSpecialistDB(specialist)
 
 	require.NoError(t, createResult.Err)
 	require.Equal(t, http.StatusCreated, createResult.StatusCode)
 
 	// Delete newly added specialist
-	deleteResult := repo.DeleteSpecialist(createResult.ResultData.ID)
+	deleteResult := repo.DeleteSpecialistDB(createResult.ResultData.ID)
 
 	// Assert
 	require.NoError(t, deleteResult.Err)
@@ -177,7 +177,7 @@ func TestDeleteSpecialist_IntegrationTest_Ok(t *testing.T) {
 	assert.True(t, deleteResult.ResultData)
 
 	//Check to see if the specialist is deleted
-	getResult := repo.GetSpecialistById(createResult.ResultData.ID)
+	getResult := repo.GetSpecialistByIdDB(createResult.ResultData.ID)
 
 	require.Error(t, getResult.Err)
 	assert.Equal(t, http.StatusNotFound, getResult.StatusCode)
@@ -186,7 +186,7 @@ func TestDeleteSpecialist_IntegrationTest_Ok(t *testing.T) {
 func TestDeleteSpecialist_IntegrationTest_NotFound(t *testing.T) {
 	repo := NewSpecialistRepository(db)
 
-	result := repo.DeleteSpecialist(-1)
+	result := repo.DeleteSpecialistDB(-1)
 
 	require.Error(t, result.Err)
 	assert.Equal(t, http.StatusNotFound, result.StatusCode)

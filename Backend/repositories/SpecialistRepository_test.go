@@ -54,7 +54,7 @@ func TestAddNewSpecialist_Success(t *testing.T) {
 		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password). 
 		WillReturnRows(rows)
 
-	result := repo.AddSpecialist(specialist)
+	result := repo.AddSpecialistDB(specialist)
 
 	require.NoError(t, result.Err)
 	assert.Equal(t, http.StatusCreated, result.StatusCode)
@@ -90,7 +90,7 @@ func TestAddSpecialist_DuplicateEmail(t *testing.T) {
 		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password).
 		WillReturnError(pgErr)
 
-	result := repo.AddSpecialist(specialist)
+	result := repo.AddSpecialistDB(specialist)
 
 	require.Error(t, result.Err)
 
@@ -115,7 +115,7 @@ func TestAddSpecialist_DatabaseFailure(t *testing.T) {
 		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password).
 		WillReturnError(errors.New("database unavailable"))
 
-	result := repo.AddSpecialist(specialist)
+	result := repo.AddSpecialistDB(specialist)
 
 	require.Error(t, result.Err)
 
@@ -145,7 +145,7 @@ func TestUpdateSpecialist_Success(t *testing.T){
 		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password, specialistID). 
 		WillReturnResult(sqlmock.NewResult(int64(specialistID), 1))
 
-	result := repo.UpdateSpecialist(specialist)
+	result := repo.UpdateSpecialistDB(specialist)
 
 	assert.Nil(t, result.Err)
 	assert.Equal(t, http.StatusOK, result.StatusCode)
@@ -173,7 +173,7 @@ func TestUpdateSpecialist_DuplicateEmail(t *testing.T){
 		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password, specialistID). 
 		WillReturnError(pgErr)
 
-	result := repo.UpdateSpecialist(specialist)
+	result := repo.UpdateSpecialistDB(specialist)
 
 	assert.NotNil(t, result.Err)
 	assert.Equal(t, http.StatusConflict, result.StatusCode)
@@ -194,7 +194,7 @@ func TestUpdateSpecialist_DatabaseFailure(t *testing.T){
 		WithArgs(specialist.FirstName, specialist.LastName, specialist.Email, specialist.Password, specialistID). 
 		WillReturnError(fmt.Errorf("Database error"))
 
-	result := repo.UpdateSpecialist(specialist)
+	result := repo.UpdateSpecialistDB(specialist)
 
 	assert.NotNil(t, result.Err)
 	assert.Equal(t, http.StatusInternalServerError, result.StatusCode)
@@ -220,7 +220,7 @@ func TestGetSpecialistById_success(t *testing.T){
 		
 	mock.ExpectQuery(regexp.QuoteMeta(constants.GetSpecialistById)).WithArgs(1).WillReturnRows(rows)
 
-	result := repo.GetSpecialistById(specialistId)
+	result := repo.GetSpecialistByIdDB(specialistId)
 
 	assert.Nil(t, result.Err)
 	assert.Equal(t, http.StatusOK, result.StatusCode)
@@ -237,7 +237,7 @@ func TestGetSpecialistById_DatabaseError(t *testing.T){
 		WithArgs(specialistId).
 		WillReturnError(fmt.Errorf("Database error"))
 
-	result := repo.GetSpecialistById(specialistId)
+	result := repo.GetSpecialistByIdDB(specialistId)
 
 	assert.NotNil(t, result.Err)
 	assert.Equal(t, http.StatusInternalServerError, result.StatusCode)
@@ -248,7 +248,7 @@ func TestGetSpecialistById_IDNotFound(t *testing.T){
 	specialistId := 112
 		
 	mock.ExpectQuery(regexp.QuoteMeta(constants.GetSpecialistById)).WithArgs(specialistId).WillReturnError(sql.ErrNoRows)
-	result := repo.GetSpecialistById(specialistId)
+	result := repo.GetSpecialistByIdDB(specialistId)
 
 	assert.NotNil(t, result.Err)
 	assert.Equal(t, http.StatusNotFound, result.StatusCode)
@@ -267,7 +267,7 @@ func TestDeleteSpecialist_Success(t *testing.T) {
 		WithArgs(1).
 		WillReturnResult(mockResult)
 
-	result := repo.DeleteSpecialist(1)
+	result := repo.DeleteSpecialistDB(1)
 
 	require.NoError(t, result.Err)
 	assert.Equal(t, http.StatusOK, result.StatusCode)
@@ -285,7 +285,7 @@ func TestDeleteSpecialist_NotFound(t *testing.T) {
 		WithArgs(id).
 		WillReturnResult(mockResult)
 
-	result := repo.DeleteSpecialist(id)
+	result := repo.DeleteSpecialistDB(id)
 
 	require.Error(t, result.Err)
 	assert.Equal(t, http.StatusNotFound, result.StatusCode)
@@ -302,7 +302,7 @@ func TestDeleteSpecialist_DatabaseError(t *testing.T) {
 		WithArgs(1).
 		WillReturnError(errors.New("database unavailable"))
 
-	result := repo.DeleteSpecialist(1)
+	result := repo.DeleteSpecialistDB(1)
 
 	require.Error(t, result.Err)
 	assert.Equal(t, http.StatusInternalServerError, result.StatusCode)
