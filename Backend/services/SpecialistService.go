@@ -22,7 +22,6 @@ type specialistService struct {
 	specialistRepo repositories.SpecialistRepository
 }
 
-
 func NewSpecialistService(specialistRepo repositories.SpecialistRepository, emailVerificationRepo repositories.EmailVerificationRepository) SpecialistService {
 	return &specialistService{
 		specialistRepo: specialistRepo,
