@@ -7,31 +7,38 @@ import (
 )
 
 type EmailSendService interface {
-	SendEmail() error
+	SendEmail(emailReq EmailRequest) error
 }
 
-type emailSendService struct {
+type EmailRequest struct {
+    From        string
+    To          []string
+    Subject     string
+    HTML        string
+    Attachments []*resend.Attachment
+}
+
+type resendEmailService struct {
 	client *resend.Client
 }
 
 func NewEmailSendService() EmailSendService {
-	return &emailSendService{
+	return &resendEmailService{
 		client: resend.NewClient(os.Getenv("RESEND_API_KEY")),
 	}
 }
 
 // Method to send an email using the Resend API
-func (e *emailSendService) SendEmail() error {
-	client := resend.NewClient(os.Getenv("RESEND_API_KEY"))
-
+func (e *resendEmailService) SendEmail(emailReq EmailRequest) error {
     params := &resend.SendEmailRequest{
-        From:    "ScheduleFlow <noreply@darienmiller.com>",
-        To:      []string{"darienm931@gmail.com"},
-        Subject: "Hello World",
-        Html:    "<p>Congrats on sending your <strong>first email</strong>!</p>",
+        From:    emailReq.From,
+        To:      emailReq.To,
+        Subject: emailReq.Subject,
+        Html:    emailReq.HTML,
+        Attachments: emailReq.Attachments,
     }
 
-    _, err := client.Emails.Send(params)
+    _, err := e.client.Emails.Send(params)
     
     if err != nil {
         return err

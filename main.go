@@ -11,7 +11,6 @@ import (
 
 	"ScheduleFlow/Backend/controllers"
 	"ScheduleFlow/Backend/database"
-	"ScheduleFlow/Backend/services"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/alexedwards/scs/v2"
@@ -30,12 +29,6 @@ func main() {
 	//Initialize router
 	router := chi.NewRouter()
 	indexController := controllers.NewIndexController()
-
-	emailService := services.NewEmailSendService()
-
-	if err := emailService.SendEmail(); err != nil {
-		fmt.Println("Error sending email:", err)
-	}
 
 	//Set up middlewares
 	router.Use(middleware.Recoverer)
