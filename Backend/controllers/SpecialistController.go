@@ -4,6 +4,7 @@ import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/services"
 	"errors"
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -17,11 +18,15 @@ type SpecialistController struct {
 }
 
 func NewSpecialistController(specialistService services.SpecialistService) *SpecialistController {	
-	return &SpecialistController{
+	sc := &SpecialistController{
 		Router:            chi.NewRouter(),
 		templates:         template.Must(template.ParseGlob("./templates/partials/*.html")),
 		specialistService: specialistService,
 	}
+
+	sc.registerSpecialistRoutes()
+
+	return sc
 }
 
 func (s *SpecialistController) registerSpecialistRoutes(){
@@ -37,6 +42,8 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 			return
 		}
 
+		fmt.Println("Error parsing form data:", err)
+
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -48,12 +55,15 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		Email:     req.FormValue("email"),
 	}
 
+	fmt.Println("specialist password:", specialist.Password, "specialist email:", specialist.Email, "specialist first name:", specialist.FirstName, "specialist last name:", specialist.LastName)
+
 	result := s.specialistService.AddNewSpecialist(specialist)
 
 	if result.Err != nil{
 		http.Error(res, result.Err.Error(), result.StatusCode)
 		return
 	} 
-
+	
+	res.WriteHeader(http.StatusOK)
 	//add cookie, and redirect to home page.
 }

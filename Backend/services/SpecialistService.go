@@ -22,7 +22,7 @@ type specialistService struct {
 	specialistRepo repositories.SpecialistRepository
 }
 
-func NewSpecialistService(specialistRepo repositories.SpecialistRepository, emailVerificationRepo repositories.EmailVerificationRepository) SpecialistService {
+func NewSpecialistService(specialistRepo repositories.SpecialistRepository) SpecialistService {
 	return &specialistService{
 		specialistRepo: specialistRepo,
 	}

@@ -7,7 +7,7 @@
 {{ define "content" }}
     <div class="page-wrapper">
 
-        <form x-data="{ activeTab: 'signIn' }">
+        <div class="form-wrapper" x-data="{ activeTab: 'signIn' }">
             <div class="sign-up-wrapper">
                 <button :class="{ 'active': activeTab === 'signIn' }" @click="activeTab = 'signIn'" type="button">
                     Sign In
@@ -21,7 +21,7 @@
             </div>
             
             <!-- Sign In Credentials -->
-            <div class="credentials" x-show="activeTab === 'signIn'">
+            <form class="credentials" x-show="activeTab === 'signIn'">
                 <div class="form-group">
                     <label for="email">Email Address</label><br/>
                     <input type="email" id="email" name="email" placeholder="you@ucpnyc.org" required>
@@ -42,18 +42,18 @@
                     <img src="/static/img/microsoft-logo.png" alt="Microsoft Logo" class="microsoft-logo">
                     Sign in with Microsoft
                 </button>
-            </div>
+            </form>
     
             <!-- Sign Up Credentials -->
-            <div class="credentials" x-show="activeTab === 'signUp'">
+            <form class="credentials" x-show="activeTab === 'signUp'" hx-post="/specialists/signup" hx-on:htmx:after-request="if(event.detail.successful) this.reset()"> 
                 <div class="form-group">
                     <label for="first-name">First Name</label><br/>
-                    <input type="text" min-length="2" max-length="30" id="first-name" name="first-name" placeholder="Enter your first name" required>
+                    <input type="text" minlength="2" maxlength="30" id="first-name" name="first-name" placeholder="Enter your first name" required>
                 </div>
     
                 <div class="form-group">
                     <label for="last-name">Last Name</label><br/>
-                    <input type="text" min-length="2" max-length="30" id="last-name" name="last-name" placeholder="Enter your last name" required>
+                    <input type="text" minlength="2" maxlength="30" id="last-name" name="last-name" placeholder="Enter your last name" required>
                 </div>
     
                 <div class="form-group">
@@ -62,9 +62,9 @@
                         type="email"
                         id="email"
                         name="email" 
-                        placeholder="you@adaptcn.org" 
-                        pattern="^[a-zA-Z0-9._%+-]+@ucpnyc\.org$"
-                        title="Please use your official @ucpnyc.org email address." 
+                        placeholder="you@ucpnyc.org" 
+                        pattern="[a-zA-Z0-9._%+\-]+@ucpnyc\.org$" 
+                        title="Please use a @ucpnyc.org email address"
                         required
                     >
                 </div>
@@ -75,7 +75,7 @@
                 </div>
     
                 <button type="submit" class="sign-in-btn">Sign Up</button>
-            </div>
+            </form>
     
             <!-- Question to sign up if don't have an account -->
             <div class="form-footer" x-show="activeTab === 'signIn'">
@@ -87,6 +87,6 @@
                 Already have an account? <span @click="activeTab = 'signIn'">Sign in</span>
             </div>
     
-        </form>
+        </div>
     </div>
 {{ end }}

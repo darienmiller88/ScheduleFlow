@@ -28,7 +28,7 @@ func main() {
 
 	//Initialize router
 	router := chi.NewRouter()
-	indexController := controllers.NewIndexController()
+	indexController := controllers.NewIndexController(database.DB)
 
 	//Set up middlewares
 	router.Use(middleware.Recoverer)

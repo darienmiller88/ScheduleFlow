@@ -41,5 +41,7 @@ func (e *emailVerificationService) GetEmailVerificationEntry(specialistId int) m
 
 // UpdateEmailVerificationEntry implements [EmailVerificationService].
 func (e *emailVerificationService) UpdateEmailVerificationEntry(emailVerification models.EmailVerification) models.Result[models.EmailVerification] {
+	//update the email verification entry in the database using the repository	
+	
 	return e.repo.UpdateEmailVerification(emailVerification)
 }
