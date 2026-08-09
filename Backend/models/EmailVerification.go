@@ -22,8 +22,11 @@ type EmailVerification struct{
 	Code         string `db:"-"`
 }
 
+// NewEmailVerification creates a new EmailVerification struct with the given specialistId, and generates
+// a random 6-digit code that is hashed and stored in the CodeHash field. The ExpiresAt field is set to 15 minutes
+// from the current time. The Code field is set to the actual code that will be sent to the specialist's email.
 func NewEmailVerification(specialistId int) (EmailVerification, error) {
-	min, max := 1000, 9999
+	min, max := 100000, 999999
 	code := min + rand.IntN(max-min)
 
 	codeString    := strconv.Itoa(code)

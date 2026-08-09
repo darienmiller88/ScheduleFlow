@@ -4,6 +4,7 @@ import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/services"
 	"errors"
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -67,15 +68,26 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		return
 	}
 
-	// emailVerificationResult, err := models.NewEmailVerification(result.ResultData.ID)
+	newEmailVerification, err := models.NewEmailVerification(result.ResultData.ID)
 
-	// if err != nil {
-	// 	http.Error(res, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	// s.emailVerificationService.AddEmailVerificationEntry()
+	emailVerificationResult := s.emailVerificationService.AddEmailVerificationEntry(newEmailVerification)
 
+	if emailVerificationResult.Err != nil {
+		http.Error(res, emailVerificationResult.Err.Error(), emailVerificationResult.StatusCode)
+		return
+	}
+
+	if err := s.emailSendService.SendVerificationEmail("darienm931@gmail.com", "Darien", emailVerificationResult.ResultData.Code); err != nil {
+		http.Error(res, fmt.Sprintf("Failed to send verification email: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Println("Email verification was sent to email successfully:")
 	res.WriteHeader(http.StatusOK)
 	//add cookie, and redirect to home page.
 }
