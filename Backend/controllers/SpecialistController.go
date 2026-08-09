@@ -4,7 +4,6 @@ import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/services"
 	"errors"
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -17,7 +16,7 @@ type SpecialistController struct {
 	specialistService services.SpecialistService
 }
 
-func NewSpecialistController(specialistService services.SpecialistService) *SpecialistController {	
+func NewSpecialistController(specialistService services.SpecialistService) *SpecialistController {
 	sc := &SpecialistController{
 		Router:            chi.NewRouter(),
 		templates:         template.Must(template.ParseGlob("./templates/partials/*.html")),
@@ -29,20 +28,18 @@ func NewSpecialistController(specialistService services.SpecialistService) *Spec
 	return sc
 }
 
-func (s *SpecialistController) registerSpecialistRoutes(){
+func (s *SpecialistController) registerSpecialistRoutes() {
 	s.Router.Post("/signup", s.signup)
 }
 
-func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request){
-	if err := req.ParseForm(); err != nil{
+func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request) {
+	if err := req.ParseForm(); err != nil {
 		var maxBytesErr *http.MaxBytesError
-		
+
 		if errors.As(err, &maxBytesErr) {
 			http.Error(res, "Request payload too large. Must be 1 mb and under", http.StatusRequestEntityTooLarge)
 			return
 		}
-
-		fmt.Println("Error parsing form data:", err)
 
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
@@ -55,17 +52,13 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		Email:     req.FormValue("email"),
 	}
 
-	fmt.Println("specialist password:", specialist.Password, "specialist email:", specialist.Email, "specialist first name:", specialist.FirstName, "specialist last name:", specialist.LastName)
-
 	result := s.specialistService.AddNewSpecialist(specialist)
 
-	fmt.Println("err:", result.Err)
-
-	if result.Err != nil{
+	if result.Err != nil {
 		http.Error(res, result.Err.Error(), result.StatusCode)
 		return
-	} 
-	
+	}
+
 	res.WriteHeader(http.StatusOK)
 	//add cookie, and redirect to home page.
 }

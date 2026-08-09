@@ -72,23 +72,23 @@ func (s *Specialist) validatePassword() error {
 	var errorsFound []string
 
 	if len(s.Password) < minPasswordLen {
-		errorsFound = append(errorsFound, fmt.Sprintf("Please include at least %d characters", minPasswordLen))
+		errorsFound = append(errorsFound, fmt.Sprintf("include at least %d characters", minPasswordLen))
 	}
 
 	if !upper.MatchString(s.Password) {
-		errorsFound = append(errorsFound, "Please include at least one uppercase letter")
+		errorsFound = append(errorsFound, "include at least one uppercase letter")
 	}
 
 	if !lower.MatchString(s.Password) {
-		errorsFound = append(errorsFound, "Please include at least one lowercase letter")
+		errorsFound = append(errorsFound, "include at least one lowercase letter")
 	}
 
 	if !number.MatchString(s.Password) {
-		errorsFound = append(errorsFound, "Please include at least one number")
+		errorsFound = append(errorsFound, "include at least one number")
 	}
 
 	if !symbol.MatchString(s.Password) {
-		errorsFound = append(errorsFound, `Please include at least one symbol: !@#$%^&*`)
+		errorsFound = append(errorsFound, `include at least one symbol: !@#$%^&*`)
 	}
 
 	if len(errorsFound) > 0 {
