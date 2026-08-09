@@ -61,7 +61,7 @@ func (s *specialistService) AddNewSpecialist(specialist models.Specialist) model
 	//Set the hashed password to the specialist's password field, and the abbreviated player name
 	//to the first letter of the first name and the first letter of the last name.
 	specialist.Password = string(hashedPassword)
-	specialist.PlayerNameAbbrev = s.getPlayerNameInitials(specialist.FirstName, specialist.LastName)
+	specialist.NameAbbrev = s.getPlayerNameInitials(specialist.FirstName, specialist.LastName)
 
 	return s.specialistRepo.AddSpecialistDB(specialist)
 }

@@ -42,6 +42,7 @@ func (s *specialistRepository) AddSpecialistDB(specialist models.Specialist) mod
 		specialist.LastName,
 		specialist.Email,
 		specialist.Password,
+		specialist.NameAbbrev,
 	).Scan(&specialist.ID)
 
 	if err != nil {

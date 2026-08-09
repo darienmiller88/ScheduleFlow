@@ -13,14 +13,22 @@ import (
 type SpecialistController struct {
 	Router            *chi.Mux
 	templates         *template.Template
-	specialistService services.SpecialistService
+	specialistService        services.SpecialistService
+	emailVerificationService services.EmailVerificationService
+	emailSendService         services.EmailSendService
 }
 
-func NewSpecialistController(specialistService services.SpecialistService) *SpecialistController {
+func NewSpecialistController(
+	specialistService services.SpecialistService, 
+	emailVerificationService services.EmailVerificationService,
+	emailSendService services.EmailSendService,
+) *SpecialistController {
 	sc := &SpecialistController{
 		Router:            chi.NewRouter(),
 		templates:         template.Must(template.ParseGlob("./templates/partials/*.html")),
 		specialistService: specialistService,
+		emailVerificationService: emailVerificationService,
+		emailSendService: emailSendService,
 	}
 
 	sc.registerSpecialistRoutes()
@@ -58,6 +66,15 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		http.Error(res, result.Err.Error(), result.StatusCode)
 		return
 	}
+
+	// emailVerificationResult, err := models.NewEmailVerification(result.ResultData.ID)
+
+	// if err != nil {
+	// 	http.Error(res, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+
+	// s.emailVerificationService.AddEmailVerificationEntry()
 
 	res.WriteHeader(http.StatusOK)
 	//add cookie, and redirect to home page.
