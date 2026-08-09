@@ -59,6 +59,8 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 
 	result := s.specialistService.AddNewSpecialist(specialist)
 
+	fmt.Println("err:", result.Err)
+
 	if result.Err != nil{
 		http.Error(res, result.Err.Error(), result.StatusCode)
 		return

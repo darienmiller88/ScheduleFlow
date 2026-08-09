@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -30,7 +31,7 @@ var (
 	number = regexp.MustCompile(`[0-9]`)
 
 	//Password needs to have at least one of these symbols
-	symbol = regexp.MustCompile(`[!@#$%^&*()_\-+=\[\]{}|\\:;"'<,>.?/]`)
+	symbol = regexp.MustCompile(`[!@#$%^&*]`)
 
 	//Email must be an actual email, and have "@ucpnyc.org" as the domain
 	emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@ucpnyc\.org$`)
@@ -68,24 +69,30 @@ func (s *Specialist) Validate() error {
 }
 
 func (s *Specialist) validatePassword() error {
-	if len(s.Password) < minPasswordLen{
-		return fmt.Errorf("Password must have at least %d characters close", minPasswordLen)
+	var errorsFound []string
+
+	if len(s.Password) < minPasswordLen {
+		errorsFound = append(errorsFound, fmt.Sprintf("Please include at least %d characters", minPasswordLen))
 	}
 
 	if !upper.MatchString(s.Password) {
-		return errors.New("Password must have at least one uppercase letter")
+		errorsFound = append(errorsFound, "Please include at least one uppercase letter")
 	}
 
 	if !lower.MatchString(s.Password) {
-		return errors.New("Password must have at least one lowecase letter")
+		errorsFound = append(errorsFound, "Please include at least one lowercase letter")
 	}
 
 	if !number.MatchString(s.Password) {
-		return errors.New("Password must have at least one number")
+		errorsFound = append(errorsFound, "Please include at least one number")
 	}
 
 	if !symbol.MatchString(s.Password) {
-		return errors.New(`password must have at least one symbol: !@#$%^&*()_-+={}[]|\\:;"'<,>.?/`)
+		errorsFound = append(errorsFound, `Please include at least one symbol: !@#$%^&*`)
+	}
+
+	if len(errorsFound) > 0 {
+		return errors.New(strings.Join(errorsFound, ","))
 	}
 
 	return nil
@@ -101,19 +108,19 @@ func (s *Specialist) validateEmail() error {
 
 func (s *Specialist) validateFirstAndLastName() error {
 	if len(s.FirstName) < minimumLen || len(s.FirstName) > maximumLen{
-		return fmt.Errorf("%s must be between %d and %d characters long", s.FirstName, minimumLen, maximumLen)
+		return fmt.Errorf("first name must be between %d and %d characters long", minimumLen, maximumLen)
 	}
 
 	if len(s.LastName) < minimumLen || len(s.LastName) > maximumLen {
-		return fmt.Errorf("%s is too short, it must be at least %d characters long", s.FirstName, minimumLen)
+		return fmt.Errorf("last name must be between %d and %d characters long", minimumLen, maximumLen)
 	}
 
 	if len(s.FirstName) > maximumLen {
-		return fmt.Errorf("%s is too long, it must be at most %d characters long", s.FirstName, minimumLen)
+		return fmt.Errorf("first name is too long, it must be at most %d characters long", maximumLen)
 	}
 
 	if len(s.LastName) > maximumLen {
-		return fmt.Errorf("%s is too long, it must be at most %d characters long", s.FirstName, minimumLen)
+		return fmt.Errorf("last name is too long, it must be at most %d characters long", maximumLen)
 	}
 
 	return nil

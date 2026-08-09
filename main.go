@@ -12,8 +12,8 @@ import (
 	"ScheduleFlow/Backend/controllers"
 	"ScheduleFlow/Backend/database"
 
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/alexedwards/scs/v2"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 var sessionManager *scs.SessionManager
@@ -39,7 +39,7 @@ func main() {
 
 	//Mount index router, which has all other controllers mounted on it
 	router.Mount("/", indexController.Router)
-	
+
 	//Serve static files along the "/static" route
 	fs := http.FileServer(http.Dir("static"))
 	router.Handle("/static/*", http.StripPrefix("/static/", fs))
@@ -49,4 +49,3 @@ func main() {
 	fmt.Println("Server is running on port:", port)
 	http.ListenAndServe(fmt.Sprintf(":%s", port), sessionManager.LoadAndSave(router))
 }
-
