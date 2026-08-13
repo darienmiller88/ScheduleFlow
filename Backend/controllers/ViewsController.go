@@ -49,7 +49,14 @@ func NewViewsController() *ViewsController {
 
 func (v *ViewsController) registerViewRoutes() {
 	v.Router.Get("/home", v.homePage)
+	v.Router.Get("/verification", v.verificationPage)
 	v.Router.Get("/", v.loginPage)
+}
+
+func (v *ViewsController) verificationPage(res http.ResponseWriter, req *http.Request) {
+	if err := v.templates["verification"].Execute(res, nil); err != nil {
+		http.Error(res, "Error rendering template", http. StatusInternalServerError)
+	}
 }
 
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {

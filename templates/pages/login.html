@@ -45,7 +45,12 @@
             </form>
     
             <!-- Sign Up Credentials -->
-            <form class="credentials" x-show="activeTab === 'signUp'" hx-post="/specialists/signup" hx-on:htmx:after-request="if(event.detail.successful) this.reset()"> 
+            <form 
+                class="credentials" 
+                x-show="activeTab === 'signUp'" 
+                hx-post="/specialists/signup" 
+                hx-on:htmx:after-request="if(event.detail.successful) this.reset()"
+            > 
                 <div class="form-group">
                     <label for="first-name">First Name</label><br/>
                     <input type="text" minlength="2" maxlength="30" id="first-name" name="first-name" placeholder="Enter your first name" required>
