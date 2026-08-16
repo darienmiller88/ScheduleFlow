@@ -54,6 +54,7 @@ func (v *ViewsController) registerViewRoutes() {
 	v.Router.Get("/home", v.homePage)
 	v.Router.Get("/verification", v.verificationPage)
 	v.Router.Get("/", v.loginPage)
+	v.Router.NotFound(v.notFound)
 }
 
 func (v *ViewsController) verificationPage(res http.ResponseWriter, req *http.Request) {
@@ -71,5 +72,12 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 func (v *ViewsController) loginPage(res http.ResponseWriter, req *http.Request) {
 	if err := v.pageTemplates["login"].Execute(res, nil); err != nil {
 		http.Error(res, "Error rendering template", http.StatusInternalServerError)
+	}
+}
+
+func (v *ViewsController) notFound(res http.ResponseWriter, req *http.Request) {
+	res.WriteHeader(http.StatusNotFound)
+	if err := v.standardTemplates.ExecuteTemplate(res, "notfound.html", nil); err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
 	}
 }
