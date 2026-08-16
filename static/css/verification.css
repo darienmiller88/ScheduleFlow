@@ -1,12 +1,28 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+    color: #111827;
+}
+
 .verification-container {
-    /* width: 100%; */
+    width: 100%;
     max-width: 440px;
     background-color: #ffffff;
-    border: 2px solid red;
+    border: 1px solid #e1e5e9;
     border-radius: 10px;
     padding: 40px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin: 0 auto;
 }
 
 .logo {

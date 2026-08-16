@@ -12,7 +12,8 @@ import (
 
 type ViewsController struct {
 	Router    *chi.Mux
-	templates map[string]*template.Template
+	pageTemplates map[string]*template.Template
+	standardTemplates *template.Template
 }
 
 func NewViewsController() *ViewsController {
@@ -20,6 +21,7 @@ func NewViewsController() *ViewsController {
 	pages, _    := filepath.Glob("./templates/pages/*.html")
   
 	tmplMap := make(map[string]*template.Template)
+	standardTemplates := template.Must(template.ParseGlob("./templates/*.html"))
 
 	for _, page := range pages {
 		// Get page name without extension (e.g., "home", "login")
@@ -39,7 +41,8 @@ func NewViewsController() *ViewsController {
 
 	vc := &ViewsController{
 		Router:    chi.NewRouter(),
-		templates: tmplMap,
+		pageTemplates: tmplMap,
+		standardTemplates: standardTemplates,
 	}
 
 	vc.registerViewRoutes()
@@ -54,19 +57,19 @@ func (v *ViewsController) registerViewRoutes() {
 }
 
 func (v *ViewsController) verificationPage(res http.ResponseWriter, req *http.Request) {
-	if err := v.templates["verification"].Execute(res, nil); err != nil {
-		http.Error(res, "Error rendering template", http. StatusInternalServerError)
+	if err := v.standardTemplates.ExecuteTemplate(res, "verification.html", nil); err != nil {
+		http.Error(res, "Error rendering template", http.StatusInternalServerError)
 	}
 }
 
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
-	if err := v.templates["home"].Execute(res, nil); err != nil {
+	if err := v.pageTemplates["home"].Execute(res, nil); err != nil {
 		http.Error(res, "Error rendering template", http.StatusInternalServerError)
 	}
 }
 
 func (v *ViewsController) loginPage(res http.ResponseWriter, req *http.Request) {
-	if err := v.templates["login"].Execute(res, nil); err != nil {
+	if err := v.pageTemplates["login"].Execute(res, nil); err != nil {
 		http.Error(res, "Error rendering template", http.StatusInternalServerError)
 	}
 }
