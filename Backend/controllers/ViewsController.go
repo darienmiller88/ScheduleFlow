@@ -77,6 +77,7 @@ func (v *ViewsController) loginPage(res http.ResponseWriter, req *http.Request) 
 
 func (v *ViewsController) notFound(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusNotFound)
+	
 	if err := v.standardTemplates.ExecuteTemplate(res, "notfound.html", nil); err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 	}
