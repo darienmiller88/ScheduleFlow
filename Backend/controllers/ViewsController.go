@@ -1,14 +1,15 @@
 package controllers
 
 import (
+	"ScheduleFlow/Backend/middlewares"
 	"fmt"
 	"html/template"
 	"net/http"
 	"path/filepath"
 	"strings"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/alexedwards/scs/v2"
+	"github.com/go-chi/chi/v5"
 )
 
 type ViewsController struct {
@@ -45,7 +46,7 @@ func NewViewsController(sessionManager *scs.SessionManager) *ViewsController {
 		Router:            chi.NewRouter(),
 		pageTemplates:     tmplMap,
 		standardTemplates: standardTemplates,
-		sessionManger: sessionManager,
+		sessionManger:     sessionManager,
 	}
 
 	vc.registerViewRoutes()
@@ -54,9 +55,13 @@ func NewViewsController(sessionManager *scs.SessionManager) *ViewsController {
 }
 
 func (v *ViewsController) registerViewRoutes() {
-	v.Router.Get("/home", v.homePage)
-	v.Router.Get("/verification", v.verificationPage)
-	v.Router.Get("/", v.loginPage)
+	v.Router.Group(func(r chi.Router) {
+		r.Use(middlewares.RequireAuth(v.sessionManger))
+		r.Get("/home", v.homePage)
+		r.Get("/verification", v.verificationPage)
+	})
+	
+	v.Router.With(middlewares.SendBackToHome(v.sessionManger)).Get("/", v.loginPage)
 	v.Router.NotFound(v.notFound)
 }
 
@@ -67,7 +72,6 @@ func (v *ViewsController) verificationPage(res http.ResponseWriter, req *http.Re
 }
 
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
-	
 	if err := v.pageTemplates["home"].Execute(res, nil); err != nil {
 		http.Error(res, "Error rendering template", http.StatusInternalServerError)
 	}

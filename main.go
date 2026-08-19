@@ -37,12 +37,6 @@ func main() {
 	//Mount index router, which has all other controllers mounted on it
 	router.Mount("/", indexController.Router)
 
-	router.Put("/add-session", func (w http.ResponseWriter, r *http.Request) {
-		// Store a new key and value in the session data.
-
-		sm.Put(r.Context(), "message", "Hello from a session!")
-	})
-
 	//Serve static files along the "/static" route
 	fs := http.FileServer(http.Dir("static"))
 	router.Handle("/static/*", http.StripPrefix("/static/", fs))
