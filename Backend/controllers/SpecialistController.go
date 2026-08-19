@@ -3,11 +3,14 @@ package controllers
 import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/services"
+	"ScheduleFlow/Backend/middlewares"
+
 	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
 
+	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -17,12 +20,14 @@ type SpecialistController struct {
 	specialistService        services.SpecialistService
 	emailVerificationService services.EmailVerificationService
 	emailSendService         services.EmailSendService
+	sessionManager           *scs.SessionManager
 }
 
 func NewSpecialistController(
 	specialistService services.SpecialistService, 
 	emailVerificationService services.EmailVerificationService,
 	emailSendService services.EmailSendService,
+	sessionManager *scs.SessionManager,
 ) *SpecialistController {
 	sc := &SpecialistController{
 		Router:            chi.NewRouter(),
@@ -30,6 +35,7 @@ func NewSpecialistController(
 		specialistService: specialistService,
 		emailVerificationService: emailVerificationService,
 		emailSendService: emailSendService,
+		sessionManager: sessionManager,
 	}
 
 	sc.registerSpecialistRoutes()
@@ -38,6 +44,10 @@ func NewSpecialistController(
 }
 
 func (s *SpecialistController) registerSpecialistRoutes() {
+	s.Router.Group(func(r chi.Router) {
+		r.Use(middlewares.RequireAuth(s.sessionManager))
+	})
+
 	s.Router.Post("/signup", s.signup)
 }
 

@@ -8,18 +8,20 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/alexedwards/scs/v2"
 )
 
 type ViewsController struct {
-	Router    *chi.Mux
-	pageTemplates map[string]*template.Template
+	Router            *chi.Mux
+	pageTemplates     map[string]*template.Template
 	standardTemplates *template.Template
+	sessionManger     *scs.SessionManager
 }
 
-func NewViewsController() *ViewsController {
+func NewViewsController(sessionManager *scs.SessionManager) *ViewsController {
 	partials, _ := filepath.Glob("./templates/partials/*.html")
-	pages, _    := filepath.Glob("./templates/pages/*.html")
-  
+	pages, _ := filepath.Glob("./templates/pages/*.html")
+
 	tmplMap := make(map[string]*template.Template)
 	standardTemplates := template.Must(template.ParseGlob("./templates/*.html"))
 
@@ -40,9 +42,10 @@ func NewViewsController() *ViewsController {
 	}
 
 	vc := &ViewsController{
-		Router:    chi.NewRouter(),
-		pageTemplates: tmplMap,
+		Router:            chi.NewRouter(),
+		pageTemplates:     tmplMap,
 		standardTemplates: standardTemplates,
+		sessionManger: sessionManager,
 	}
 
 	vc.registerViewRoutes()
@@ -64,6 +67,7 @@ func (v *ViewsController) verificationPage(res http.ResponseWriter, req *http.Re
 }
 
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
+	
 	if err := v.pageTemplates["home"].Execute(res, nil); err != nil {
 		http.Error(res, "Error rendering template", http.StatusInternalServerError)
 	}
@@ -77,7 +81,7 @@ func (v *ViewsController) loginPage(res http.ResponseWriter, req *http.Request) 
 
 func (v *ViewsController) notFound(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusNotFound)
-	
+
 	if err := v.standardTemplates.ExecuteTemplate(res, "notfound.html", nil); err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 	}

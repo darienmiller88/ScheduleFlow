@@ -11,24 +11,21 @@ import (
 
 	"ScheduleFlow/Backend/controllers"
 	"ScheduleFlow/Backend/database"
+	"ScheduleFlow/Backend/sessionManager"
 
-	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5/middleware"
 )
-
-var sessionManager *scs.SessionManager
 
 func main() {
 	godotenv.Load()
 	database.ConnectToPostgreSQL()
 
-	// Initialize a new session manager and configure the session lifetime for one week.
-	sessionManager = scs.New()
-	sessionManager.Lifetime = 168 * time.Hour
-
+	//initialize session manager
+	sm := sessionmanager.NewSessionManager(database.DB)
+	
 	//Initialize router
 	router := chi.NewRouter()
-	indexController := controllers.NewIndexController(database.DB)
+	indexController := controllers.NewIndexController(database.DB, sm)
 
 	//Set up middlewares
 	router.Use(middleware.Recoverer)
@@ -40,6 +37,12 @@ func main() {
 	//Mount index router, which has all other controllers mounted on it
 	router.Mount("/", indexController.Router)
 
+	router.Put("/add-session", func (w http.ResponseWriter, r *http.Request) {
+		// Store a new key and value in the session data.
+
+		sm.Put(r.Context(), "message", "Hello from a session!")
+	})
+
 	//Serve static files along the "/static" route
 	fs := http.FileServer(http.Dir("static"))
 	router.Handle("/static/*", http.StripPrefix("/static/", fs))
@@ -47,5 +50,6 @@ func main() {
 	port := os.Getenv("PORT")
 
 	fmt.Println("Server is running on port:", port)
-	http.ListenAndServe(fmt.Sprintf(":%s", port), sessionManager.LoadAndSave(router))
+	http.ListenAndServe(fmt.Sprintf(":%s", port), sm.LoadAndSave(router))
 }
+
