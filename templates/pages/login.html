@@ -26,62 +26,89 @@
                     <label for="email">Email Address</label><br/>
                     <input type="email" id="email" name="email" placeholder="you@ucpnyc.org" required>
                 </div>
-    
+
                 <div class="form-group">
                     <label for="password">Password</label><br/>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
-    
+
                 <div class="forgot-password">
                     <a>Forgot password?</a>
                 </div>
-    
+
                 <button type="submit" class="sign-in-btn">Sign In</button>
-                <div class="form-divider">or</div>
-                <button type="submit" class="microsoft-btn">
-                    <img src="/static/img/microsoft-logo.png" alt="Microsoft Logo" class="microsoft-logo">
-                    Sign in with Microsoft
-                </button>
             </form>
-    
+
             <!-- Sign Up Credentials -->
             <form 
                 class="credentials" 
                 x-show="activeTab === 'signUp'" 
+                x-data="{
+                    password: '',
+                    get hasLength() { return this.password.length >= 8 },
+                    get hasUpper() { return /[A-Z]/.test(this.password) },
+                    get hasLower() { return /[a-z]/.test(this.password) },
+                    get hasNumber() { return /[0-9]/.test(this.password) },
+                    get hasSymbol() { return /[!@#$%^&*]/.test(this.password) },
+                    get passwordValid() {
+                        return this.hasLength && this.hasUpper && this.hasLower && this.hasNumber && this.hasSymbol
+                    }
+                }"
                 hx-post="/specialists/signup" 
                 hx-on:htmx:after-request="if(event.detail.successful) this.reset()"
+                @submit="if (!passwordValid) { $event.preventDefault(); $event.stopImmediatePropagation(); }"
             > 
-                <div class="form-group">
-                    <label for="first-name">First Name</label><br/>
-                    <input type="text" minlength="2" maxlength="30" id="first-name" name="first-name" placeholder="Enter your first name" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first-name">First Name</label><br/>
+                        <input type="text" minlength="2" maxlength="30" id="first-name" name="first-name" placeholder="First name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last-name">Last Name</label><br/>
+                        <input type="text" minlength="2" maxlength="30" id="last-name" name="last-name" placeholder="Last name" required>
+                    </div>
                 </div>
-    
-                <div class="form-group">
-                    <label for="last-name">Last Name</label><br/>
-                    <input type="text" minlength="2" maxlength="30" id="last-name" name="last-name" placeholder="Enter your last name" required>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label><br/>
+                        <input 
+                            type="email"
+                            id="signup-email"
+                            name="email" 
+                            placeholder="you@ucpnyc.org" 
+                            pattern="[a-zA-Z0-9._%+\-]+@ucpnyc\.org$" 
+                            title="Please use a @ucpnyc.org email address"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-password">Password</label><br/>
+                        <input 
+                            type="password" 
+                            id="signup-password" 
+                            name="password" 
+                            minlength="8"
+                            placeholder="Enter your password" 
+                            x-model="password"
+                            required
+                        >
+                    </div>
                 </div>
-    
-                <div class="form-group">
-                    <label for="email">Email Address</label><br/>
-                    <input 
-                        type="email"
-                        id="email"
-                        name="email" 
-                        placeholder="you@ucpnyc.org" 
-                        pattern="[a-zA-Z0-9._%+\-]+@ucpnyc\.org$" 
-                        title="Please use a @ucpnyc.org email address"
-                        required
-                    >
-                </div>
-    
-                <div class="form-group">
-                    <label for="password">Password</label><br/>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-    
-                <button type="submit" class="sign-in-btn">Sign Up</button>
+
+                <ul class="password-requirements" x-show="password.length > 0" x-cloak>
+                    <li :class="hasLength ? 'valid' : 'invalid'"><span class="indicator-dot"></span>At least 8 characters</li>
+                    <li :class="hasUpper ? 'valid' : 'invalid'"><span class="indicator-dot"></span>One uppercase letter</li>
+                    <li :class="hasLower ? 'valid' : 'invalid'"><span class="indicator-dot"></span>One lowercase letter</li>
+                    <li :class="hasNumber ? 'valid' : 'invalid'"><span class="indicator-dot"></span>One number</li>
+                    <li :class="hasSymbol ? 'valid' : 'invalid'"><span class="indicator-dot"></span>One symbol</li>
+                </ul>
+
+                <button type="submit" class="sign-in-btn" :disabled="!passwordValid" :class="{ 'btn-disabled': !passwordValid }">Sign Up</button>
             </form>
-    
+
             <!-- Question to sign up if don't have an account -->
             <div class="form-footer" x-show="activeTab === 'signIn'">
                 Don't have an account? <span @click="activeTab = 'signUp'">Sign up</span>
@@ -91,7 +118,7 @@
             <div class="form-footer" x-show="activeTab === 'signUp'">
                 Already have an account? <span @click="activeTab = 'signIn'">Sign in</span>
             </div>
-    
+
         </div>
     </div>
 {{ end }}

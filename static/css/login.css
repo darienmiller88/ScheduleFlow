@@ -24,6 +24,10 @@
     background-color: rgb(245, 245, 245);
 }
 
+/* boiler plate for alpine */
+[x-cloak] { 
+    display: none !important; 
+}
 
 /****************************
 Sign Up Wrapper
@@ -202,4 +206,78 @@ Form Divider
 .form-footer span:hover{
     cursor: pointer;
     text-decoration: underline;
+}
+
+
+/*********************************
+Form Row (side-by-side fields)
+*********************************/
+.form-wrapper .credentials .form-row{
+    display: flex;
+    gap: 1rem;
+}
+
+.form-wrapper .credentials .form-row .form-group{
+    flex: 1;
+    min-width: 0; /* prevents inputs from overflowing their flex item */
+}
+
+.form-wrapper .credentials .form-row .form-group input{
+    width: 100%; /* fills the narrower column cleanly, unlike the 95% default */
+    box-sizing: border-box;
+}
+
+
+/*********************************
+Password Requirements Checklist
+*********************************/
+.form-wrapper .credentials .password-requirements{
+    list-style: none;
+    margin: 0.6rem 0 1rem;
+    padding: 0;
+}
+
+.form-wrapper .credentials .password-requirements li{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #666666;
+    margin-bottom: 0.3rem;
+    transition: color 0.2s ease-in-out;
+}
+
+.form-wrapper .credentials .password-requirements .indicator-dot{
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background-color: #d9534f; /* default/red */
+    flex-shrink: 0;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.form-wrapper .credentials .password-requirements li.valid{
+    color: #2f8f4e;
+}
+
+.form-wrapper .credentials .password-requirements li.valid .indicator-dot{
+    background-color: #2f8f4e; /* green */
+}
+
+.form-wrapper .credentials .password-requirements li.invalid .indicator-dot{
+    background-color: #d9534f; /* red */
+}
+
+
+/*********************************
+Disabled submit button state
+*********************************/
+.form-wrapper .credentials .sign-in-btn.btn-disabled{
+    background-color: #b9b9b9;
+    cursor: not-allowed;
+}
+
+.form-wrapper .credentials .sign-in-btn.btn-disabled:hover{
+    cursor: not-allowed;
+    background-color: #b9b9b9;
 }
