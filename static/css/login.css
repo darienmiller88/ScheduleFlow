@@ -11,8 +11,11 @@
     border-radius: 0.8rem;
     background-color: white;
 
-    width: 85vw;       /* Default width on mobile */
-    max-width: 35rem; /* The hard stop so it never gets too wide on desktop */
+    /* Default width on mobile */
+    width: 85vw;       
+
+    /* The hard stop so it never gets too wide on desktop */
+    max-width: 45rem; 
     margin: auto;
 }
 
@@ -212,21 +215,36 @@ Form Divider
 /*********************************
 Form Row (side-by-side fields)
 *********************************/
+
+/* Mobile & tablet: stack all fields vertically */
 .form-wrapper .credentials .form-row{
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0;
 }
 
 .form-wrapper .credentials .form-row .form-group{
-    flex: 1;
     min-width: 0; /* prevents inputs from overflowing their flex item */
 }
 
 .form-wrapper .credentials .form-row .form-group input{
-    width: 100%; /* fills the narrower column cleanly, unlike the 95% default */
+    width: 100%; /* fills the column cleanly, unlike the 95% default */
     box-sizing: border-box;
 }
 
+/* Desktop: first/last name on one row, email/password on the next */
+@media (min-width: 992px){
+    .form-wrapper .credentials .form-row{
+        flex-direction: row;
+        gap: clamp(1rem, 0.7143rem + 0.0893vw, 2rem);
+        margin-bottom: 1rem;
+    }
+
+    .form-wrapper .credentials .form-row .form-group{
+        flex: 1;
+        margin-bottom: 0; /* the row itself now carries the bottom margin */
+    }
+}
 
 /*********************************
 Password Requirements Checklist
