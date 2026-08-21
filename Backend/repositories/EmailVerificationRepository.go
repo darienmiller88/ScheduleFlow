@@ -3,18 +3,30 @@ package repositories
 import (
 	"ScheduleFlow/Backend/constants"
 	"ScheduleFlow/Backend/utils"
+	"database/sql"
+	"errors"
+	"fmt"
 	"net/http"
 
 	"ScheduleFlow/Backend/models"
+
 	"github.com/jmoiron/sqlx"
 )
 
 // Interface for the Email Verifications. Defines the methods that can be used to interact with the
 // email verification table in the database.
 type EmailVerificationRepository interface {
+
+	// UpdateEmailVerification updates an existing email verification entry in the database for a specialist.
 	UpdateEmailVerification(emailVerification models.EmailVerification) models.Result[models.EmailVerification]
+
+	// AddEmailVerification adds a new email verification entry to the database for a specialist.
 	AddEmailVerification(emailVerification models.EmailVerification) models.Result[models.EmailVerification]
+
+	// GetEmailVerification retrieves the email verification entry for a given specialist ID.
 	GetEmailVerification(specialistId int) models.Result[models.EmailVerification]
+
+	// DeleteEmailVerification deletes the email verification entry for a given specialist ID.
 	DeleteEmailVerification(specialistId int) models.Result[bool]
 }
 
@@ -63,6 +75,14 @@ func (e *emailVerificationRepository) GetEmailVerification(specialistId int) mod
 	err := e.db.Get(&emailVerification, constants.GetEmailVerification, specialistId)
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return utils.GetResult(
+				fmt.Errorf("email verification for specialist with id %d not found", specialistId),
+				http.StatusNotFound,
+				models.EmailVerification{},
+			)
+		}
+
 		return utils.GetResult(err, http.StatusInternalServerError, models.EmailVerification{})
 	}
 

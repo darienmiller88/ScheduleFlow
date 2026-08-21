@@ -45,8 +45,8 @@ func NewViewsController(sessionManager *scs.SessionManager) *ViewsController {
 	vc := &ViewsController{
 		Router:            chi.NewRouter(),
 		pageTemplates:     tmplMap,
-		standardTemplates: standardTemplates,
 		sessionManger:     sessionManager,
+		standardTemplates: standardTemplates,
 	}
 
 	vc.registerViewRoutes()
@@ -65,11 +65,6 @@ func (v *ViewsController) registerViewRoutes() {
 	v.Router.NotFound(v.notFound)
 }
 
-func (v *ViewsController) verificationPage(res http.ResponseWriter, req *http.Request) {
-	if err := v.standardTemplates.ExecuteTemplate(res, "verification.html", nil); err != nil {
-		http.Error(res, "Error rendering template", http.StatusInternalServerError)
-	}
-}
 
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 	if err := v.pageTemplates["home"].Execute(res, nil); err != nil {
@@ -79,6 +74,12 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 
 func (v *ViewsController) loginPage(res http.ResponseWriter, req *http.Request) {
 	if err := v.pageTemplates["login"].Execute(res, nil); err != nil {
+		http.Error(res, "Error rendering template", http.StatusInternalServerError)
+	}
+}
+
+func (v *ViewsController) verificationPage(res http.ResponseWriter, req *http.Request) {
+	if err := v.standardTemplates.ExecuteTemplate(res, "verification.html", nil); err != nil {
 		http.Error(res, "Error rendering template", http.StatusInternalServerError)
 	}
 }
