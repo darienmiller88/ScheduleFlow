@@ -25,7 +25,7 @@ func NewIndexController(db *sqlx.DB, sessionManager *scs.SessionManager) *IndexC
 
 // registerRoutes sets up the routes for the IndexController by mounting all sub-routes in controllers.
 func (c *IndexController) registerRoutes(db *sqlx.DB, sessionManager *scs.SessionManager) {
-	vc := NewViewsController(sessionManager)
+	vc := NewViewsController(sessionManager, db)
 	sc := NewSpecialistController(
 		services.NewSpecialistService(repositories.NewSpecialistRepository(db)),
 		services.NewEmailVerificationService(repositories.NewEmailVerificationRepository(db)),

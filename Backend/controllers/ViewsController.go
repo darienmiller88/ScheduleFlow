@@ -10,16 +10,18 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
+	"github.com/jmoiron/sqlx"
 )
 
 type ViewsController struct {
+	db          	  *sqlx.DB
 	Router            *chi.Mux
 	pageTemplates     map[string]*template.Template
-	standardTemplates *template.Template
 	sessionManger     *scs.SessionManager
+	standardTemplates *template.Template
 }
 
-func NewViewsController(sessionManager *scs.SessionManager) *ViewsController {
+func NewViewsController(sessionManager *scs.SessionManager, db *sqlx.DB) *ViewsController {
 	partials, _ := filepath.Glob("./templates/partials/*.html")
 	pages, _ := filepath.Glob("./templates/pages/*.html")
 
@@ -55,16 +57,11 @@ func NewViewsController(sessionManager *scs.SessionManager) *ViewsController {
 }
 
 func (v *ViewsController) registerViewRoutes() {
-	v.Router.Group(func(r chi.Router) {
-		r.Use(middlewares.RequireAuth(v.sessionManger))
-		r.Get("/home", v.homePage)
-		r.Get("/verification", v.verificationPage)
-	})
-	
+	v.Router.With(middlewares.RequireAuth(v.sessionManger)).Get("/home", v.homePage)
 	v.Router.With(middlewares.SendBackToHome(v.sessionManger)).Get("/", v.loginPage)
+	v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.RequireVerification(v.sessionManger, v.db)).Get("/verification", v.verificationPage)
 	v.Router.NotFound(v.notFound)
 }
-
 
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 	if err := v.pageTemplates["home"].Execute(res, nil); err != nil {
