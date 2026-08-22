@@ -21,7 +21,7 @@
             </div>
             
             <!-- Sign In Credentials -->
-            <form class="credentials" x-show="activeTab === 'signIn'">
+            <form class="credentials" x-show="activeTab === 'signIn'" x-data="{ showPassword: false }">
                 <div class="form-group">
                     <label for="email">Email Address</label><br/>
                     <input type="email" id="email" name="email" placeholder="you@ucpnyc.org" required>
@@ -29,11 +29,34 @@
 
                 <div class="form-group">
                     <label for="password">Password</label><br/>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <div class="password-wrapper">
+                        <input 
+                            :type="showPassword ? 'text' : 'password'" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter your password" 
+                            required
+                        >
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            @click="showPassword = !showPassword"
+                            :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                        >
+                            <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="forgot-password">
-                    <a>Forgot password?</a>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember-me" name="remember-me">
+                        Keep me signed in
+                    </label>
+
+                    <div class="forgot-password">
+                        <a>Forgot password?</a>
+                    </div>
                 </div>
 
                 <button type="submit" class="sign-in-btn">Sign In</button>
@@ -45,6 +68,7 @@
                 x-show="activeTab === 'signUp'" 
                 x-data="{
                     password: '',
+                    showPassword: false,
                     get hasLength() { return this.password.length >= 8 },
                     get hasUpper() { return /[A-Z]/.test(this.password) },
                     get hasLower() { return /[a-z]/.test(this.password) },
@@ -86,15 +110,25 @@
 
                     <div class="form-group">
                         <label for="signup-password">Password</label><br/>
-                        <input 
-                            type="password" 
-                            id="signup-password" 
-                            name="password" 
-                            minlength="8"
-                            placeholder="Enter your password" 
-                            x-model="password"
-                            required
-                        >
+                        <div class="password-wrapper">
+                            <input 
+                                :type="showPassword ? 'text' : 'password'" 
+                                id="signup-password" 
+                                name="password" 
+                                minlength="8"
+                                placeholder="Enter your password" 
+                                x-model="password"
+                                required
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle" 
+                                @click="showPassword = !showPassword"
+                                :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                            >
+                                <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 

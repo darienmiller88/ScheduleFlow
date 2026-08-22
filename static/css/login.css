@@ -12,7 +12,7 @@
     background-color: white;
 
     /* Default width on mobile */
-    width: 85vw;       
+    width: 90vw;       
 
     /* The hard stop so it never gets too wide on desktop */
     max-width: 45rem; 
@@ -30,6 +30,10 @@
 /* boiler plate for alpine */
 [x-cloak] { 
     display: none !important; 
+}
+
+label{
+    font-weight: bold;
 }
 
 /****************************
@@ -148,50 +152,45 @@ Credentials
 
 
 /************************ 
-Forgot Password 
+Form Options Row (checkbox + forgot password)
 *************************/
-.form-wrapper .forgot-password{
-    text-align: right;
+.form-wrapper .credentials .form-options{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-bottom: clamp(0.5rem, 1vw, 1.2rem);
-    color: #1F51FF;
-    font-size: clamp(0.85rem, 0.7rem + 1vw, 1rem);
 }
 
-.form-wrapper .forgot-password:hover{
+.form-wrapper .credentials .form-options .remember-me{
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: clamp(0.85rem, 0.7rem + 1vw, 1rem);
+    color: #666666;
+}
+
+.form-wrapper .credentials .form-options .remember-me:hover{
     cursor: pointer;
 }
 
-
-/**************************
-Form Divider
-****************************/
-.form-wrapper .form-divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    
-    /* Matches the typography style you set earlier */
-    font-family: 'Lucida Sans', Geneva, Verdana, sans-serif;
-    font-size: 0.875rem; /* 14px */
-    color: #666666;
-    margin: 1.5rem 0;   /* Sets spacing above and below the divider */
+.form-wrapper .credentials .form-options .remember-me input[type="checkbox"]{
+    width: 0.95rem;
+    height: 0.95rem;
+    accent-color: #1F51FF;
+    cursor: pointer;
+    margin: 0;
 }
 
-/* This creates the lines on BOTH sides */
-.form-divider::before,
-.form-divider::after {
-    content: "";
-    flex: 1; /* Forces the lines to stretch and fill all available side space */
-    border-bottom: 1px solid lightgray;
+.form-wrapper .credentials .form-options .forgot-password{
+    color: #1F51FF;
+    font-size: clamp(0.85rem, 0.7rem + 1vw, 1rem);
+    margin-bottom: 0; /* the row now owns the spacing, not this element */
 }
 
-/* This adds perfect spacing between the text and the lines */
-.form-divider::before {
-    margin-right: 1rem;
-}
-
-.form-divider::after {
-    margin-left: 1rem;
+.form-wrapper .credentials .form-options .forgot-password:hover{
+    cursor: pointer;
 }
 
 /* Form footer */
@@ -245,6 +244,49 @@ Form Row (side-by-side fields)
         margin-bottom: 0; /* the row itself now carries the bottom margin */
     }
 }
+
+/*********************************
+Password Show/Hide Toggle
+*********************************/
+.form-wrapper .credentials .password-wrapper{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-wrapper .credentials .password-wrapper input{
+    width: 100%;
+    padding-right: 2.5rem; /* keeps typed text from running under the icon */
+    box-sizing: border-box;
+}
+
+/* Overrides the generic ".credentials button" flex/color/background rules,
+   since this button lives inside a form but isn't a submit action */
+.form-wrapper .credentials .password-wrapper .password-toggle{
+    position: absolute;
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-25%); /* offsets for the label+<br/> stacked above the input */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
+    color: #888888;
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: color 0.2s ease-in-out;
+}
+
+.form-wrapper .credentials .password-wrapper .password-toggle:hover{
+    cursor: pointer;
+    background-color: transparent;
+    color: #1F51FF;
+}
+
 
 /*********************************
 Password Requirements Checklist
