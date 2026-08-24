@@ -48,10 +48,35 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 		r.Use(middlewares.RequireAuth(s.sessionManager))
 	})
 
-	s.Router.Post("/signup", s.signup)
+	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signup", s.signUp)
+	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
+	s.Router.With(middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
+	s.Router.Post("/resend-verification", s.resendVerification)
 }
 
-func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request) {
+func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Request){
+
+}
+
+func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *http.Request){
+	if err := req.ParseForm(); err != nil{
+		http.Error(res, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	 req.FormValue("verification_code")
+}
+
+func (s *SpecialistController) resendVerification(res http.ResponseWriter, req *http.Request){
+
+}
+
+func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request){
+	
+}
+
+func (s *SpecialistController) signUp(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
 		var maxBytesErr *http.MaxBytesError
 
@@ -71,6 +96,7 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		Email:     req.FormValue("email"),
 	}
 
+	// Validate the specialist data
 	result := s.specialistService.AddNewSpecialist(specialist)
 
 	if result.Err != nil {
@@ -78,6 +104,7 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		return
 	}
 
+	// Create a new email verification entry for the newly registered specialist
 	newEmailVerification, err := models.NewEmailVerification(result.ResultData.ID)
 
 	if err != nil {
@@ -85,6 +112,7 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		return
 	}
 
+	// Add the email verification entry to the database
 	emailVerificationResult := s.emailVerificationService.AddEmailVerificationEntry(newEmailVerification)
 
 	if emailVerificationResult.Err != nil {
@@ -92,12 +120,21 @@ func (s *SpecialistController) signup(res http.ResponseWriter, req *http.Request
 		return
 	}
 
-	if err := s.emailSendService.SendVerificationEmail("darienm931@gmail.com", "Darien", emailVerificationResult.ResultData.Code); err != nil {
+	// Send the verification email
+	if err := s.emailSendService.SendVerificationEmail(specialist.Email, specialist.FirstName, emailVerificationResult.ResultData.Code); err != nil {
 		http.Error(res, fmt.Sprintf("Failed to send verification email: %v", err), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("Email verification was sent to email successfully:")
-	res.WriteHeader(http.StatusOK)
-	//add cookie, and redirect to home page.
+	// Renew the session token to prevent session fixation attacks
+	if err := s.sessionManager.RenewToken(req.Context()); err != nil {
+		http.Error(res, fmt.Sprintf("Failed to renew session token: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Store the user ID in the session after successful signup
+	s.sessionManager.Put(req.Context(), "userID", result.ResultData.ID)
+
+	fmt.Println("Email verification was sent to email successfully")
+	http.Redirect(res, req, "/verification", http.StatusSeeOther)
 }

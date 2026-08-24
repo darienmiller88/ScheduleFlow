@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ScheduleFlow/Backend/middlewares"
+	"ScheduleFlow/Backend/services"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -10,18 +11,20 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
-	"github.com/jmoiron/sqlx"
 )
 
 type ViewsController struct {
-	db          	  *sqlx.DB
 	Router            *chi.Mux
 	pageTemplates     map[string]*template.Template
 	sessionManger     *scs.SessionManager
 	standardTemplates *template.Template
+	emailVerificationService services.EmailVerificationService
 }
 
-func NewViewsController(sessionManager *scs.SessionManager, db *sqlx.DB) *ViewsController {
+func NewViewsController(
+	sessionManager *scs.SessionManager, 
+	emailVerificationService services.EmailVerificationService,
+) *ViewsController {
 	partials, _ := filepath.Glob("./templates/partials/*.html")
 	pages, _ := filepath.Glob("./templates/pages/*.html")
 
@@ -49,6 +52,7 @@ func NewViewsController(sessionManager *scs.SessionManager, db *sqlx.DB) *ViewsC
 		pageTemplates:     tmplMap,
 		sessionManger:     sessionManager,
 		standardTemplates: standardTemplates,
+		emailVerificationService: emailVerificationService,
 	}
 
 	vc.registerViewRoutes()
@@ -59,7 +63,8 @@ func NewViewsController(sessionManager *scs.SessionManager, db *sqlx.DB) *ViewsC
 func (v *ViewsController) registerViewRoutes() {
 	v.Router.With(middlewares.RequireAuth(v.sessionManger)).Get("/home", v.homePage)
 	v.Router.With(middlewares.SendBackToHome(v.sessionManger)).Get("/", v.loginPage)
-	v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.RequireVerification(v.sessionManger, v.db)).Get("/verification", v.verificationPage)
+	// v.Router.Get("/verification", v.verificationPage)
+	v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.RequireVerification(v.sessionManger, v.emailVerificationService)).Get("/verification", v.verificationPage)
 	v.Router.NotFound(v.notFound)
 }
 

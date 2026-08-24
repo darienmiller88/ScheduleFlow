@@ -4,9 +4,7 @@ import (
 	"net/http"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/jmoiron/sqlx"
-
-    "ScheduleFlow/Backend/repositories"
+	"ScheduleFlow/Backend/services"
 )
 
 // RequireAuth checks if the user is authenticated. If not, it redirects to the login page.
@@ -27,14 +25,13 @@ func RequireAuth(sm *scs.SessionManager) func(http.Handler) http.Handler {
 }
 
 // RequireVerification checks if the user is verified. If so, it redirects to the home page.
-func RequireVerification(sm *scs.SessionManager, db *sqlx.DB) func(http.Handler) http.Handler {
+func RequireVerification(sm *scs.SessionManager, emailVerificationService services.EmailVerificationService) func(http.Handler) http.Handler {
     return func(next http.Handler) http.Handler {
         return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
             userID := sm.GetInt(req.Context(), "userID")
-            repository := repositories.NewEmailVerificationRepository(db)
 
             //query the database to check if the user is verified
-            result := repository.GetEmailVerification(userID)
+            result := emailVerificationService.GetEmailVerificationEntry(userID)
 
             if result.Err != nil {
                 http.Error(res, result.Err.Error(), http.StatusInternalServerError)

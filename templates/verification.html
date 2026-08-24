@@ -24,7 +24,7 @@
             </p>
 
             <form
-                hx-post="/verify-email"
+                hx-post="/specialists/verify-email"
                 hx-target="#verification-result"
                 hx-swap="innerHTML"
             >
@@ -58,7 +58,7 @@
                     Didn't receive the email?
                     <button
                         type="button"
-                        hx-post="/resend-verification"
+                        hx-post="/specialists/resend-verification"
                         hx-target="#verification-result"
                         hx-swap="innerHTML"
                     >
