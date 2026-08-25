@@ -44,19 +44,19 @@ func NewSpecialistController(
 }
 
 func (s *SpecialistController) registerSpecialistRoutes() {
-	s.Router.Group(func(r chi.Router) {
-		r.Use(middlewares.RequireAuth(s.sessionManager))
-	})
+	// s.Router.Group(func(r chi.Router) {
+	// 	r.Use(middlewares.RequireAuth(s.sessionManager))
+	// })
 
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signup", s.signUp)
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
-	s.Router.With(middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
-	s.Router.Post("/resend-verification", s.resendVerification)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
 }
 
 func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Request){
-
+	// s.sessionManager.Pop(req.Context())
 }
 
 func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *http.Request){
@@ -65,7 +65,10 @@ func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *htt
 		return
 	}
 
-	 req.FormValue("verification_code")
+	verficiationCode := req.FormValue("verification_code")
+	userId           := s.sessionManager.GetInt(req.Context(), "userId")
+
+	s.emailVerificationService.VerifyEmailCode(userId, verficiationCode)
 }
 
 func (s *SpecialistController) resendVerification(res http.ResponseWriter, req *http.Request){

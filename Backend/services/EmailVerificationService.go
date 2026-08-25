@@ -6,17 +6,26 @@ import (
 	"ScheduleFlow/Backend/utils"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type EmailVerificationService interface {
+	
+	//Update an email verification enntry with a new expiry and new code hash
 	UpdateEmailVerificationEntry(emailVerification models.EmailVerification) models.Result[models.EmailVerification]
+	
+	//Add a new email veriication entry
 	AddEmailVerificationEntry(emailVerification models.EmailVerification) models.Result[models.EmailVerification]
+	
+	//Delete a new email verification entry
 	DeleteEmailVerificationEntry(specialistId int) models.Result[bool]
+
+	//Get a email verification entry by id
 	GetEmailVerificationEntry(specialistId int) models.Result[models.EmailVerification]
-	VerifyEmailCode(specialistId int, verificationCode int) models.Result[bool]
+
+	//Verify whether or not the user inputted the correct verification
+	VerifyEmailCode(specialistId int, verificationCode string) models.Result[bool]
 }
 
 type emailVerificationService struct {
@@ -30,15 +39,15 @@ func NewEmailVerificationService(repo repositories.EmailVerificationRepository) 
 	}
 }
 
-// VerifyEmailCode implements [EmailVerificationService].
-func (e *emailVerificationService) VerifyEmailCode(specialistId int, verificationCode int) models.Result[bool] {
+//
+func (e *emailVerificationService) VerifyEmailCode(specialistId int, verificationCode string) models.Result[bool] {
 	result := e.repo.GetEmailVerification(specialistId)
 
 	if result.Err != nil{
 		return utils.GetResult(result.Err, result.StatusCode, false)
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(result.ResultData.CodeHash), []byte(strconv.Itoa(verificationCode)))
+	err := bcrypt.CompareHashAndPassword([]byte(result.ResultData.CodeHash), []byte(verificationCode))
 
 	if err == nil {
 		return utils.GetResult(nil, http.StatusOK, true)
