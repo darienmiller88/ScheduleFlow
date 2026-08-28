@@ -5,7 +5,9 @@ import (
 	"ScheduleFlow/Backend/repositories"
 	"ScheduleFlow/Backend/utils"
 	"errors"
+	"math/rand/v2"
 	"net/http"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -26,6 +28,9 @@ type EmailVerificationService interface {
 
 	//Verify whether or not the user inputted the correct verification
 	VerifyEmailCode(specialistId int, verificationCode string) models.Result[bool]
+
+	//Generate a new email code to verify new account
+	GenerateNewEmailCode() string
 }
 
 type emailVerificationService struct {
@@ -37,6 +42,13 @@ func NewEmailVerificationService(repo repositories.EmailVerificationRepository) 
 	return &emailVerificationService{
 		repo: repo,
 	}
+}
+
+func (e *emailVerificationService) GenerateNewEmailCode() string{
+	min, max := 100000, 999999
+	code := min + rand.IntN(max-min)
+
+	return strconv.Itoa(code)
 }
 
 //

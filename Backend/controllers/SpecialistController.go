@@ -15,12 +15,14 @@ import (
 )
 
 type SpecialistController struct {
-	Router            *chi.Mux
-	templates         *template.Template
+	Router          *chi.Mux
+	templates       *template.Template
+	sessionManager  *scs.SessionManager
+
+	//Services to be used by controller
+	emailSendService         services.EmailSendService
 	specialistService        services.SpecialistService
 	emailVerificationService services.EmailVerificationService
-	emailSendService         services.EmailSendService
-	sessionManager           *scs.SessionManager
 }
 
 func NewSpecialistController(
@@ -52,7 +54,8 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
-	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
+	s.Router.Post("/resend-verification", s.resendVerification)
+	// s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
 }
 
 func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Request){
@@ -67,12 +70,46 @@ func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *htt
 
 	verficiationCode := req.FormValue("verification_code")
 	userId           := s.sessionManager.GetInt(req.Context(), "userId")
+	result           := s.emailVerificationService.VerifyEmailCode(userId, verficiationCode)
 
-	s.emailVerificationService.VerifyEmailCode(userId, verficiationCode)
+	if result.Err != nil {
+		http.Error(res, result.Err.Error(), result.StatusCode)
+		return
+	}
+
+	_, err := res.Write([]byte(`<p style="color: green; font-weight:bold">Verification code re-sent.</p>`))
+
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+	}
 }
 
+// Will be rate limited to 5 a day
 func (s *SpecialistController) resendVerification(res http.ResponseWriter, req *http.Request){
+	userId := s.sessionManager.GetInt(req.Context(), "userID")
+	specialistResult := s.specialistService.GetSpecialistById(userId)
 
+	fmt.Println("specialists:", specialistResult)
+
+	// if specialistResult.Err != nil {
+	// 	fmt.Println("err:",specialistResult.Err)
+	// 	http.Error(res, specialistResult.Err.Error(), specialistResult.StatusCode)
+	// 	return
+	// }
+
+	code := s.emailVerificationService.GenerateNewEmailCode()
+	fmt.Println("code:", code)
+	// Send the verification email
+	// if err := s.emailSendService.SendVerificationEmail(specialistResult.ResultData.Email, specialistResult.ResultData.FirstName, code); err != nil {
+	// 	http.Error(res, fmt.Sprintf("Failed to send verification email: %v", err), http.StatusInternalServerError)
+	// 	return
+	// }
+
+	_, err := res.Write([]byte(`<p style="color: green; font-weight:bold">Verification code re-sent.</p>`))
+
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request){

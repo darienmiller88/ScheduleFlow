@@ -29,7 +29,7 @@ func NewViewsController(
 	pages, _ := filepath.Glob("./templates/pages/*.html")
 
 	tmplMap := make(map[string]*template.Template)
-	standardTemplates := template.Must(template.ParseGlob("./templates/*.html"))
+	standardTemplates := template.Must(template.ParseGlob("templates/*.html"))
 
 	for _, page := range pages {
 		// Get page name without extension (e.g., "home", "login")
@@ -63,8 +63,8 @@ func NewViewsController(
 func (v *ViewsController) registerViewRoutes() {
 	v.Router.With(middlewares.RequireAuth(v.sessionManger)).Get("/home", v.homePage)
 	v.Router.With(middlewares.SendBackToHome(v.sessionManger)).Get("/", v.loginPage)
-	// v.Router.Get("/verification", v.verificationPage)
-	v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.RequireVerification(v.sessionManger, v.emailVerificationService)).Get("/verification", v.verificationPage)
+	v.Router.Get("/verification", v.verificationPage)
+	// v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.RequireVerification(v.sessionManger, v.emailVerificationService)).Get("/verification", v.verificationPage)
 	v.Router.NotFound(v.notFound)
 }
 

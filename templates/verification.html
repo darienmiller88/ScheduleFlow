@@ -10,69 +10,77 @@
     <body>
         <main class="verification-container">
 
-        <div class="logo">
-            <h1>ScheduleFlow</h1>
-        </div>
-
-        <div class="content">
-
-            <h2>Verify your email</h2>
-
-            <p>
-                We've sent a six-digit verification code to your email address.
-                Enter the code below to activate your account.
-            </p>
-
-            <form
-                hx-post="/specialists/verify-email"
-                hx-target="#verification-result"
-                hx-swap="innerHTML"
-            >
-                <input
-                    type="text"
-                    name="verification_code"
-                    class="code-input"
-                    placeholder="000000"
-                    maxlength="6"
-                    inputmode="numeric"
-                    autocomplete="one-time-code"
-                    required
-                >
-
-                <button
-                    type="submit"
-                    class="verify-button"
-                >
-                    Verify Email
-                </button>
-            </form>
-
-            <div id="verification-result"></div>
-
-            <p class="expiration">
-                Your verification code expires in 15 minutes.
-            </p>
-
-            <div class="resend">
-                <p>
-                    Didn't receive the email?
-                    <button
-                        type="button"
-                        hx-post="/specialists/resend-verification"
-                        hx-target="#verification-result"
-                        hx-swap="innerHTML"
-                    >
-                        Resend code
-                    </button>
-                </p>
+            <div class="logo">
+                <h1>ScheduleFlow</h1>
             </div>
 
-        </div>
+            <div class="content">
 
-    </main>
+                <h2>Verify your email</h2>
+
+                <p>
+                    We've sent a six-digit verification code to your email address.
+                    Enter the code below to activate your account.
+                </p>
+
+                <form
+                    hx-post="/specialists/verify-email"
+                    hx-target="#verification-result"
+                    hx-swap="innerHTML"
+                >
+                    <input
+                        type="text"
+                        name="verification_code"
+                        class="code-input"
+                        placeholder="000000"
+                        maxlength="6"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        required
+                    >
+
+                    <button type="submit" class="verify-button">
+                        <span id="signup-spinner" class="htmx-indicator">
+                            <i class="bi bi-arrow-repeat spinner-icon"></i>
+                        </span>
+                        Verify Email
+                    </button>
+                </form>
+
+                <div id="verification-result" hx-on:htmx:after-swap="setTimeout(() => this.innerHTML = '', 4000)">
+                </div>
+
+                <p class="expiration">
+                    Your verification code expires in 15 minutes.
+                </p>
+
+                <div class="resend">
+                    <p>
+                        Didn't receive the email?
+                        <button
+                            type="button"
+                             x-data="{ disabled: false }"
+                            :disabled="disabled"
+                            @click="disabled = true; setTimeout(() => disabled = false, 5000)"
+
+                            hx-post="/specialists/resend-verification"
+                            hx-target="#verification-result"
+                            hx-swap="innerHTML"
+                        >
+                            Resend code
+                        </button>
+                    </p>
+                </div>
+
+            </div>
+        </main>
 
          <!-- HTMX import-->
         <script src="/static/js/htmx.min.js"></script>
+
+        <!-- Alpine Plugins -->
+        <script defer src="/static/js/alpine.min.persist.js"></script>
+        <script defer src="/static/js/alpine.min.js"></script>
     </body>
 </html>
 

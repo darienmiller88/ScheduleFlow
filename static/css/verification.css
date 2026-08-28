@@ -152,6 +152,22 @@ body {
     text-align: center;
 }
 
+/* htmx spinner*/
+.form-wrapper .credentials .htmx-indicator{
+    display: inline-flex;
+    margin-right: 0.4rem;
+}
+
+.form-wrapper .credentials .spinner-icon{
+    display: inline-block;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin{
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 @media (max-width: 480px) {
     .verification-container {
         padding: 30px 24px;
