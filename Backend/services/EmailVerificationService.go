@@ -8,6 +8,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"strconv"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -62,6 +63,12 @@ func (e *emailVerificationService) VerifyEmailCode(specialistId int, verificatio
 	err := bcrypt.CompareHashAndPassword([]byte(result.ResultData.CodeHash), []byte(verificationCode))
 
 	if err == nil {
+
+		//If the expiry at (ex, 8/10/27) is before the current date (8/14/27), the code has expired.
+		if result.ResultData.ExpiresAt.Before(time.Now()) {
+			return utils.GetResult(errors.New("Verification code has expired"), http.StatusGone, false)
+		}
+
 		return utils.GetResult(nil, http.StatusOK, true)
 	}
 

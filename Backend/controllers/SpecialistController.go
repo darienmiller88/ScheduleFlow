@@ -4,6 +4,7 @@ import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/services"
 	"ScheduleFlow/Backend/middlewares"
+	"ScheduleFlow/Backend/utils"
 
 	"errors"
 	"fmt"
@@ -54,8 +55,8 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
-	s.Router.Post("/resend-verification", s.resendVerification)
-	// s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
+	// s.Router.Post("/resend-verification", s.resendVerification)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
 }
 
 func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Request){
@@ -73,15 +74,11 @@ func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *htt
 	result           := s.emailVerificationService.VerifyEmailCode(userId, verficiationCode)
 
 	if result.Err != nil {
-		http.Error(res, result.Err.Error(), result.StatusCode)
+		utils.SendHtmlError(res, result.StatusCode, result.Err.Error())
 		return
 	}
 
-	_, err := res.Write([]byte(`<p style="color: green; font-weight:bold">Verification code re-sent.</p>`))
-
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusInternalServerError)
-	}
+    http.Redirect(res, req, "/home", http.StatusSeeOther)
 }
 
 // Will be rate limited to 5 a day
@@ -89,21 +86,18 @@ func (s *SpecialistController) resendVerification(res http.ResponseWriter, req *
 	userId := s.sessionManager.GetInt(req.Context(), "userID")
 	specialistResult := s.specialistService.GetSpecialistById(userId)
 
-	fmt.Println("specialists:", specialistResult)
-
-	// if specialistResult.Err != nil {
-	// 	fmt.Println("err:",specialistResult.Err)
-	// 	http.Error(res, specialistResult.Err.Error(), specialistResult.StatusCode)
-	// 	return
-	// }
+	if specialistResult.Err != nil {
+		http.Error(res, specialistResult.Err.Error(), specialistResult.StatusCode)
+		return
+	}
 
 	code := s.emailVerificationService.GenerateNewEmailCode()
-	fmt.Println("code:", code)
+
 	// Send the verification email
-	// if err := s.emailSendService.SendVerificationEmail(specialistResult.ResultData.Email, specialistResult.ResultData.FirstName, code); err != nil {
-	// 	http.Error(res, fmt.Sprintf("Failed to send verification email: %v", err), http.StatusInternalServerError)
-	// 	return
-	// }
+	if err := s.emailSendService.SendVerificationEmail(specialistResult.ResultData.Email, specialistResult.ResultData.FirstName, code); err != nil {
+		http.Error(res, fmt.Sprintf("Failed to send verification email: %v", err), http.StatusInternalServerError)
+		return
+	}
 
 	_, err := res.Write([]byte(`<p style="color: green; font-weight:bold">Verification code re-sent.</p>`))
 
