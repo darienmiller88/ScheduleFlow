@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -16,10 +17,43 @@ type SpecialistService interface {
 	UpdateSpecialist(specialist models.Specialist) models.Result[models.Specialist]
 	DeleteSpecialist(specialistId int) models.Result[bool]
 	GetSpecialistById(id int) models.Result[models.Specialist]
+	AuthenticateSpecialist(email string, password string) models.Result[bool]
+	
+	GetSpecialistByEmail(email string) models.Result[models.Specialist]
 }
 
 type specialistService struct {
 	specialistRepo repositories.SpecialistRepository
+}
+
+//Method to authenticate a specialist by checking if the provided email and password match the stored credentials 
+// in the database. Returns a boolean indicating whether the authentication was successful or not.
+func (s *specialistService) AuthenticateSpecialist(email string, password string) models.Result[bool] {
+	specialistResult := s.GetSpecialistByEmail(email)
+
+	// Compare the provided password with the hashed password stored in the database
+	err := bcrypt.CompareHashAndPassword([]byte(specialistResult.ResultData.Password), []byte(password))
+
+	if err != nil {
+		return utils.GetResult(fmt.Errorf("email or password is incorrect"), http.StatusUnauthorized, false)
+	}
+
+	if specialistResult.Err != nil {
+
+		// If the specialist is not found by email, return a 401 Unauthorized status code
+		if specialistResult.StatusCode == http.StatusNotFound {
+			return utils.GetResult(fmt.Errorf("email or password is incorrect"), http.StatusUnauthorized, false)
+		}
+
+		return utils.GetResult(specialistResult.Err, specialistResult.StatusCode, false)
+	}
+
+	return utils.GetResult(nil, http.StatusOK, true)
+}
+
+// GetSpecialistByEmail implements [SpecialistService].
+func (s *specialistService) GetSpecialistByEmail(email string) models.Result[models.Specialist] {
+	return s.specialistRepo.GetSpecialistByEmailDB(email)
 }
 
 func NewSpecialistService(specialistRepo repositories.SpecialistRepository) SpecialistService {

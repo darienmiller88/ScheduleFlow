@@ -84,6 +84,14 @@ func (s *specialistRepository) GetSpecialistByEmailDB(email string) models.Resul
 	err := s.db.Get(&specialist, constants.GetSpecialistByEmail, email)
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return utils.GetResult(
+				fmt.Errorf("specialist with email %s not found", email),
+				http.StatusNotFound,
+				models.Specialist{},
+			)
+		}
+
 		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
 	}
 

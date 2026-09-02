@@ -21,7 +21,13 @@
             </div>
             
             <!-- Sign In Credentials -->
-            <form class="credentials" x-show="activeTab === 'signIn'" x-data="{ showPassword: false }">
+            <form 
+                class="credentials"
+                x-show="activeTab === 'signIn'" 
+                x-data="{ showPassword: false }"
+                hx-target="#incorrect-password"
+                hx-swap="innerHTML"
+            >
                 <div class="form-group">
                     <label for="email">Email Address</label><br/>
                     <input type="email" id="email" name="email" placeholder="you@ucpnyc.org" required>
@@ -46,6 +52,7 @@
                             <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
                         </button>
                     </div>
+                    <div id="incorrect-password"></div>
                 </div>
 
                 <div class="form-options">

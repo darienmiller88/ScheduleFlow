@@ -30,8 +30,8 @@ type EmailVerificationService interface {
 	//Verify whether or not the user inputted the correct verification
 	VerifyEmailCode(specialistId int, verificationCode string) models.Result[bool]
 
-	//Generate a new email code to verify new account
-	GenerateNewEmailCode() string
+	//Generate a new email code to verify new account. Returns (code, code_hash)
+	GenerateNewEmailCode() (string, []byte)
 }
 
 type emailVerificationService struct {
@@ -45,11 +45,14 @@ func NewEmailVerificationService(repo repositories.EmailVerificationRepository) 
 	}
 }
 
-func (e *emailVerificationService) GenerateNewEmailCode() string{
+func (e *emailVerificationService) GenerateNewEmailCode() (string, []byte){
 	min, max := 100000, 999999
 	code := min + rand.IntN(max-min)
+	codeString := strconv.Itoa(code)
 
-	return strconv.Itoa(code)
+	codeHash, _ := bcrypt.GenerateFromPassword([]byte(codeString), 10)
+
+	return strconv.Itoa(code), codeHash
 }
 
 //
@@ -92,7 +95,5 @@ func (e *emailVerificationService) GetEmailVerificationEntry(specialistId int) m
 
 // UpdateEmailVerificationEntry implements [EmailVerificationService].
 func (e *emailVerificationService) UpdateEmailVerificationEntry(emailVerification models.EmailVerification) models.Result[models.EmailVerification] {
-	//update the email verification entry in the database using the repository
-
 	return e.repo.UpdateEmailVerification(emailVerification)
 }
