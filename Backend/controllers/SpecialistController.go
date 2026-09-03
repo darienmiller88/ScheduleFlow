@@ -60,7 +60,17 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 }
 
 func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Request) {
+	// Renew the session token to prevent session fixation attacks
+	if err := s.sessionManager.RenewToken(req.Context()); err != nil {
+		utils.SendHtmlError(res, http.StatusInternalServerError, fmt.Sprintf("Failed to renew session token: %v", err))
+		return
+	}
+
+	// Remove the user ID from the session to log the user out
 	s.sessionManager.Pop(req.Context(), "userId")
+
+	// Redirect to the login page after successful logout
+	http.Redirect(res, req, "/", http.StatusSeeOther)
 }
 
 func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *http.Request) {
@@ -126,8 +136,14 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 		return
 	}
 
-	email    := req.FormValue("email")
-	password := req.FormValue("password")
+	email      := req.FormValue("email")
+	password   := req.FormValue("password")
+	rememberMe := req.FormValue("remember-me") == "on"
+
+	// Set session lifetime to 1 year if "Remember Me" is checked
+	if rememberMe {
+		s.sessionManager.Lifetime = 365 * (7 * 24 * time.Hour) 
+	}
 
 	// Authenticate the specialist using the provided email and password
 	result := s.specialistService.AuthenticateSpecialist(email, password)

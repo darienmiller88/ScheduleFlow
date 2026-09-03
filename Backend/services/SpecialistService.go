@@ -13,12 +13,27 @@ import (
 )
 
 type SpecialistService interface {
+
+	// AddNewSpecialist adds a new specialist to the database. It takes a models.Specialist object as input 
+	// and returns a models.Result containing the newly created specialist or an error if the addition fails.
 	AddNewSpecialist(specialist models.Specialist) models.Result[models.Specialist]
+
+	// UpdateSpecialist updates the details of an existing specialist in the database. 
+	// It takes a models.Specialist object as input and returns a models.Result 
+	//  the updated specialist or an error if the update fails.
 	UpdateSpecialist(specialist models.Specialist) models.Result[models.Specialist]
+
+	// DeleteSpecialist removes a specialist from the database using their ID.
 	DeleteSpecialist(specialistId int) models.Result[bool]
+
+	// GetSpecialistByEmail retrieves a specialist from the database using their email.
 	GetSpecialistById(id int) models.Result[models.Specialist]
+
+	// AuthenticateSpecialist checks if the provided email and password match the stored credentials in the database.
 	AuthenticateSpecialist(email string, password string) models.Result[bool]
-	
+
+	// GetSpecialistByEmail retrieves a specialist from the database using their email.
+	// Returns the specialist as a models.Specialist.
 	GetSpecialistByEmail(email string) models.Result[models.Specialist]
 }
 
@@ -26,12 +41,21 @@ type specialistService struct {
 	specialistRepo repositories.SpecialistRepository
 }
 
+// NewSpecialistService creates a new instance of the SpecialistService with the provided SpecialistRepository.
+func NewSpecialistService(specialistRepo repositories.SpecialistRepository) SpecialistService {
+	return &specialistService{
+		specialistRepo: specialistRepo,
+	}
+}
+
 //Method to authenticate a specialist by checking if the provided email and password match the stored credentials 
 // in the database. Returns a boolean indicating whether the authentication was successful or not.
 func (s *specialistService) AuthenticateSpecialist(email string, password string) models.Result[bool] {
 	specialistResult := s.GetSpecialistByEmail(email)
 
-	// Compare the provided password with the hashed password stored in the database
+	// Compare the provided password with the hashed password stored in the database. Do this 
+	// first so that email and password are checked at the same time, and the user is not given
+	// a hint about which one is incorrect.
 	err := bcrypt.CompareHashAndPassword([]byte(specialistResult.ResultData.Password), []byte(password))
 
 	if err != nil {
@@ -56,11 +80,6 @@ func (s *specialistService) GetSpecialistByEmail(email string) models.Result[mod
 	return s.specialistRepo.GetSpecialistByEmailDB(email)
 }
 
-func NewSpecialistService(specialistRepo repositories.SpecialistRepository) SpecialistService {
-	return &specialistService{
-		specialistRepo: specialistRepo,
-	}
-}
 
 // GetSpecialistById implements [SpecialistService].
 func (s *specialistService) GetSpecialistById(id int) models.Result[models.Specialist] {

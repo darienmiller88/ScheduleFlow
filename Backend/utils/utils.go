@@ -19,6 +19,5 @@ func GetResult[T any](err error, statusCode int, payload T) models.Result[T] {
 func SendHtmlError(res http.ResponseWriter, statusCode int, errorText string) {
     res.Header().Set("Content-Type", "text/html") 
     res.WriteHeader(statusCode)
-    
-	fmt.Fprintf(res, `<p class="error-text">%s</p>`, template.HTMLEscapeString(errorText))
+	fmt.Fprintf(res, `<p style="color: red;">%s</p>`, template.HTMLEscapeString(errorText))
 }
