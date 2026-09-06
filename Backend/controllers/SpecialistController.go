@@ -54,8 +54,9 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signup", s.signUp)
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
-	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
+	// s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
+	s.Router.Post("/verify-email", s.verifyEmailCode)
 	// s.Router.Post("/resend-verification", s.resendVerification)
 }
 
@@ -75,7 +76,7 @@ func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Reques
 
 func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
-		http.Error(res, err.Error(), http.StatusBadRequest)
+		utils.SendHtmlError(res, http.StatusBadRequest, fmt.Sprintf("Failed to parse form: %v", err))
 		return
 	}
 
@@ -84,6 +85,7 @@ func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *htt
 	result := s.emailVerificationService.VerifyEmailCode(userId, verficiationCode)
 
 	if result.Err != nil {
+		fmt.Println("Verification error:", result.Err)
 		utils.SendHtmlError(res, result.StatusCode, result.Err.Error())
 		return
 	}
@@ -148,8 +150,11 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 	// Authenticate the specialist using the provided email and password
 	result := s.specialistService.AuthenticateSpecialist(email, password)
 
+	
 	if result.Err != nil {
-		utils.SendHtmlError(res, result.StatusCode, result.Err.Error())
+		fmt.Println("result", result)
+		// http.Error(res, result.Err.Error(), result.StatusCode)
+		utils.SendHtmlError(res, 200, result.Err.Error())
 		return
 	}
 

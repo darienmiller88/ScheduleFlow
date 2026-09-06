@@ -24,9 +24,11 @@
             <form 
                 class="credentials"
                 x-show="activeTab === 'signIn'" 
-                x-data="{ showPassword: false }"
+                x-data="{ showPassword: false, cooldown: false }"
+                hx-post="/specialists/signin"
                 hx-target="#incorrect-password"
                 hx-swap="innerHTML"
+                @submit="cooldown = true; setTimeout(() => cooldown = false, 5000)"
             >
                 <div class="form-group">
                     <label for="email">Email Address</label><br/>
@@ -52,7 +54,10 @@
                             <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
                         </button>
                     </div>
-                    <div id="incorrect-password"></div>
+                    <div 
+                        id="incorrect-password" 
+                        hx-on:htmx:after-swap="setTimeout(() => this.innerHTML = '', 4000)"
+                    ></div>
                 </div>
 
                 <div class="form-options">
@@ -66,7 +71,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="sign-in-btn">Sign In</button>
+                <button type="submit" class="sign-in-btn" :disabled="cooldown" :class="{ 'btn-disabled': cooldown }">Sign In</button>
             </form>
 
             <!-- Sign Up Credentials -->

@@ -63,9 +63,9 @@ func NewViewsController(
 func (v *ViewsController) registerViewRoutes() {
 	v.Router.With(middlewares.RequireAuth(v.sessionManger)).Get("/home", v.homePage)
 	v.Router.With(middlewares.SendBackToHome(v.sessionManger)).Get("/", v.loginPage)
-	v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.RequireVerification(v.sessionManger, v.emailVerificationService)).Get("/verification", v.verificationPage)
+	// v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.RequireVerification(v.sessionManger, v.emailVerificationService)).Get("/verification", v.verificationPage)
 	v.Router.NotFound(v.notFound)
-	// v.Router.Get("/verification", v.verificationPage)
+	v.Router.Get("/verification", v.verificationPage)
 }
 
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {

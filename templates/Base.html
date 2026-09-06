@@ -25,6 +25,11 @@
 
         <!-- HTMX import-->
         <script src="/static/js/htmx.min.js"></script>
+        <script>
+            htmx.config.responseHandling = [
+                { code: "...", swap: true }
+            ];
+        </script>
         
         <!-- Alpine Plugins -->
         <script defer src="/static/js/alpine.min.persist.js"></script>
