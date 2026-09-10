@@ -54,9 +54,9 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signup", s.signUp)
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
-	// s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
-	s.Router.Post("/verify-email", s.verifyEmailCode)
+	// s.Router.Post("/verify-email", s.verifyEmailCode)
 	// s.Router.Post("/resend-verification", s.resendVerification)
 }
 
@@ -85,7 +85,6 @@ func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *htt
 	result := s.emailVerificationService.VerifyEmailCode(userId, verficiationCode)
 
 	if result.Err != nil {
-		fmt.Println("Verification error:", result.Err)
 		utils.SendHtmlError(res, result.StatusCode, result.Err.Error())
 		return
 	}
@@ -144,7 +143,7 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 
 	// Set session lifetime to 1 year if "Remember Me" is checked
 	if rememberMe {
-		s.sessionManager.Lifetime = 365 * (7 * 24 * time.Hour) 
+		s.sessionManager.Lifetime = 365 * (24 * time.Hour) 
 	}
 
 	// Authenticate the specialist using the provided email and password
@@ -167,8 +166,9 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 	// Store the user ID in the session after successful login
 	s.sessionManager.Put(req.Context(), "userID", s.specialistService.GetSpecialistByEmail(email).ResultData.ID)
 
-	// Redirect to the home page after successful login
-	http.Redirect(res, req, "/home", http.StatusSeeOther)
+	// Set the HX-Redirect header to redirect the user to the home page
+	res.Header().Set("HX-Redirect", "/home")
+	res.WriteHeader(http.StatusOK)
 }
 
 func (s *SpecialistController) signUp(res http.ResponseWriter, req *http.Request) {
@@ -223,6 +223,7 @@ func (s *SpecialistController) signUp(res http.ResponseWriter, req *http.Request
 	// Store the user ID in the session after successful signup
 	s.sessionManager.Put(req.Context(), "userID", result.ResultData.ID)
 
-	fmt.Println("Email verification was sent to email successfully")
-	http.Redirect(res, req, "/verification", http.StatusSeeOther)
+	// Set the HX-Redirect header to redirect the user to the verification page
+	res.Header().Set("HX-Redirect", "/verification")
+	res.WriteHeader(http.StatusOK)
 }
