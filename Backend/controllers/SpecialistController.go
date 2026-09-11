@@ -47,17 +47,11 @@ func NewSpecialistController(
 }
 
 func (s *SpecialistController) registerSpecialistRoutes() {
-	// s.Router.Group(func(r chi.Router) {
-	// 	r.Use(middlewares.RequireAuth(s.sessionManager))
-	// })
-
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signup", s.signUp)
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
-	// s.Router.Post("/verify-email", s.verifyEmailCode)
-	// s.Router.Post("/resend-verification", s.resendVerification)
 }
 
 func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Request) {
@@ -71,7 +65,8 @@ func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Reques
 	s.sessionManager.Pop(req.Context(), "userId")
 
 	// Redirect to the login page after successful logout
-	http.Redirect(res, req, "/", http.StatusSeeOther)
+	res.Header().Set("HX-Redirect", "/")
+    res.WriteHeader(http.StatusOK)
 }
 
 func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *http.Request) {
@@ -89,7 +84,17 @@ func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *htt
 		return
 	}
 
-	http.Redirect(res, req, "/home", http.StatusSeeOther)
+	// If the verification is successful, delete the email verification entry from the database
+	deleteResult := s.emailVerificationService.DeleteEmailVerificationEntry(userId)
+
+	if deleteResult.Err != nil {
+		utils.SendHtmlError(res, deleteResult.StatusCode, deleteResult.Err.Error())
+		return
+	}
+
+	// Redirect to the home page after successful verification
+	res.Header().Set("HX-Redirect", "/home")
+    res.WriteHeader(http.StatusOK)
 }
 
 // Will be rate limited to 5 a day
@@ -133,27 +138,20 @@ func (s *SpecialistController) resendVerification(res http.ResponseWriter, req *
 
 func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
-		http.Error(res, err.Error(), http.StatusBadRequest)
+		utils.SendHtmlError(res, http.StatusBadRequest, fmt.Sprintf("Failed to parse form: %v", err))
+		// http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	email      := req.FormValue("email")
 	password   := req.FormValue("password")
 	rememberMe := req.FormValue("remember-me") == "on"
-
-	// Set session lifetime to 1 year if "Remember Me" is checked
-	if rememberMe {
-		s.sessionManager.Lifetime = 365 * (24 * time.Hour) 
-	}
-
+	
 	// Authenticate the specialist using the provided email and password
 	result := s.specialistService.AuthenticateSpecialist(email, password)
-
 	
 	if result.Err != nil {
-		fmt.Println("result", result)
-		// http.Error(res, result.Err.Error(), result.StatusCode)
-		utils.SendHtmlError(res, 200, result.Err.Error())
+		utils.SendHtmlError(res, result.StatusCode, result.Err.Error())
 		return
 	}
 
@@ -163,8 +161,18 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 		return
 	}
 
+	// Set session lifetime to 1 year if "Remember Me" is checked
+	if rememberMe {
+		s.sessionManager.Lifetime = 365 * (24 * time.Hour) 
+	}
+
 	// Store the user ID in the session after successful login
 	s.sessionManager.Put(req.Context(), "userID", s.specialistService.GetSpecialistByEmail(email).ResultData.ID)
+
+	// Reset to default session lifetime of 1 week after setting the user ID
+	if rememberMe{
+		s.sessionManager.Lifetime = 7 * (24 * time.Hour) 
+	}
 
 	// Set the HX-Redirect header to redirect the user to the home page
 	res.Header().Set("HX-Redirect", "/home")
@@ -173,7 +181,7 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 
 func (s *SpecialistController) signUp(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
-		http.Error(res, err.Error(), http.StatusBadRequest)
+		utils.SendHtmlError(res, http.StatusBadRequest, fmt.Sprintf("Failed to parse form: %v", err))
 		return
 	}
 
@@ -188,7 +196,7 @@ func (s *SpecialistController) signUp(res http.ResponseWriter, req *http.Request
 	result := s.specialistService.AddNewSpecialist(specialist)
 
 	if result.Err != nil {
-		http.Error(res, result.Err.Error(), result.StatusCode)
+		utils.SendHtmlError(res, result.StatusCode, result.Err.Error())
 		return
 	}
 
@@ -196,7 +204,7 @@ func (s *SpecialistController) signUp(res http.ResponseWriter, req *http.Request
 	newEmailVerification, err := models.NewEmailVerification(result.ResultData.ID)
 
 	if err != nil {
-		http.Error(res, err.Error(), http.StatusInternalServerError)
+		utils.SendHtmlError(res, http.StatusInternalServerError, fmt.Sprintf("Failed to create email verification entry: %v", err))
 		return
 	}
 
@@ -204,19 +212,19 @@ func (s *SpecialistController) signUp(res http.ResponseWriter, req *http.Request
 	emailVerificationResult := s.emailVerificationService.AddEmailVerificationEntry(newEmailVerification)
 
 	if emailVerificationResult.Err != nil {
-		http.Error(res, emailVerificationResult.Err.Error(), emailVerificationResult.StatusCode)
+		utils.SendHtmlError(res, emailVerificationResult.StatusCode, emailVerificationResult.Err.Error())
 		return
 	}
 
 	// Send the verification email
 	if err := s.emailSendService.SendVerificationEmail(specialist.Email, specialist.FirstName, emailVerificationResult.ResultData.Code); err != nil {
-		http.Error(res, fmt.Sprintf("Failed to send verification email: %v", err), http.StatusInternalServerError)
+		utils.SendHtmlError(res, http.StatusInternalServerError, fmt.Sprintf("Failed to send verification email: %v", err))
 		return
 	}
 
 	// Renew the session token to prevent session fixation attacks
 	if err := s.sessionManager.RenewToken(req.Context()); err != nil {
-		http.Error(res, fmt.Sprintf("Failed to renew session token: %v", err), http.StatusInternalServerError)
+		utils.SendHtmlError(res, http.StatusInternalServerError, fmt.Sprintf("Failed to renew session token: %v", err))
 		return
 	}
 

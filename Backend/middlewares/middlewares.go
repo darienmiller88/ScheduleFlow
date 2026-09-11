@@ -98,7 +98,14 @@ func SendBackToHome(sm *scs.SessionManager) func(http.Handler) http.Handler {
 
             // If userID is not 0, it means the user is authenticated, so redirect to home page
             if userID != 0 {
-                http.Redirect(res, req, "/home", http.StatusSeeOther)
+
+                if req.Method == http.MethodPost {
+                    res.Header().Set("HX-Redirect", "/home")
+                    res.WriteHeader(http.StatusOK)
+                }else{
+                    http.Redirect(res, req, "/home", http.StatusSeeOther)
+                }
+
                 return
             }
 
