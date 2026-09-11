@@ -54,8 +54,8 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signup", s.signUp)
 	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
-	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
-	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.RequireVerification(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
 	// s.Router.Post("/verify-email", s.verifyEmailCode)
 	// s.Router.Post("/resend-verification", s.resendVerification)
 }
