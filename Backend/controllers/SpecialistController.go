@@ -47,11 +47,31 @@ func NewSpecialistController(
 }
 
 func (s *SpecialistController) registerSpecialistRoutes() {
-	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckVerified(s.sessionManager, s.emailVerificationService)).Post("/signout", s.signOut)
-	s.Router.With(middlewares.SendBackToHome(s.sessionManager), middlewares.CheckVerified(s.sessionManager, s.emailVerificationService)).Post("/signin", s.signIn)
-	s.Router.With(middlewares.SendBackToHome(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/signup", s.signUp)
-	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
-	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Put("/resend-verification", s.resendVerification)
+	s.Router.With(
+		middlewares.RequireAuth(s.sessionManager), 
+		middlewares.CheckVerified(s.sessionManager, s.emailVerificationService),
+	).Post("/signout", s.signOut)
+
+	s.Router.With(
+		middlewares.SendBackToHome(s.sessionManager),
+		middlewares.CheckVerified(s.sessionManager, s.emailVerificationService),
+	).Post("/signin", s.signIn)
+
+	s.Router.With(
+		middlewares.SendBackToHome(s.sessionManager), 
+		middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService),
+	).Post("/signup", s.signUp)
+
+	//Rate limit to 1 per 3 seconds. This is to prevent spamming the email verification code.
+	s.Router.With(
+		middlewares.RequireAuth(s.sessionManager), 
+		middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService),
+	).Post("/verify-email", s.verifyEmailCode)
+
+	s.Router.With(
+		middlewares.RequireAuth(s.sessionManager), 
+		middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService),
+	).Put("/resend-verification", s.resendVerification)
 }
 
 func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Request) {

@@ -39,7 +39,11 @@
                         required
                     >
 
-                    <button type="submit" class="verify-button">
+                    <button
+                        type="submit"
+                        class="verify-button"
+                        hx-disable="this"
+                    >
                         <span id="signup-spinner" class="htmx-indicator">
                             <i class="bi bi-arrow-repeat spinner-icon"></i>
                         </span>
