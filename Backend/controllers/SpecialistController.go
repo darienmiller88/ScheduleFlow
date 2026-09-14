@@ -47,11 +47,11 @@ func NewSpecialistController(
 }
 
 func (s *SpecialistController) registerSpecialistRoutes() {
-	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signup", s.signUp)
-	s.Router.With(middlewares.SendBackToHome(s.sessionManager)).Post("/signin", s.signIn)
-	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Post("/signout", s.signOut)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckVerified(s.sessionManager, s.emailVerificationService)).Post("/signout", s.signOut)
+	s.Router.With(middlewares.SendBackToHome(s.sessionManager), middlewares.CheckVerified(s.sessionManager, s.emailVerificationService)).Post("/signin", s.signIn)
+	s.Router.With(middlewares.SendBackToHome(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/signup", s.signUp)
 	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/verify-email", s.verifyEmailCode)
-	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Post("/resend-verification", s.resendVerification)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager), middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService)).Put("/resend-verification", s.resendVerification)
 }
 
 func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Request) {
@@ -62,7 +62,7 @@ func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Reques
 	}
 
 	// Remove the user ID from the session to log the user out
-	s.sessionManager.Pop(req.Context(), "userId")
+	s.sessionManager.Pop(req.Context(), "userID")
 
 	// Redirect to the login page after successful logout
 	res.Header().Set("HX-Redirect", "/")
@@ -76,7 +76,7 @@ func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *htt
 	}
 
 	verficiationCode := req.FormValue("verification_code")
-	userId := s.sessionManager.GetInt(req.Context(), "userId")
+	userId := s.sessionManager.GetInt(req.Context(), "userID")
 	result := s.emailVerificationService.VerifyEmailCode(userId, verficiationCode)
 
 	if result.Err != nil {

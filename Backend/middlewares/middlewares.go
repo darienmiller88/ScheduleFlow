@@ -1,10 +1,12 @@
 package middlewares
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/alexedwards/scs/v2"
 	"ScheduleFlow/Backend/services"
+
+	"github.com/alexedwards/scs/v2"
 )
 
 // RequireAuth checks if the user is authenticated. If not, it redirects to the login page.
@@ -98,6 +100,7 @@ func SendBackToHome(sm *scs.SessionManager) func(http.Handler) http.Handler {
 
             // If userID is not 0, it means the user is authenticated, so redirect to home page
             if userID != 0 {
+                fmt.Println("User is authenticated, redirecting to home page:", userID)
 
                 if req.Method == http.MethodPost {
                     res.Header().Set("HX-Redirect", "/home")

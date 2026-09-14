@@ -47,7 +47,7 @@
                     </button>
                 </form>
 
-                <div id="verification-result" hx-on:htmx:after-swap="setTimeout(() => this.innerHTML = '', 4000)">
+                <div id="verification-result" hx-on:htmx:after-swap="setTimeout(() => this.innerHTML = '', 3000)">
                 </div>
 
                 <p class="expiration">
@@ -59,11 +59,11 @@
                         Didn't receive the email?
                         <button
                             type="button"
-                             x-data="{ disabled: false }"
+                            x-data="{ disabled: false }"
                             :disabled="disabled"
                             @click="disabled = true; setTimeout(() => disabled = false, 5000)"
 
-                            hx-post="/specialists/resend-verification"
+                            hx-put="/specialists/resend-verification"
                             hx-target="#verification-result"
                             hx-swap="innerHTML"
                         >

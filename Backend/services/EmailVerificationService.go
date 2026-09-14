@@ -45,6 +45,7 @@ func NewEmailVerificationService(repo repositories.EmailVerificationRepository) 
 	}
 }
 
+//GenerateNewEmailCode generates a new email verification code and its hash. Returns (code, code_hash)
 func (e *emailVerificationService) GenerateNewEmailCode() (string, []byte){
 	min, max := 100000, 999999
 	code := min + rand.IntN(max-min)
@@ -55,7 +56,8 @@ func (e *emailVerificationService) GenerateNewEmailCode() (string, []byte){
 	return strconv.Itoa(code), codeHash
 }
 
-//
+//VerifyEmailCode implements [EmailVerificationService]. It checks if the provided verification code matches
+//the stored hash and if it has not expired. Returns a Result indicating success or failure.
 func (e *emailVerificationService) VerifyEmailCode(specialistId int, verificationCode string) models.Result[bool] {
 	result := e.repo.GetEmailVerification(specialistId)
 
