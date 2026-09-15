@@ -13,6 +13,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/httprate"
 )
 
 type SpecialistController struct {
@@ -47,28 +48,37 @@ func NewSpecialistController(
 }
 
 func (s *SpecialistController) registerSpecialistRoutes() {
+	// Rate limit to 1 per 5 seconds. This is to prevent spamming the signout endpoint.
 	s.Router.With(
+		httprate.LimitBy(1, 5 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager), 
 		middlewares.CheckVerified(s.sessionManager, s.emailVerificationService),
 	).Post("/signout", s.signOut)
 
+	// Rate limit to 1 per 4 seconds. This is to prevent spamming the signin endpoint.
 	s.Router.With(
+		httprate.LimitBy(1, 4 * time.Second, middlewares.ClientIPKey),
 		middlewares.SendBackToHome(s.sessionManager),
 		middlewares.CheckVerified(s.sessionManager, s.emailVerificationService),
 	).Post("/signin", s.signIn)
 
+	//Rate limit to 1 per 10 seconds. This is to prevent spamming the signup endpoint and creating multiple accounts.
 	s.Router.With(
+		httprate.LimitBy(1, 10 * time.Second, middlewares.ClientIPKey),
 		middlewares.SendBackToHome(s.sessionManager), 
 		middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService),
 	).Post("/signup", s.signUp)
 
 	//Rate limit to 1 per 3 seconds. This is to prevent spamming the email verification code.
 	s.Router.With(
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager), 
 		middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService),
 	).Post("/verify-email", s.verifyEmailCode)
 
+	//Rate limit to 5 per day. This is to prevent spamming the email verification code.
 	s.Router.With(
+		httprate.LimitBy(5, 24 * time.Hour, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager), 
 		middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService),
 	).Put("/resend-verification", s.resendVerification)

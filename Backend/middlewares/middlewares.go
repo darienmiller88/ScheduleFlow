@@ -12,9 +12,9 @@ import (
 )
 
 
-// clientIPKey is the rate-limit key. middleware.GetClientIP reads the IP
+// ClientIPKey is the rate-limit key. middleware.GetClientIP reads the IP
 // resolved in step 1; httprate.CanonicalizeIP buckets IPv6 clients by /64.
-func clientIPKey(r *http.Request) (string, error) {
+func ClientIPKey(r *http.Request) (string, error) {
 	return httprate.CanonicalizeIP(middleware.GetClientIP(r.Context())), nil
 }
 
