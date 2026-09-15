@@ -48,16 +48,16 @@ func NewSpecialistController(
 }
 
 func (s *SpecialistController) registerSpecialistRoutes() {
-	// Rate limit to 1 per 5 seconds. This is to prevent spamming the signout endpoint.
+	// Rate limit to 1 per 3 seconds. This is to prevent spamming the signout endpoint.
 	s.Router.With(
-		httprate.LimitBy(1, 5 * time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager), 
 		middlewares.CheckVerified(s.sessionManager, s.emailVerificationService),
 	).Post("/signout", s.signOut)
 
-	// Rate limit to 1 per 4 seconds. This is to prevent spamming the signin endpoint.
+	// Rate limit to 1 per 3 seconds. This is to prevent spamming the signin endpoint.
 	s.Router.With(
-		httprate.LimitBy(1, 4 * time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.SendBackToHome(s.sessionManager),
 		middlewares.CheckVerified(s.sessionManager, s.emailVerificationService),
 	).Post("/signin", s.signIn)
@@ -105,9 +105,9 @@ func (s *SpecialistController) verifyEmailCode(res http.ResponseWriter, req *htt
 		return
 	}
 
-	verficiationCode := req.FormValue("verification_code")
+	verificationCode := req.FormValue("verification_code")
 	userId := s.sessionManager.GetInt(req.Context(), "userID")
-	result := s.emailVerificationService.VerifyEmailCode(userId, verficiationCode)
+	result := s.emailVerificationService.VerifyEmailCode(userId, verificationCode)
 
 	if result.Err != nil {
 		utils.SendHtmlError(res, result.StatusCode, result.Err.Error())
@@ -182,6 +182,22 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 	
 	if result.Err != nil {
 		utils.SendHtmlError(res, result.StatusCode, result.Err.Error())
+		return
+	}
+
+	// Check if the specialist has already verified their email
+	userId := s.sessionManager.GetInt(req.Context(), "userID")
+	emailVerificationResult := s.emailVerificationService.GetEmailVerificationEntry(userId)
+	
+	if emailVerificationResult.StatusCode == http.StatusInternalServerError {
+		utils.SendHtmlError(res, http.StatusInternalServerError, emailVerificationResult.Err.Error())
+		return
+	}
+
+	//if the specialist has not verified their email, redirect them to the verification page
+	if emailVerificationResult.StatusCode == http.StatusOK {
+		res.Header().Set("HX-Redirect", "/verification")
+		res.WriteHeader(http.StatusOK)
 		return
 	}
 
