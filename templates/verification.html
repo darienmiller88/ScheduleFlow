@@ -25,7 +25,7 @@
 
                 <form
                     hx-post="/specialists/verify-email"
-                    hx-target="#verification-result"
+                    hx-target="#verify-button-wrapper"
                     hx-swap="innerHTML"
                 >
                     <input
@@ -39,16 +39,39 @@
                         required
                     >
 
-                    <button
-                        type="submit"
-                        class="verify-button"
-                        hx-disable="this"
+                    <!-- Pristine copy of the button, never touched by swaps -->
+                    <template id="verify-button-template">
+                        <button
+                            type="submit"
+                            class="verify-button"
+                        >
+                            <span id="signup-spinner" class="htmx-indicator">
+                                <i class="bi bi-arrow-repeat spinner-icon"></i>
+                            </span>
+                            Verify Email
+                        </button>
+                    </template>
+
+                    <div 
+                        id="verify-button-wrapper"
+                        hx-on:htmx:after-swap="
+                            clearTimeout(this._restoreTimer);
+                            this._restoreTimer = setTimeout(() => {
+                                this.innerHTML = '';
+                                this.appendChild(document.getElementById('verify-button-template').content.cloneNode(true));
+                            }, 3000);
+                        "
                     >
-                        <span id="signup-spinner" class="htmx-indicator">
-                            <i class="bi bi-arrow-repeat spinner-icon"></i>
-                        </span>
-                        Verify Email
-                    </button>
+                        <button
+                            type="submit"
+                            class="verify-button"
+                        >
+                            <span id="signup-spinner" class="htmx-indicator">
+                                <i class="bi bi-arrow-repeat spinner-icon"></i>
+                            </span>
+                            Verify Email
+                        </button>
+                    </div>
                 </form>
 
                 <div id="verification-result" hx-on:htmx:after-swap="setTimeout(() => this.innerHTML = '', 3000)">
