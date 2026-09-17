@@ -37,6 +37,7 @@ const (
 	UpdateEmailVerification string = `
 		UPDATE email_verification 
 		SET
+			updated_at = NOW(),
 			code_hash = $1,
 			expires_at = $2
 		WHERE
@@ -44,7 +45,7 @@ const (
 	`
 
 	// Query to delete a specialist from the database by their ID if they choose to close their account.
-	DeleteSpecialist     string = `DELETE FROM specialists WHERE id = $1`
+	DeleteSpecialist        string = `DELETE FROM specialists WHERE id = $1`
 
 	// Query to delete an email verification entry from the database by specialist ID
 	DeleteEmailVerification string = `DELETE FROM email_verification WHERE specialist_id = $1`

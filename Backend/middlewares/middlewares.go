@@ -3,13 +3,41 @@ package middlewares
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"ScheduleFlow/Backend/services"
 
 	"github.com/alexedwards/scs/v2"
-    "github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
 )
+
+//PreventResendCode prevents users from spamming the resend verification code button. It checks if the user has
+//already requested a code within the last 15 minutes. If they have, it returns a 429 Too Many Requests
+//status code and an error message. If not, it allows the request to proceed and sets a rate limit for the user.
+func PreventResendCode(sm *scs.SessionManager, emailVerificationService services.EmailVerificationService) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+            userID := sm.GetInt(req.Context(), "userID")
+
+            //query the database to check if the user is verified
+            result := emailVerificationService.GetEmailVerificationEntry(userID)
+
+            if result.Err != nil {
+                http.Error(res, result.Err.Error(), http.StatusInternalServerError)
+                return
+            }
+
+            // If the user has already requested a code within the last 15 minutes, return a 429 Too Many Requests status code
+            if timeUntilExpires := time.Until(result.ResultData.ExpiresAt); timeUntilExpires > 0 {
+                http.Error(res, fmt.Sprintf("You have already requested a verification code. Please wait %d minutes before requesting again.", int(timeUntilExpires.Minutes())), http.StatusTooManyRequests)
+                return
+            }
+
+            next.ServeHTTP(res, req)
+        })
+    }
+}
 
 
 // ClientIPKey is the rate-limit key. middleware.GetClientIP reads the IP

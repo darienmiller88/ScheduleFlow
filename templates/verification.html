@@ -88,7 +88,7 @@
                             type="button"
                             x-data="{ disabled: false }"
                             :disabled="disabled"
-                            @click="disabled = true; setTimeout(() => disabled = false, 5000)"
+                            @click="disabled = true; setTimeout(() => disabled = false, 900000)"
 
                             hx-put="/specialists/resend-verification"
                             hx-target="#verification-result"
