@@ -184,18 +184,10 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 	}
 
 	// Check if the specialist has already verified their email
-	userId := s.sessionManager.GetInt(req.Context(), "userID")
-	emailVerificationResult := s.emailVerificationService.GetEmailVerificationEntry(userId)
+	emailVerificationResult := s.emailVerificationService.GetEmailVerificationEntryByEmail(email)
 	
 	if emailVerificationResult.StatusCode == http.StatusInternalServerError {
 		utils.SendHtmlError(res, http.StatusInternalServerError, emailVerificationResult.Err.Error())
-		return
-	}
-
-	//if the specialist has not verified their email, redirect them to the verification page
-	if emailVerificationResult.StatusCode == http.StatusOK {
-		res.Header().Set("HX-Redirect", "/verification")
-		res.WriteHeader(http.StatusOK)
 		return
 	}
 
@@ -208,6 +200,17 @@ func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request
 	// Set session lifetime to 1 year if "Remember Me" is checked
 	if rememberMe {
 		s.sessionManager.Lifetime = 365 * (24 * time.Hour) 
+	}
+	
+	//if the specialist has not verified their email, redirect them to the verification page
+	if emailVerificationResult.StatusCode == http.StatusOK {
+		
+		//Give the user a new session with their userID so they can access the verification page
+		s.sessionManager.Put(req.Context(), "userID", s.specialistService.GetSpecialistByEmail(email).ResultData.ID)
+
+		res.Header().Set("HX-Redirect", "/verification")
+		res.WriteHeader(http.StatusOK)
+		return
 	}
 
 	// Store the user ID in the session after successful login
