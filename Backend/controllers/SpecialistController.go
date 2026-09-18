@@ -80,6 +80,7 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 		httprate.LimitBy(5, 24 * time.Hour, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager), 
 		middlewares.CheckNotVerified(s.sessionManager, s.emailVerificationService),
+		middlewares.PreventResendCode(s.sessionManager, s.emailVerificationService),
 	).Put("/resend-verification", s.resendVerification)
 }
 
