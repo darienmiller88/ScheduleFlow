@@ -14,18 +14,21 @@ import (
 )
 
 type EmailVerificationService interface {
-	
+
 	//Update an email verification enntry with a new expiry and new code hash
 	UpdateEmailVerificationEntry(emailVerification models.EmailVerification) models.Result[models.EmailVerification]
-	
+
 	//Add a new email veriication entry
 	AddEmailVerificationEntry(emailVerification models.EmailVerification) models.Result[models.EmailVerification]
-	
+
 	//Delete a new email verification entry
 	DeleteEmailVerificationEntry(specialistId int) models.Result[bool]
 
 	//Get a email verification entry by id
 	GetEmailVerificationEntry(specialistId int) models.Result[models.EmailVerification]
+
+	//Get a email verification entry by email
+	GetEmailVerificationEntryByEmail(email string) models.Result[models.EmailVerification]
 
 	//Verify whether or not the user inputted the correct verification
 	VerifyEmailCode(specialistId int, verificationCode string) models.Result[bool]
@@ -45,8 +48,8 @@ func NewEmailVerificationService(repo repositories.EmailVerificationRepository) 
 	}
 }
 
-//GenerateNewEmailCode generates a new email verification code and its hash. Returns (code, code_hash)
-func (e *emailVerificationService) GenerateNewEmailCode() (string, []byte){
+// GenerateNewEmailCode generates a new email verification code and its hash. Returns (code, code_hash)
+func (e *emailVerificationService) GenerateNewEmailCode() (string, []byte) {
 	min, max := 100000, 999999
 	code := min + rand.IntN(max-min)
 	codeString := strconv.Itoa(code)
@@ -56,12 +59,12 @@ func (e *emailVerificationService) GenerateNewEmailCode() (string, []byte){
 	return strconv.Itoa(code), codeHash
 }
 
-//VerifyEmailCode implements [EmailVerificationService]. It checks if the provided verification code matches
-//the stored hash and if it has not expired. Returns a Result indicating success or failure.
+// VerifyEmailCode implements [EmailVerificationService]. It checks if the provided verification code matches
+// the stored hash and if it has not expired. Returns a Result indicating success or failure.
 func (e *emailVerificationService) VerifyEmailCode(specialistId int, verificationCode string) models.Result[bool] {
 	result := e.repo.GetEmailVerification(specialistId)
 
-	if result.Err != nil{
+	if result.Err != nil {
 		return utils.GetResult(result.Err, result.StatusCode, false)
 	}
 
@@ -73,7 +76,7 @@ func (e *emailVerificationService) VerifyEmailCode(specialistId int, verificatio
 		if result.ResultData.ExpiresAt.Before(time.Now()) {
 			return utils.GetResult(errors.New("Verification code has expired"), http.StatusGone, false)
 		}
-
+		
 		return utils.GetResult(nil, http.StatusOK, true)
 	}
 
@@ -83,6 +86,11 @@ func (e *emailVerificationService) VerifyEmailCode(specialistId int, verificatio
 // Method to add a new email verification entry to the database for a specialist
 func (e *emailVerificationService) AddEmailVerificationEntry(emailVerification models.EmailVerification) models.Result[models.EmailVerification] {
 	return e.repo.AddEmailVerification(emailVerification)
+}
+
+// GetEmailVerificationEntryByEmail implements [EmailVerificationService].
+func (e *emailVerificationService) GetEmailVerificationEntryByEmail(email string) models.Result[models.EmailVerification] {
+	return e.repo.GetEmailVerificationByEmail(email)
 }
 
 // DeleteEmailVerificationEntry implements [EmailVerificationService].

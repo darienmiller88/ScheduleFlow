@@ -26,6 +26,9 @@ type EmailVerificationRepository interface {
 	// GetEmailVerification retrieves the email verification entry for a given specialist ID.
 	GetEmailVerification(specialistId int) models.Result[models.EmailVerification]
 
+	// GetEmailVerificationByEmail retrieves the email verification entry for a given email address.
+	GetEmailVerificationByEmail(email string) models.Result[models.EmailVerification]
+
 	// DeleteEmailVerification deletes the email verification entry for a given specialist ID.
 	DeleteEmailVerification(specialistId int) models.Result[bool]
 }
@@ -34,6 +37,8 @@ type EmailVerificationRepository interface {
 type emailVerificationRepository struct {
 	db *sqlx.DB
 }
+
+
 
 func NewEmailVerificationRepository(db *sqlx.DB) EmailVerificationRepository {
 	return &emailVerificationRepository{
@@ -68,10 +73,31 @@ func (e *emailVerificationRepository) DeleteEmailVerification(specialistId int) 
 	return utils.GetResult(nil, http.StatusOK, true)
 }
 
+// Method to retrieve an email verification entry from the database by specialist email
+func (e *emailVerificationRepository) GetEmailVerificationByEmail(email string) models.Result[models.EmailVerification] {
+	var emailVerification models.EmailVerification
+
+	err := e.db.Get(&emailVerification, constants.GetEmailVerificationByEmail, email)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return utils.GetResult(
+				fmt.Errorf("email verification for email %s not found", email),
+				http.StatusNotFound,
+				models.EmailVerification{},
+			)
+		}
+
+		return utils.GetResult(err, http.StatusInternalServerError, models.EmailVerification{})
+	}
+
+	return utils.GetResult(nil, http.StatusOK, emailVerification)
+}
+
 // Method to retrieve an email verification entry from the database by specialist ID
 func (e *emailVerificationRepository) GetEmailVerification(specialistId int) models.Result[models.EmailVerification] {
 	var emailVerification models.EmailVerification
-	
+
 	err := e.db.Get(&emailVerification, constants.GetEmailVerification, specialistId)
 
 	if err != nil {

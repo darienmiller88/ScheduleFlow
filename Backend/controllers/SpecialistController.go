@@ -59,7 +59,6 @@ func (s *SpecialistController) registerSpecialistRoutes() {
 	s.Router.With(
 		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.SendBackToHome(s.sessionManager),
-		middlewares.CheckVerified(s.sessionManager, s.emailVerificationService),
 	).Post("/signin", s.signIn)
 
 	//Rate limit to 1 per 10 seconds. This is to prevent spamming the signup endpoint and creating multiple accounts.
@@ -169,7 +168,6 @@ func (s *SpecialistController) resendVerification(res http.ResponseWriter, req *
 func (s *SpecialistController) signIn(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
 		utils.SendHtmlError(res, http.StatusBadRequest, fmt.Sprintf("Failed to parse form: %v", err))
-		// http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
 

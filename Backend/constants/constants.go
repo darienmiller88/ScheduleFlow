@@ -17,6 +17,9 @@ const (
 	// Query to retrieve a specialist from the database by their email
 	GetSpecialistByEmail string = `SELECT * FROM specialists WHERE email = $1`
 
+	// Query to retrieve an email verification entry from the database by specialist email
+	GetEmailVerificationByEmail string = `SELECT * FROM email_verification WHERE specialist_id = (SELECT id FROM specialists WHERE email = $1)`
+
 	// Query to retrieve a specialist from the database by their ID
 	GetSpecialistById    string = `SELECT * FROM specialists WHERE id = $1`
 
