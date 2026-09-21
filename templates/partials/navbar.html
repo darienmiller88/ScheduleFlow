@@ -5,13 +5,14 @@
         <div class="nav-title">ScheduleFlow</div>
     </div>
 
+    {{ if .ID }}
     <button class="menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle Navigation">
         <i class="bi bi-list"></i>
     </button>
 
     <div class="user-info desktop-only">
-        <div class="nav-item acronym">JD</div>
-        <div class="nav-item username">John Doe</div>
+        <div class="nav-item acronym">{{ .NameAbbrev }}</div>
+        <div class="nav-item username">{{ .FirstName }} {{ .LastName }}</div>
         <div class="nav-item settings-icon">
             <i class="bi bi-gear"></i>
         </div> 
@@ -23,12 +24,13 @@
 
     <div class="mobile-menu" x-show="mobileMenuOpen" x-transition @click.outside="mobileMenuOpen = false" x-cloak>
         <div class="mobile-user-profile">
-            <div class="acronym">JD</div>
-            <div class="username">John Doe</div>
+            <div class="acronym">{{ .NameAbbrev }}</div>
+            <div class="username">{{ .FirstName }} {{ .LastName }}</div>
         </div>
         <hr>
         <a href="/settings" class="mobile-nav-item"><i class="bi bi-gear"></i> Settings</a>
         <button hx-post="/logout" class="mobile-nav-item"><i class="bi bi-box-arrow-right"></i> Sign Out</button>
     </div>
+    {{ end }}
 </nav>
 {{ end }}

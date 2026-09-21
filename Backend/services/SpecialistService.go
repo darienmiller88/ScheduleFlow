@@ -26,7 +26,7 @@ type SpecialistService interface {
 	// DeleteSpecialist removes a specialist from the database using their ID.
 	DeleteSpecialist(specialistId int) models.Result[bool]
 
-	// GetSpecialistByEmail retrieves a specialist from the database using their email.
+	// GetSpecialistById retrieves a specialist from the database using their id.
 	GetSpecialistById(id int) models.Result[models.Specialist]
 
 	// AuthenticateSpecialist checks if the provided email and password match the stored credentials in the database.

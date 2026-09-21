@@ -3,7 +3,6 @@ package controllers
 import (
 	"ScheduleFlow/Backend/middlewares"
 	"ScheduleFlow/Backend/services"
-	
 
 	"fmt"
 	"html/template"
@@ -20,12 +19,16 @@ type ViewsController struct {
 	pageTemplates     map[string]*template.Template
 	sessionManger     *scs.SessionManager
 	standardTemplates *template.Template
+
+	//services
+	playerService            services.SpecialistService
 	emailVerificationService services.EmailVerificationService
 }
 
 func NewViewsController(
 	sessionManager *scs.SessionManager, 
 	emailVerificationService services.EmailVerificationService,
+	specialistService services.SpecialistService,
 ) *ViewsController {
 	partials, _ := filepath.Glob("./templates/partials/*.html")
 	pages, _ := filepath.Glob("./templates/pages/*.html")
@@ -55,6 +58,7 @@ func NewViewsController(
 		sessionManger:     sessionManager,
 		standardTemplates: standardTemplates,
 		emailVerificationService: emailVerificationService,
+		playerService:            specialistService,
 	}
 
 	vc.registerViewRoutes()
@@ -78,7 +82,15 @@ func (v *ViewsController) registerViewRoutes() {
 }
 
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
-	if err := v.pageTemplates["home"].Execute(res, nil); err != nil {
+	userID := v.sessionManger.GetInt(req.Context(), "userID")
+	specialistResult := v.playerService.GetSpecialistById(userID)
+
+	if specialistResult.Err != nil {
+		http.Error(res, "Error retrieving specialist data", http.StatusInternalServerError)
+		return
+	}
+
+	if err := v.pageTemplates["home"].Execute(res, specialistResult.ResultData); err != nil {
 		http.Error(res, "Error rendering template", http.StatusInternalServerError)
 	}
 }

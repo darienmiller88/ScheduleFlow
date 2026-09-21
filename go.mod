@@ -33,7 +33,7 @@ require (
 	github.com/microsoft/kiota-serialization-text-go v1.1.3 // indirect
 	github.com/microsoftgraph/msgraph-sdk-go v1.100.0 // indirect
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.4.1 // indirect
-	github.com/netresearch/go-cron v0.15.0 // indirect
+	github.com/netresearch/go-cron v0.16.0 // indirect
 	github.com/oapi-codegen/runtime v1.6.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/resend/resend-go/v3 v3.12.0 // indirect
