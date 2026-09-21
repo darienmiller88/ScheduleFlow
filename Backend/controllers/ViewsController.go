@@ -3,6 +3,8 @@ package controllers
 import (
 	"ScheduleFlow/Backend/middlewares"
 	"ScheduleFlow/Backend/services"
+	
+
 	"fmt"
 	"html/template"
 	"net/http"
@@ -61,8 +63,16 @@ func NewViewsController(
 }
 
 func (v *ViewsController) registerViewRoutes() {
-	v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.CheckVerified(v.sessionManger, v.emailVerificationService)).Get("/home", v.homePage)
-	v.Router.With(middlewares.RequireAuth(v.sessionManger), middlewares.CheckNotVerified(v.sessionManger, v.emailVerificationService)).Get("/verification", v.verificationPage)
+	v.Router.With(
+		middlewares.RequireAuth(v.sessionManger), 
+		middlewares.CheckVerified(v.sessionManger, v.emailVerificationService),
+	).Get("/home", v.homePage)
+
+	v.Router.With(
+		middlewares.RequireAuth(v.sessionManger), 
+		middlewares.CheckNotVerified(v.sessionManger, v.emailVerificationService),
+	).Get("/verification", v.verificationPage)
+
 	v.Router.With(middlewares.SendBackToHome(v.sessionManger)).Get("/", v.loginPage)
 	v.Router.NotFound(v.notFound)
 }

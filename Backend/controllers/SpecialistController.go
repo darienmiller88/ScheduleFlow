@@ -92,7 +92,7 @@ func (s *SpecialistController) signOut(res http.ResponseWriter, req *http.Reques
 	}
 
 	// Remove the user ID from the session to log the user out
-	s.sessionManager.Pop(req.Context(), "userID")
+	s.sessionManager.Remove(req.Context(), "userID")
 
 	// Redirect to the login page after successful logout
 	res.Header().Set("HX-Redirect", "/")

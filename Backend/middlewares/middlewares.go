@@ -39,7 +39,6 @@ func PreventResendCode(sm *scs.SessionManager, emailVerificationService services
     }
 }
 
-
 // ClientIPKey is the rate-limit key. middleware.GetClientIP reads the IP
 // resolved in step 1; httprate.CanonicalizeIP buckets IPv6 clients by /64.
 func ClientIPKey(r *http.Request) (string, error) {
@@ -106,25 +105,19 @@ func CheckVerified(sm *scs.SessionManager, emailVerificationService services.Ema
             //query the database to check if the user is verified
             result := emailVerificationService.GetEmailVerificationEntry(userID)
 
-            if result.Err != nil {
-                http.Error(res, result.Err.Error(), result.StatusCode)
-                return
+            switch result.StatusCode {
+                case http.StatusOK:
+                    if req.Method == http.MethodPost {
+                        res.Header().Set("HX-Redirect", "/verification")
+                        res.WriteHeader(http.StatusOK)
+                    }else{
+                        http.Redirect(res, req, "/verification", http.StatusSeeOther)
+                    }
+                case http.StatusNotFound:
+                    next.ServeHTTP(res, req)
+                default:
+                    http.Error(res, result.Err.Error(), result.StatusCode)
             }
-
-            // If the user has not verified their email (email verification found), redirect to the verification page
-            if result.StatusCode == http.StatusOK {
-                
-                if req.Method == http.MethodPost {
-                    res.Header().Set("HX-Redirect", "/verification")
-                    res.WriteHeader(http.StatusOK)
-                }else{
-                    http.Redirect(res, req, "/verification", http.StatusSeeOther)
-                }
-                
-                return
-            }
-
-            next.ServeHTTP(res, req)
         })
     }
 }

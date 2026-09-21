@@ -130,6 +130,43 @@ nav .user-info .sign-out-icon {
     letter-spacing: -0.01em;
 }
 
+
+/******************
+Styles for signout 
+******************/
+.nav-item.sign-out-icon{
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Default state: show the door icon, hide the spinner */
+.nav-item.sign-out-icon .spinner-icon{
+    display: none;
+    color: #007bff; /* Bootstrap primary blue for spinner */
+}
+
+/* During the request: swap icons, and block further clicks */
+.nav-item.sign-out-icon.htmx-request{
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.nav-item.sign-out-icon.htmx-request .sign-out-default{
+    display: none;
+}
+
+.nav-item.sign-out-icon.htmx-request .spinner-icon{
+    display: inline-block;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin{
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 /* ==========================================================================
    RESPONSIVE MEDIA BREAKPOINT (Mobile & Tablet Layouts)
    ========================================================================== */

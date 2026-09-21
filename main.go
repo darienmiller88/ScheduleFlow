@@ -7,10 +7,12 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/httprate"
 	"github.com/joho/godotenv"
 
 	"ScheduleFlow/Backend/controllers"
 	"ScheduleFlow/Backend/database"
+	"ScheduleFlow/Backend/middlewares"
 	"ScheduleFlow/Backend/sessionManager"
 
 	"github.com/go-chi/chi/v5/middleware"
@@ -32,7 +34,9 @@ func main() {
 	router.Use(middleware.Logger)
 	router.Use(middleware.ClientIPFromRemoteAddr)
 	router.Use(middleware.RequestSize(1 << 20))
-	router.Use(middleware.Timeout(45 * time.Second))
+	router.Use(middleware.Timeout(30 * time.Second))
+	router.Use(httprate.LimitBy(300, time.Minute, middlewares.ClientIPKey))
+
 
 	//Mount index router, which has all other controllers mounted on it
 	router.Mount("/", indexController.Router)
