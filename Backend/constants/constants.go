@@ -8,6 +8,9 @@ const (
 	// Query to add a new email verification entry to the database for a specialist
 	AddEmailVerification string = `INSERT INTO email_verification (specialist_id, code_hash, expires_at) VALUES ($1, $2, $3) RETURNING id`
 
+	// Query to add a new sent email entry to the database for a specialist
+	AddSentEmail string = `INSERT INTO sent_emails (file_path, specialist_id) VALUES ($1, $2) RETURNING id`
+	
 	// Query to retrieve an email verification entry from the database by specialist ID
 	GetEmailVerification string = `SELECT * FROM email_verification WHERE specialist_id = $1`
 
@@ -22,6 +25,12 @@ const (
 
 	// Query to retrieve a specialist from the database by their ID
 	GetSpecialistById    string = `SELECT * FROM specialists WHERE id = $1`
+
+	// Query to retrieve all sent email entries for a given specialist ID
+	GetSentEmailBySpecialistId string = `SELECT * FROM sent_emails WHERE specialist_id = $1`
+
+	// Query to retrieve all sent email entries in the database
+	GetAllSentEmails string = `SELECT * FROM sent_emails`
 
 	// Query to update a specialist's information in the database by their ID
 	UpdateSpecialist     string = `
