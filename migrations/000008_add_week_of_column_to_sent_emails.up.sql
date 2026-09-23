@@ -1,0 +1,1 @@
+ALTER TABLE sent_emails ADD COLUMN week_of TEXT NOT NULL DEFAULT '';

@@ -3,6 +3,7 @@ package controllers
 import (
 	"ScheduleFlow/Backend/middlewares"
 	"ScheduleFlow/Backend/services"
+	"ScheduleFlow/Backend/models"
 
 	"fmt"
 	"html/template"
@@ -14,6 +15,11 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+type HomePageData struct {
+	SpecialistData models.Specialist
+	SentEmails     []models.SentEmail
+}
+
 type ViewsController struct {
 	Router            *chi.Mux
 	pageTemplates     map[string]*template.Template
@@ -23,12 +29,14 @@ type ViewsController struct {
 	//services
 	playerService            services.SpecialistService
 	emailVerificationService services.EmailVerificationService
+	sentEmailService         services.SentEmailService
 }
 
 func NewViewsController(
 	sessionManager *scs.SessionManager, 
 	emailVerificationService services.EmailVerificationService,
 	specialistService services.SpecialistService,
+	sentEmailService services.SentEmailService,
 ) *ViewsController {
 	partials, _ := filepath.Glob("./templates/partials/*.html")
 	pages, _ := filepath.Glob("./templates/pages/*.html")
@@ -59,6 +67,7 @@ func NewViewsController(
 		standardTemplates: standardTemplates,
 		emailVerificationService: emailVerificationService,
 		playerService:            specialistService,
+		sentEmailService:         sentEmailService,
 	}
 
 	vc.registerViewRoutes()
@@ -84,13 +93,25 @@ func (v *ViewsController) registerViewRoutes() {
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 	userID := v.sessionManger.GetInt(req.Context(), "userID")
 	specialistResult := v.playerService.GetSpecialistById(userID)
-
+	
 	if specialistResult.Err != nil {
 		http.Error(res, "Error retrieving specialist data", http.StatusInternalServerError)
 		return
 	}
+	
+	sentEmailResult := v.sentEmailService.GetAllSentEmails()
 
-	if err := v.pageTemplates["home"].Execute(res, specialistResult.ResultData); err != nil {
+	if sentEmailResult.Err != nil {
+		http.Error(res, "Error retrieving sent emails", http.StatusInternalServerError)
+		return
+	}
+
+	pageData := HomePageData{
+		SpecialistData: specialistResult.ResultData,
+		SentEmails:     sentEmailResult.ResultData,
+	}
+
+	if err := v.pageTemplates["home"].Execute(res, pageData); err != nil {
 		http.Error(res, "Error rendering template", http.StatusInternalServerError)
 	}
 }

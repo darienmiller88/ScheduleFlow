@@ -1,0 +1,1 @@
+ALTER TABLE sent_emails DROP COLUMN week_of;

@@ -29,6 +29,7 @@ func (c *IndexController) registerRoutes(db *sqlx.DB, sessionManager *scs.Sessio
 		sessionManager, 
 		services.NewEmailVerificationService(repositories.NewEmailVerificationRepository(db)),
 		services.NewSpecialistService(repositories.NewSpecialistRepository(db)),
+		services.NewSentEmailService(repositories.NewSentEmailRepository(db)),
 	)
 	sc := NewSpecialistController(
 		services.NewSpecialistService(repositories.NewSpecialistRepository(db)),
