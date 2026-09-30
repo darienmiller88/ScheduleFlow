@@ -18,6 +18,7 @@ import (
 type HomePageData struct {
 	SpecialistData models.Specialist
 	SentEmails     []models.SentEmail
+	NumSentEmails   int
 }
 
 type ViewsController struct {
@@ -109,6 +110,7 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 	pageData := HomePageData{
 		SpecialistData: specialistResult.ResultData,
 		SentEmails:     sentEmailResult.ResultData,
+		NumSentEmails:  len(sentEmailResult.ResultData),
 	}
 
 	if err := v.pageTemplates["home"].Execute(res, pageData); err != nil {

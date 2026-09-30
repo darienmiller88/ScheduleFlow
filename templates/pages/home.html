@@ -8,28 +8,46 @@
     <div class="page-wrapper">
         <div class="upload-schedule" x-data="{ fileName: '' }">
             <div class="upload-title">Upload Schedule</div>
-            <form action="/upload" method="post" enctype="multipart/form-data">
-                <label for="schedule-upload" class="upload-btn">
-                    <div class="upload-icon">
-                        <i class="bi bi-cloud-upload"></i>
-                    </div>
-                   Click to browse for excel file
-                    <span class="file-types">.xlsx,.xls</span>
-                </label>
-
-                <span x-text="fileName"></span>
-
-                <input
-                    id="schedule-upload"
-                    type="file"
-                    name="schedule"
-                    accept=".xlsx"
-                    hidden
-                    @change="fileName = $event.target.files[0]?.name || 'No schedule selected'"
+                <form 
+                    hx-post="/upload"
+                    hx-encoding="multipart/form-data"
+                    hx-target="#upload-result"
+                    hx-swap="innerHTML"
+                    hx-on:htmx:after-swap="document.getElementById('upload-result').innerHTML = ''"
                 >
+                    <label for="schedule-upload" class="upload-btn">
+                        <div class="upload-icon">
+                            <i class="bi bi-cloud-upload"></i>
+                        </div>
+                        Click to browse for excel file
+                        <span class="file-types">.xlsx,.xls</span>
+                    </label>
 
-                <!-- <button type="submit">Send Now</button> -->
-            </form>
+                    <span x-text="fileName"></span>
+
+                    <input
+                        id="schedule-upload"
+                        type="file"
+                        name="schedule"
+                        accept=".xlsx,.xls"
+                        hidden
+                        required
+                        @change="fileName = $event.target.files[0]?.name || 'No schedule selected'"
+                    >
+
+                    <button 
+                        type="submit"
+                        x-data="{ disabled: false }"
+                        :disabled="disabled"
+                        @click="disabled = true; setTimeout(() => disabled = false, 3000)"
+                    >
+                        <span id="upload-spinner" class="htmx-indicator">
+                            <i class="bi bi-arrow-repeat spinner-icon"></i>
+                        </span>
+                        Schedule
+                    </button>
+                </form>
+            <div id="upload-result"></div>
         </div>
         <div class="schedule-container">
             <h2 class="schedule-title">Recent Schedules</h2>
@@ -45,23 +63,16 @@
                         </tr>
                     </thead>
                     <tbody class="schedule-dates">
+                        {{ range .SentEmails }}
                         <tr>
-                            <td>Dec 16-22, 2024</td>
-                            <td>Dec 15, 2024 4:30 PM</td>
+                            <td>{{ .WeekOf }}</td>
+                            <td>{{ .CreatedAt }}</td>
                             <td><span class="status-badge sent">Sent</span></td>
                             <td class="actions">
                                 <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
                                 <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>Dec 9-15, 2024</td>
-                            <td>Dec 8, 2024 3:45 PM</td>
-                            <td><span class="status-badge sent">Sent</span></td>
-                            <td class="actions">
-                                <button class="action-btn" aria-label="View"><i class="bi bi-eye"></i></button>
-                                <button class="action-btn" aria-label="Download"><i class="bi bi-download"></i></button>
-                            </td>
+                        {{ end }}
                         </tr>
                     </tbody>
                 </table>
@@ -69,8 +80,8 @@
         </div>
         <div class="schedule-stats">
             <div class="schedule-stats-title">Schedule Statistics</div>
-            <p>Total Schedules: 3</p>
-            <p>Sent Schedules: 5</p>
+            <p>Total Schedules: 1</p>
+            <p>Sent Schedules: {{ .NumSentEmails }}</p>
             <p>Pending Schedules: 1</p>
         </div>
     </div>
