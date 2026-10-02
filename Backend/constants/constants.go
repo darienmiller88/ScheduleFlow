@@ -32,6 +32,8 @@ const (
 	// Query to retrieve all sent email entries in the database
 	GetAllSentEmails string = `SELECT * FROM sent_emails`
 
+	GetAllRecentSchedules string = ``
+
 	// Query to update a specialist's information in the database by their ID
 	UpdateSpecialist     string = `
 		UPDATE specialists 

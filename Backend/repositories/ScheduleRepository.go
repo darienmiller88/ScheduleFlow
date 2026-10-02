@@ -10,6 +10,9 @@ type ScheduleRepository interface {
 
 	//Add a new schedule for a specialist
 	AddNewSchedule(schedule models.Schedule) models.Result[models.Schedule]
+
+	//
+	Get
 }
 
 type scheduleRepository struct {

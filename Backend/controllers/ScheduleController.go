@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"ScheduleFlow/Backend/services"
 	"html/template"
 
 	"github.com/go-chi/chi/v5"
