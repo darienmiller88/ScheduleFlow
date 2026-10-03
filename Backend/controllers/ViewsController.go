@@ -100,7 +100,7 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	
-	sentEmailResult := v.sentEmailService.GetAllSentEmails()
+	sentEmailResult := v.sentEmailService.GetSentEmailBySpecialistId(userID)
 
 	if sentEmailResult.Err != nil {
 		http.Error(res, "Error retrieving sent emails", http.StatusInternalServerError)

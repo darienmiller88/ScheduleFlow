@@ -19,8 +19,8 @@ type SentEmailRepository interface {
 	// GetSentEmailBySpecialistId retrieves all sent email entries for a given specialist ID.
 	GetSentEmailBySpecialistId(specialistId int) models.Result[[]models.SentEmail]
 
-	// GetAllSentEmails retrieves all sent email entries in the database.
-	GetAllSentEmails() models.Result[[]models.SentEmail]
+	// GetAllSentEmails retrieves all sent email entries by specialist ID from the database.
+	GetAllSentEmailsBySpecialistId(specialistId int) models.Result[[]models.SentEmail]
 }
 
 // Implementation of the SentEmailRepository interface using sql
@@ -72,11 +72,11 @@ func (s *sentEmailRepository) GetSentEmailBySpecialistId(specialistId int) model
 	return utils.GetResult(nil, http.StatusOK, sentEmails)
 }
 
-// GetAllSentEmails implements [SentEmailRepository].
-func (s *sentEmailRepository) GetAllSentEmails() models.Result[[]models.SentEmail] {
+// GetAllSentEmailsBySpecialistId implements [SentEmailRepository].
+func (s *sentEmailRepository) GetAllSentEmailsBySpecialistId(specialistId int) models.Result[[]models.SentEmail] {
 	sentEmails := []models.SentEmail{}
 
-	err := s.db.Select(&sentEmails, constants.GetAllSentEmails)
+	err := s.db.Select(&sentEmails, constants.GetAllSentEmailsBySpecialistId, specialistId)
 
 	if err != nil {
 		return utils.GetResult(err, http.StatusInternalServerError, []models.SentEmail{})

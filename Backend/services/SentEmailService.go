@@ -13,7 +13,7 @@ type SentEmailService interface {
 	GetSentEmailBySpecialistId(specialistId int) models.Result[[]models.SentEmail]
 
 	// GetAllSentEmails retrieves all sent email entries in the database.
-	GetAllSentEmails() models.Result[[]models.SentEmail]
+	GetAllSentEmailsBySpecialistId(specialistId int) models.Result[[]models.SentEmail]
 }
 
 type sentEmailService struct {
@@ -33,8 +33,8 @@ func (s *sentEmailService) AddSentEmail(sentEmail models.SentEmail) models.Resul
 }
 
 // GetAllSentEmails implements [SentEmailService].
-func (s *sentEmailService) GetAllSentEmails() models.Result[[]models.SentEmail] {
-	return s.sentEmailRepository.GetAllSentEmails()
+func (s *sentEmailService) GetAllSentEmailsBySpecialistId(specialistId int) models.Result[[]models.SentEmail] {
+	return s.sentEmailRepository.GetAllSentEmailsBySpecialistId(specialistId)
 }
 
 // GetSentEmailBySpecialistId implements [SentEmailService].
