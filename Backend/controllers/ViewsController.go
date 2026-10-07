@@ -31,6 +31,7 @@ type ViewsController struct {
 	playerService            services.SpecialistService
 	emailVerificationService services.EmailVerificationService
 	sentEmailService         services.SentEmailService
+	scheduleService          services.ScheduleService
 }
 
 func NewViewsController(
@@ -100,12 +101,14 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	
-	sentEmailResult := v.sentEmailService.GetSentEmailBySpecialistId(userID)
+	sentEmailResult := v.sentEmailService.GetAllSentEmailsBySpecialistId(userID)
 
 	if sentEmailResult.Err != nil {
 		http.Error(res, "Error retrieving sent emails", http.StatusInternalServerError)
 		return
 	}
+
+
 
 	pageData := HomePageData{
 		SpecialistData: specialistResult.ResultData,

@@ -9,9 +9,6 @@ type SentEmailService interface {
 	// AddSentEmail adds a new sent email entry to the database for a specialist.
 	AddSentEmail(sentEmail models.SentEmail) models.Result[models.SentEmail]
 
-	// GetSentEmailBySpecialistId retrieves all sent email entries for a given specialist ID.
-	GetSentEmailBySpecialistId(specialistId int) models.Result[[]models.SentEmail]
-
 	// GetAllSentEmails retrieves all sent email entries in the database.
 	GetAllSentEmailsBySpecialistId(specialistId int) models.Result[[]models.SentEmail]
 }
@@ -36,9 +33,3 @@ func (s *sentEmailService) AddSentEmail(sentEmail models.SentEmail) models.Resul
 func (s *sentEmailService) GetAllSentEmailsBySpecialistId(specialistId int) models.Result[[]models.SentEmail] {
 	return s.sentEmailRepository.GetAllSentEmailsBySpecialistId(specialistId)
 }
-
-// GetSentEmailBySpecialistId implements [SentEmailService].
-func (s *sentEmailService) GetSentEmailBySpecialistId(specialistId int) models.Result[[]models.SentEmail] {
-	return s.sentEmailRepository.GetSentEmailBySpecialistId(specialistId)
-}
-
