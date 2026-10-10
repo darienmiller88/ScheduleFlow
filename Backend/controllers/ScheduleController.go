@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"ScheduleFlow/Backend/services"
 	"html/template"
+	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -9,11 +11,17 @@ import (
 type ScheduleController struct {
 	Router    *chi.Mux
 	templates *template.Template
+
 	// scheduleService services.
+	scheduleService services.ScheduleService
 }
 
-func NewScheduleController() ScheduleController {
-	sc := ScheduleController{}
+func NewScheduleController(scheduleService services.ScheduleService) ScheduleController {
+	sc := ScheduleController{
+		scheduleService: scheduleService,
+		templates:       template.Must(template.ParseGlob("templates/*.html")),
+		Router:          chi.NewRouter(),
+	}
 
 	sc.registerRoutes()
 
@@ -22,4 +30,12 @@ func NewScheduleController() ScheduleController {
 
 func (s *ScheduleController) registerRoutes() {
 
+}
+
+func (s *ScheduleController) GetScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+	
+}
+
+func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+	
 }
