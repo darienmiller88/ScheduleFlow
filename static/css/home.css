@@ -70,6 +70,13 @@
     background-color: #e0e2e8;
 }
 
+#upload-result{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem 0;
+}
+
 #file-name {
     margin-left: 1rem;
     color: #666;

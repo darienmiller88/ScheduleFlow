@@ -103,7 +103,7 @@ nav .user-info .sign-out-icon {
     
     /* Layout constraints */
     padding: 1rem 1.25rem;
-    width: 95%; /* Responsive container fluidity */
+    width: 100%; /* Responsive container fluidity */
     
     /* Typography style configuration */
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;

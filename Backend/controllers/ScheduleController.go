@@ -3,6 +3,8 @@ package controllers
 import (
 	"ScheduleFlow/Backend/middlewares"
 	"ScheduleFlow/Backend/services"
+	"ScheduleFlow/Backend/utils"
+	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -47,5 +49,21 @@ func (s *ScheduleController) GetScheduleForSpecialist(res http.ResponseWriter, r
 }
 
 func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
-	
+	if err := req.ParseMultipartForm(1 << 20); err != nil {
+		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	file, header, err := req.FormFile("schedule")
+
+	if err != nil {
+		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	fmt.Println(header.Filename)
+
+	defer file.Close()
+
+	// Process the uploaded file...
 }
