@@ -9,11 +9,9 @@
         <div class="upload-schedule" x-data="{ fileName: '' }">
             <div class="upload-title">Upload Schedule</div>
                 <form 
-                    hx-post="/upload"
                     hx-encoding="multipart/form-data"
                     hx-target="#upload-result"
                     hx-swap="innerHTML"
-                    hx-on:htmx:after-swap="document.getElementById('upload-result').innerHTML = ''"
                 >
                     <label for="schedule-upload" class="upload-btn">
                         <div class="upload-icon">
@@ -36,6 +34,7 @@
                     >
 
                     <button 
+                        hx-post="/schedules/add-schedule"
                         type="submit"
                         x-data="{ disabled: false }"
                         :disabled="disabled"
@@ -48,14 +47,20 @@
                     </button>
                 </form>
                 
-                <div id="upload-result">
-                    <div class="toast-success">
-                        <div class="toast-content">
-                            <i class="bi bi-check-circle-fill success-icon"></i>
-                            <span class="toast-message">Schedule uploaded successfully!</span>
-                        </div>
-                    </div>
-                </div>
+                <div 
+                    id="upload-result"
+                    class="upload-result"
+                    hx-on:htmx:after-swap="
+                        clearTimeout(this._fadeTimer);
+                        clearTimeout(this._clearTimer);
+                        this.classList.remove('fade-out');
+                        this._fadeTimer = setTimeout(() => this.classList.add('fade-out'), 4000);
+                        this._clearTimer = setTimeout(() => {
+                            this.innerHTML = '';
+                            this.classList.remove('fade-out');
+                        }, 3000);
+                    "
+                ></div>
         </div>
         <div class="schedule-container">
             <h2 class="schedule-title">Recent Schedules</h2>

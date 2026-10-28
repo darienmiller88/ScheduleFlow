@@ -70,11 +70,29 @@
     background-color: #e0e2e8;
 }
 
-#upload-result{
+/* Result container: fades out before being cleared */
+.upload-result{
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 1rem 0;
+    /* margin: 1rem 0; */
+    margin-top: 1rem;
+    transition: opacity 0.5s ease-out;
+}
+
+.upload-result.fade-out{
+    opacity: 0;
+}
+
+/* Slide/fade in whenever a toast is swapped in */
+.upload-result .toast-success,
+.upload-result .toast-error{
+    animation: toast-in 0.3s ease-out;
+}
+
+@keyframes toast-in{
+    from { opacity: 0; transform: translateY(-0.5rem); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 #file-name {

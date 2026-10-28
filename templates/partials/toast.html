@@ -1,10 +1,10 @@
 {{ define "toast" }}
     <!-- htmx will switch out the class for toast-success or toast-error -->
-    <div class="toast-success">
+    <div class="{{ .ToastClass }}">
         <div class="toast-content">
             <i class="bi bi-check-circle-fill success-icon"></i>
             <!-- HTMX will update this message -->
-            <span class="toast-message">Schedule uploaded successfully!</span>
+            <span class="toast-message">{{ .ToastMessage }}</span>
         </div>
     </div>
 {{ end }}

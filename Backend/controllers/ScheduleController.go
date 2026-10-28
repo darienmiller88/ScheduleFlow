@@ -14,6 +14,11 @@ import (
 	"github.com/go-chi/httprate"
 )
 
+type toastData struct {
+	ToastClass   string
+	ToastMessage string
+}
+
 type ScheduleController struct {
 	Router    *chi.Mux
 	templates *template.Template
@@ -21,11 +26,12 @@ type ScheduleController struct {
 	scheduleService services.ScheduleService
 }
 
-func NewScheduleController(scheduleService services.ScheduleService) ScheduleController {
+func NewScheduleController(scheduleService services.ScheduleService, sessionManager *scs.SessionManager) ScheduleController {
 	sc := ScheduleController{
 		scheduleService: scheduleService,
 		templates:       template.Must(template.ParseGlob("templates/partials/*.html")),
 		Router:          chi.NewRouter(),
+		sessionManager: sessionManager,
 	}
 
 	sc.registerRoutes()
@@ -65,5 +71,13 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 
 	defer file.Close()
 
+	data := toastData{
+		ToastClass:   "toast-success",
+		ToastMessage: "Schedule uploaded successfully!",
+	}
+
 	// Process the uploaded file...
+	if err := s.templates.ExecuteTemplate(res, "toast", data); err != nil {
+		utils.SendHtmlError(res, http.StatusInternalServerError, err.Error())
+	}
 }

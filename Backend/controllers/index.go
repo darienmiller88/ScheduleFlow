@@ -37,7 +37,12 @@ func (c *IndexController) registerRoutes(db *sqlx.DB, sessionManager *scs.Sessio
 		services.NewEmailSendService(),
 		sessionManager,
 	)
+	s := NewScheduleController(
+		services.NewScheduleService(repositories.NewScheduleRepository(db)),
+		sessionManager,
+	)
 
 	c.Router.Mount("/", vc.Router)
 	c.Router.Mount("/specialists", sc.Router)
+	c.Router.Mount("/schedules", s.Router)
 }
