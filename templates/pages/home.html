@@ -21,7 +21,7 @@
                         <span class="file-types">.xlsx,.xls</span>
                     </label>
 
-                    <span x-text="fileName"></span>
+                    <span x-text="fileName" id="fileName"></span>
 
                     <input
                         id="schedule-upload"
@@ -38,7 +38,13 @@
                         type="submit"
                         x-data="{ disabled: false }"
                         :disabled="disabled"
-                        @click="disabled = true; setTimeout(() => disabled = false, 3000)"
+                        @click="
+                            disabled = true; 
+                            setTimeout(() => disabled = false, 3000);
+                            fileName = '';
+                            document.getElementById('schedule-upload').value = '';
+                            document.getElementById('fileName').innerHTML = '';
+                        "
                     >
                         <span id="upload-spinner" class="htmx-indicator">
                             <i class="bi bi-arrow-repeat spinner-icon"></i>

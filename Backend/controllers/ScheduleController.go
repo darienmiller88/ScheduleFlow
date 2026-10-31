@@ -40,9 +40,9 @@ func NewScheduleController(scheduleService services.ScheduleService, sessionMana
 }
 
 func (s *ScheduleController) registerRoutes() {
-	// Rate limit to 1 request every 2 seconds per IP address for adding a schedule
+	// Rate limit to 1 request every 3 seconds per IP address for adding a schedule
 	s.Router.With(
-		httprate.LimitBy(1, 2 * time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
 	).Post("/add-schedule", s.AddScheduleForSpecialist)
 
@@ -63,11 +63,16 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 	file, header, err := req.FormFile("schedule")
 
 	if err != nil {
+		if err == http.ErrMissingFile {
+			utils.SendHtmlError(res, http.StatusBadRequest, "No file uploaded")
+			return
+		}
+
 		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	fmt.Println(header.Filename)
+	fmt.Println("file name:", header.Filename, "size:", header.Size/1024, "KB")
 
 	defer file.Close()
 
