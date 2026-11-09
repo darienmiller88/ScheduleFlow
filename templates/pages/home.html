@@ -40,9 +40,11 @@
                         :disabled="disabled"
                         @click="
                             disabled = true; 
-                            setTimeout(() => disabled = false, 3000);
+                            setTimeout(() => {
+                                disabled = false
+                                document.getElementById('schedule-upload').value = ''
+                            }, 3000);
                             fileName = '';
-                            document.getElementById('schedule-upload').value = '';
                             document.getElementById('fileName').innerHTML = '';
                         "
                     >

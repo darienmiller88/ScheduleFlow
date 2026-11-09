@@ -20,9 +20,9 @@ type toastData struct {
 }
 
 type ScheduleController struct {
-	Router    *chi.Mux
-	templates *template.Template
-	sessionManager *scs.SessionManager
+	Router          *chi.Mux
+	templates       *template.Template
+	sessionManager  *scs.SessionManager
 	scheduleService services.ScheduleService
 }
 
@@ -31,7 +31,7 @@ func NewScheduleController(scheduleService services.ScheduleService, sessionMana
 		scheduleService: scheduleService,
 		templates:       template.Must(template.ParseGlob("templates/partials/*.html")),
 		Router:          chi.NewRouter(),
-		sessionManager: sessionManager,
+		sessionManager:  sessionManager,
 	}
 
 	sc.registerRoutes()
@@ -42,7 +42,7 @@ func NewScheduleController(scheduleService services.ScheduleService, sessionMana
 func (s *ScheduleController) registerRoutes() {
 	// Rate limit to 1 request every 3 seconds per IP address for adding a schedule
 	s.Router.With(
-		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
 	).Post("/add-schedule", s.AddScheduleForSpecialist)
 
@@ -51,7 +51,7 @@ func (s *ScheduleController) registerRoutes() {
 }
 
 func (s *ScheduleController) GetScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
-	
+
 }
 
 func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
@@ -72,7 +72,7 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 		return
 	}
 
-	fmt.Println("file name:", header.Filename, "size:", header.Size/1024, "KB")
+	fmt.Println("file:", file, "size:", header.Size/1024, "KB")
 
 	defer file.Close()
 
