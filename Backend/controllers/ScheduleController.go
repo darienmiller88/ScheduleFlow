@@ -24,11 +24,13 @@ type ScheduleController struct {
 	templates       *template.Template
 	sessionManager  *scs.SessionManager
 	scheduleService services.ScheduleService
+	uploadService   services.UploadService
 }
 
-func NewScheduleController(scheduleService services.ScheduleService, sessionManager *scs.SessionManager) ScheduleController {
+func NewScheduleController(scheduleService services.ScheduleService, uploadService services.UploadService, sessionManager *scs.SessionManager) ScheduleController {
 	sc := ScheduleController{
 		scheduleService: scheduleService,
+		uploadService:   uploadService,
 		templates:       template.Must(template.ParseGlob("templates/partials/*.html")),
 		Router:          chi.NewRouter(),
 		sessionManager:  sessionManager,
@@ -75,6 +77,14 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 	fmt.Println("file:", file, "size:", header.Size/1024, "KB")
 
 	defer file.Close()
+
+	uploadResult := s.uploadService.UploadSchedule(file, header.Filename)
+
+	if uploadResult.Err != nil {
+		utils.SendHtmlError(res, http.StatusInternalServerError, uploadResult.Err.Error())
+		return
+	}
+
 
 	data := toastData{
 		ToastClass:   "toast-success",
