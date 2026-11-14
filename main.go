@@ -33,7 +33,7 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Logger)
 	router.Use(middleware.ClientIPFromRemoteAddr)
-	router.Use(middleware.RequestSize(1 << 20))
+	router.Use(middleware.RequestSize(10 << 20))
 	router.Use(middleware.Timeout(30 * time.Second))
 	router.Use(httprate.LimitBy(300, time.Minute, middlewares.ClientIPKey))
 

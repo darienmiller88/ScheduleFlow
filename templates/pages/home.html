@@ -18,7 +18,7 @@
                             <i class="bi bi-cloud-upload"></i>
                         </div>
                         Click to browse for excel file
-                        <span class="file-types">.xlsx,.xls</span>
+                        <span class="file-types">.xlsx</span>
                     </label>
 
                     <span x-text="fileName" id="fileName"></span>
@@ -27,7 +27,7 @@
                         id="schedule-upload"
                         type="file"
                         name="schedule"
-                        accept=".xlsx,.xls"
+                        accept=".jpg"
                         hidden
                         required
                         @change="fileName = $event.target.files[0]?.name || 'No schedule selected'"

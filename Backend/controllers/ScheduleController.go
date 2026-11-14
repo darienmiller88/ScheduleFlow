@@ -57,13 +57,14 @@ func (s *ScheduleController) GetScheduleForSpecialist(res http.ResponseWriter, r
 }
 
 func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
-	if err := req.ParseMultipartForm(1 << 20); err != nil {
+	if err := req.ParseMultipartForm(10 << 20); err != nil {
 		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	file, header, err := req.FormFile("schedule")
-
+	
+	fmt.Println("file:", file, "size:", header.Size/1024, "KB")
 	if err != nil {
 		if err == http.ErrMissingFile {
 			utils.SendHtmlError(res, http.StatusBadRequest, "No file uploaded")
@@ -73,8 +74,6 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
 		return
 	}
-
-	fmt.Println("file:", file, "size:", header.Size/1024, "KB")
 
 	defer file.Close()
 
