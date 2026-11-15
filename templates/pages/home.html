@@ -12,6 +12,7 @@
                     hx-encoding="multipart/form-data"
                     hx-target="#upload-result"
                     hx-swap="innerHTML"
+                    x-data="{ disabled: false }"
                 >
                     <label for="schedule-upload" class="upload-btn">
                         <div class="upload-icon">
@@ -38,7 +39,6 @@
                         hx-post="/schedules/add-schedule"
                         hx-indicator="#upload-spinner"
                         type="submit"
-                        x-data="{ disabled: false }"
                         :disabled="disabled"
                         @click="
                             disabled = true; 
@@ -57,10 +57,9 @@
                     </button>
                     <button 
                         class="base-button schedule-btn-color"
-                        hx-post="/schedules/queue-schedule"
+                        hx-put="/schedules/queue-schedule"
                         hx-indicator="#upload-spinner"
                         type="submit"
-                        x-data="{ disabled: false }"
                         :disabled="disabled"
                         @click="
                             disabled = true; 

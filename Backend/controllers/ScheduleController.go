@@ -4,7 +4,6 @@ import (
 	"ScheduleFlow/Backend/middlewares"
 	"ScheduleFlow/Backend/services"
 	"ScheduleFlow/Backend/utils"
-	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -44,13 +43,13 @@ func NewScheduleController(scheduleService services.ScheduleService, uploadServi
 func (s *ScheduleController) registerRoutes() {
 	// Rate limit to 1 request every 3 seconds per IP address for adding a schedule
 	s.Router.With(
-		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
 	).Post("/add-schedule", s.AddScheduleForSpecialist)
 
 	// Rate limit to 1 request every 3 seconds per IP address for queuing a schedule
 	s.Router.With(
-		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
 	).Put("/queue-schedule", s.QueueScheduleForSpecialist)
 
@@ -62,7 +61,7 @@ func (s *ScheduleController) GetScheduleForSpecialist(res http.ResponseWriter, r
 
 }
 
-func (s *ScheduleController) QueueScheduleForSpecialist(res http.ResponseWriter, req *http.Request){
+func (s *ScheduleController) QueueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
 
 }
 
@@ -73,8 +72,7 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 	}
 
 	file, header, err := req.FormFile("schedule")
-	
-	fmt.Println("file:", file, "size:", header.Size/1024, "KB")
+
 	if err != nil {
 		if err == http.ErrMissingFile {
 			utils.SendHtmlError(res, http.StatusBadRequest, "No file uploaded")
@@ -88,15 +86,13 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 	defer file.Close()
 
 	uploadResult := s.uploadService.UploadSchedule(file, header.Filename)
-	
+
 	if uploadResult.Err != nil {
 		utils.SendHtmlError(res, http.StatusInternalServerError, uploadResult.Err.Error())
 		return
 	}
-	
+
 	// userID := s.sessionManager.GetInt(req.Context(), "userID")
-
-
 
 	data := toastData{
 		ToastClass:   "toast-success",
