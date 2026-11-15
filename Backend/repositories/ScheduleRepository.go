@@ -14,8 +14,11 @@ import (
 
 type ScheduleRepository interface {
 
-	//Add/update a new schedule for a specialist
+	//Add a new schedule for a specialist
 	AddNewSchedule(schedule models.Schedule) models.Result[models.Schedule]
+
+	//Update the schedule for a specialist
+	UpdateSchedule(schedule models.Schedule) models.Result[models.Schedule]
 
 	//Get schedule for a specialist
 	GetScheduleForSpecialist(specialistID string) models.Result[models.Schedule]
@@ -25,18 +28,24 @@ type scheduleRepository struct {
 	db *sqlx.DB
 }
 
+
 func NewScheduleRepository(db *sqlx.DB) ScheduleRepository {
 	return &scheduleRepository{
 		db: db,
 	}
 }
 
+// UpdateSchedule implements [ScheduleRepository].
+func (s *scheduleRepository) UpdateSchedule(schedule models.Schedule) models.Result[models.Schedule] {
+	panic("unimplemented")
+}
+
 // AddNewSchedule implements [ScheduleRepository].
 func (s *scheduleRepository) AddNewSchedule(schedule models.Schedule) models.Result[models.Schedule] {
 	err := s.db.QueryRow(
-		constants.AddSchedule, 
-		schedule.SpecialistID, 
-		schedule.FilePath, 
+		constants.AddSchedule,
+		schedule.SpecialistID,
+		schedule.FilePath,
 		schedule.SendDate,
 	).Scan(&schedule.ID)
 
@@ -50,7 +59,7 @@ func (s *scheduleRepository) AddNewSchedule(schedule models.Schedule) models.Res
 // GetScheduleForSpecialist implements [ScheduleRepository].
 func (s *scheduleRepository) GetScheduleForSpecialist(specialistID string) models.Result[models.Schedule] {
 	schedule := models.Schedule{}
-	err      := s.db.Get(&schedule, constants.GetScheduleBySpecialistId, specialistID)
+	err := s.db.Get(&schedule, constants.GetScheduleBySpecialistId, specialistID)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -62,4 +71,3 @@ func (s *scheduleRepository) GetScheduleForSpecialist(specialistID string) model
 
 	return utils.GetResult(nil, http.StatusOK, schedule)
 }
-

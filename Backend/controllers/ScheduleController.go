@@ -44,7 +44,7 @@ func NewScheduleController(scheduleService services.ScheduleService, uploadServi
 func (s *ScheduleController) registerRoutes() {
 	// Rate limit to 1 request every 3 seconds per IP address for adding a schedule
 	s.Router.With(
-		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
 	).Post("/add-schedule", s.AddScheduleForSpecialist)
 
@@ -78,11 +78,14 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 	defer file.Close()
 
 	uploadResult := s.uploadService.UploadSchedule(file, header.Filename)
-
+	
 	if uploadResult.Err != nil {
 		utils.SendHtmlError(res, http.StatusInternalServerError, uploadResult.Err.Error())
 		return
 	}
+	
+	// userID := s.sessionManager.GetInt(req.Context(), "userID")
+
 
 
 	data := toastData{

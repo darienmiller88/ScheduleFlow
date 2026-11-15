@@ -63,6 +63,13 @@ const (
 			specialist_id = $3
 	`
 
+	UpdateSchedule string = `
+		UPDATE schedules 
+		SET
+			updated_now = NOW(),
+			
+		`
+
 	// Query to delete a specialist from the database by their ID if they choose to close their account.
 	DeleteSpecialist        string = `DELETE FROM specialists WHERE id = $1`
 
