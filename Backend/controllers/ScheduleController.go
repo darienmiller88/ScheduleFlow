@@ -48,11 +48,21 @@ func (s *ScheduleController) registerRoutes() {
 		middlewares.RequireAuth(s.sessionManager),
 	).Post("/add-schedule", s.AddScheduleForSpecialist)
 
+	// Rate limit to 1 request every 3 seconds per IP address for queuing a schedule
+	s.Router.With(
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
+		middlewares.RequireAuth(s.sessionManager),
+	).Put("/queue-schedule", s.QueueScheduleForSpecialist)
+
 	//defaults to rate limiting of 300 requests per minute per IP address
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Get("/get-schedule/{specialistID}", s.GetScheduleForSpecialist)
 }
 
 func (s *ScheduleController) GetScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+
+}
+
+func (s *ScheduleController) QueueScheduleForSpecialist(res http.ResponseWriter, req *http.Request){
 
 }
 
