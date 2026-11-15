@@ -34,6 +34,7 @@
                     >
 
                     <button 
+                        class="base-button upload-btn-color"
                         hx-post="/schedules/add-schedule"
                         type="submit"
                         x-data="{ disabled: false }"
@@ -51,7 +52,28 @@
                         <span id="upload-spinner" class="htmx-indicator">
                             <i class="bi bi-arrow-repeat spinner-icon"></i>
                         </span>
-                        Schedule
+                        Upload new Schedule
+                    </button>
+                    <button 
+                        class="base-button schedule-btn-color"
+                        hx-post="/schedules/add-schedule"
+                        type="submit"
+                        x-data="{ disabled: false }"
+                        :disabled="disabled"
+                        @click="
+                            disabled = true; 
+                            setTimeout(() => {
+                                disabled = false
+                                document.getElementById('schedule-upload').value = ''
+                            }, 3000);
+                            fileName = '';
+                            document.getElementById('fileName').innerHTML = '';
+                        "
+                    >
+                        <span id="upload-spinner" class="htmx-indicator">
+                            <i class="bi bi-arrow-repeat spinner-icon"></i>
+                        </span>
+                        Schedule for next Tuesday
                     </button>
                 </form>
                 

@@ -21,8 +21,7 @@
     gap: 1rem;
 }
 
-.upload-schedule form button{
-    background-color: #50C878;
+.upload-schedule form .base-button{
     border: none;
     color: white;
     padding: 0.75rem 1rem;
@@ -32,10 +31,6 @@
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s ease;
-}
-
-.upload-schedule form button:hover{
-    background-color: #3da96f;
 }
 
 .upload-schedule form .file-types{
@@ -84,6 +79,24 @@
     opacity: 0;
 }
 
+/* Color the upload button */
+.upload-btn-color{
+    background-color: #506ac8;
+} 
+
+.upload-btn-color:hover{
+    background-color: #3955b6;
+}
+
+/* Color the schedule button */
+.schedule-btn-color{
+    background-color: #50C878;
+}
+
+.schedule-btn-color:hover{
+    background-color: #3da96f;
+}
+
 /* Slide/fade in whenever a toast is swapped in */
 .upload-result .toast-success,
 .upload-result .toast-error{
@@ -100,6 +113,10 @@
     color: #666;
 }
 
+
+/* 
+Schedule Table Styling
+*/
 
 .schedule-stats{
     background-color: #ffffff;
