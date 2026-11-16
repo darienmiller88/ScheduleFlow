@@ -12,7 +12,7 @@
                     hx-encoding="multipart/form-data"
                     hx-target="#upload-result"
                     hx-swap="innerHTML"
-                    x-data="{ disabled: false }"
+                    x-data="{ disabledUpload: false, showSchedule: true }"
                 >
                     <label for="schedule-upload" class="upload-btn">
                         <div class="upload-icon">
@@ -31,7 +31,10 @@
                         accept=".xlsx"
                         hidden
                         required
-                        @change="fileName = $event.target.files[0]?.name || 'No schedule selected'"
+                        @change="
+                            showSchedule = false;
+                            fileName = $event.target.files[0]?.name || 'No schedule selected'
+                        "
                     >
 
                     <button 
@@ -39,11 +42,12 @@
                         hx-post="/schedules/add-schedule"
                         hx-indicator="#upload-spinner"
                         type="submit"
-                        :disabled="disabled"
+                        :disabled="disabledUpload"
                         @click="
-                            disabled = true; 
+                            disabledUpload = true; 
                             setTimeout(() => {
-                                disabled = false
+                                disabledUpload = false
+                                showSchedule = true;
                                 document.getElementById('schedule-upload').value = ''
                             }, 3000);
                             fileName = '';
@@ -59,12 +63,14 @@
                         class="base-button schedule-btn-color"
                         hx-put="/schedules/queue-schedule"
                         hx-indicator="#upload-spinner"
+                        x-show="showSchedule"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:leave="transition ease-in duration-300"
                         type="submit"
-                        :disabled="disabled"
                         @click="
-                            disabled = true; 
+                            disabledUpload = true;
                             setTimeout(() => {
-                                disabled = false
+                                disabledUpload = false
                                 document.getElementById('schedule-upload').value = ''
                             }, 3000);
                             fileName = '';

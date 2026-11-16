@@ -93,7 +93,7 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 
 	defer file.Close()
 
-	//receive the user id from their session, and use it to get that specialist.
+	//receive the user id from their session.
 	userID           := strconv.Itoa(s.sessionManager.GetInt(req.Context(), "userID"))
 	uploadResult := s.uploadService.UploadSchedule(file, userID)
 
