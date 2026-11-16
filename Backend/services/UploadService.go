@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/google/uuid"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -29,12 +28,12 @@ func NewUploadService() UploadService {
 
 func createFile(specialistName string, specialistId string) (*os.File, error) {
 	// Create an uploads directory if it doesn’t exist
-	if err := os.MkdirAll(filepath.Join(uploadDir, specialistName), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Join(uploadDir, specialistName + specialistId), 0755); err != nil {
 		return nil, err
-	}
+	}  
 
 	// Create an empty excel file in the uploads/schedules directory with a unique name.
-	dst, err := os.Create(filepath.Join(uploadDir, specialistName, uuid.NewString() + ".xlsx"))
+	dst, err := os.Create(filepath.Join(uploadDir, specialistName + specialistId, specialistId + ".xlsx"))
 
 	if err != nil {
 		return nil, err
@@ -45,7 +44,7 @@ func createFile(specialistName string, specialistId string) (*os.File, error) {
 
 // UploadSchedule implements [UploadService].
 func (u *uploadService) UploadSchedule(file multipart.File, specialistName string, specialistId string) models.Result[string] {
-	
+
 	//Use excelize to open the uploaded file and check if it is a valid Excel file. If it is not, return an error.
 	f, err := excelize.OpenReader(file)
 
