@@ -39,6 +39,7 @@ func (c *IndexController) registerRoutes(db *sqlx.DB, sessionManager *scs.Sessio
 	)
 	s := NewScheduleController(
 		services.NewScheduleService(repositories.NewScheduleRepository(db)),
+		services.NewSpecialistService(repositories.NewSpecialistRepository(db)),
 		services.NewUploadService(),
 		sessionManager,
 	)

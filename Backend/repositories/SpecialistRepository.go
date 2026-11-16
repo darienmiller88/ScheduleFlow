@@ -13,13 +13,15 @@ import (
 	"github.com/lib/pq"
 )
 
-// Interface for the SpecialistRepository. Defines the methods that can be used to interact with the specialists table in the database.
+// Interface for the SpecialistRepository. Defines the methods that can be used to interact with
+// the specialists table in the database.
 type SpecialistRepository interface {
 	UpdateSpecialistDB(specialist models.Specialist) models.Result[models.Specialist]
 	AddSpecialistDB(specialist models.Specialist) models.Result[models.Specialist]
 	GetSpecialistByEmailDB(email string) models.Result[models.Specialist]
 	GetPasswordByEmailDB(email string) models.Result[string]
 	GetSpecialistByIdDB(id int) models.Result[models.Specialist]
+	GetSpecialistByStringIdDB(id string) models.Result[models.Specialist]
 	DeleteSpecialistDB(id int) models.Result[bool]
 }
 
@@ -28,13 +30,15 @@ type specialistRepository struct {
 	db *sqlx.DB
 }
 
+// NewSpecialistRepository creates a new instance of the SpecialistRepository with the provided database connection.
 func NewSpecialistRepository(db *sqlx.DB) SpecialistRepository {
 	return &specialistRepository{
 		db: db,
 	}
 }
 
-// Adds a new specialists to the DB with the credientials provided in the specialist parameter. Returns the newly created specialist.
+// Adds a new specialists to the DB with the credientials provided in the specialist parameter.
+// Returns the newly created specialist.
 func (s *specialistRepository) AddSpecialistDB(specialist models.Specialist) models.Result[models.Specialist] {
 	err := s.db.QueryRow(
 		constants.AddSpecialist,
@@ -64,7 +68,8 @@ func (s *specialistRepository) AddSpecialistDB(specialist models.Specialist) mod
 	return utils.GetResult(nil, http.StatusCreated, specialist)
 }
 
-// Retrieves the password of a specialist from the DB using the email provided by the specialists. Returns the password as a string.
+// Retrieves the password of a specialist from the DB using the email provided by the specialists.
+// Returns the password as a string.
 func (s *specialistRepository) GetPasswordByEmailDB(email string) models.Result[string] {
 	var password string
 
@@ -108,6 +113,27 @@ func (s *specialistRepository) GetSpecialistByIdDB(id int) models.Result[models.
 		if errors.Is(err, sql.ErrNoRows) {
 			return utils.GetResult(
 				fmt.Errorf("specialist with id %d not found", id),
+				http.StatusNotFound,
+				models.Specialist{},
+			)
+		}
+
+		return utils.GetResult(err, http.StatusInternalServerError, models.Specialist{})
+	}
+
+	return utils.GetResult(nil, http.StatusOK, specialist)
+}
+
+// GetSpecialistByStringIdDB implements [SpecialistRepository].
+func (s *specialistRepository) GetSpecialistByStringIdDB(id string) models.Result[models.Specialist] {
+	var specialist models.Specialist
+
+	err := s.db.Get(&specialist, constants.GetSpecialistById, id)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return utils.GetResult(
+				fmt.Errorf("specialist with id %s not found", id),
 				http.StatusNotFound,
 				models.Specialist{},
 			)

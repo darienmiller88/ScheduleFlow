@@ -16,7 +16,7 @@ import (
 const uploadDir string = "uploads/schedules"
 
 type UploadService interface {
-	UploadSchedule(file multipart.File, filename string) models.Result[string]
+	UploadSchedule(file multipart.File, specialistName string, specialistId string) models.Result[string]
 }
 
 type uploadService struct {
@@ -27,14 +27,14 @@ func NewUploadService() UploadService {
 	return &uploadService{}
 }
 
-func createFile() (*os.File, error) {
+func createFile(specialistName string, specialistId string) (*os.File, error) {
 	// Create an uploads directory if it doesn’t exist
-	if err := os.MkdirAll(uploadDir, 0755); err != nil {
+	if err := os.MkdirAll(filepath.Join(uploadDir, specialistName), 0755); err != nil {
 		return nil, err
 	}
 
 	// Create an empty excel file in the uploads/schedules directory with a unique name.
-	dst, err := os.Create(filepath.Join(uploadDir, uuid.NewString() + ".xlsx"))
+	dst, err := os.Create(filepath.Join(uploadDir, specialistName, uuid.NewString() + ".xlsx"))
 
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func createFile() (*os.File, error) {
 }
 
 // UploadSchedule implements [UploadService].
-func (u *uploadService) UploadSchedule(file multipart.File, filename string) models.Result[string] {
+func (u *uploadService) UploadSchedule(file multipart.File, specialistName string, specialistId string) models.Result[string] {
 	
 	//Use excelize to open the uploaded file and check if it is a valid Excel file. If it is not, return an error.
 	f, err := excelize.OpenReader(file)
@@ -56,7 +56,7 @@ func (u *uploadService) UploadSchedule(file multipart.File, filename string) mod
 	defer f.Close()
 
 	// First, we need to create a new file in the uploads/schedules directory with a unique name.
-	dst, err := createFile()
+	dst, err := createFile(specialistName, specialistId)
 
 	if err != nil {
 		return utils.GetResult(err, http.StatusInternalServerError, "")
