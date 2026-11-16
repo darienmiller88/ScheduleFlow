@@ -4,7 +4,6 @@ import (
 	"ScheduleFlow/Backend/middlewares"
 	"ScheduleFlow/Backend/services"
 	"ScheduleFlow/Backend/utils"
-	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -21,27 +20,27 @@ type toastData struct {
 }
 
 type ScheduleController struct {
-	Router           *chi.Mux
-	templates        *template.Template
-	sessionManager   *scs.SessionManager
+	Router            *chi.Mux
+	templates         *template.Template
+	sessionManager    *scs.SessionManager
 	scheduleService   services.ScheduleService
 	specialistService services.SpecialistService
 	uploadService     services.UploadService
 }
 
 func NewScheduleController(
-	scheduleService services.ScheduleService, 
+	scheduleService services.ScheduleService,
 	specialistService services.SpecialistService,
-	uploadService services.UploadService, 
+	uploadService services.UploadService,
 	sessionManager *scs.SessionManager,
 ) ScheduleController {
 	sc := ScheduleController{
-		scheduleService: scheduleService,
+		scheduleService:   scheduleService,
 		specialistService: specialistService,
-		uploadService:   uploadService,
-		templates:       template.Must(template.ParseGlob("templates/partials/*.html")),
-		Router:          chi.NewRouter(),
-		sessionManager:  sessionManager,
+		uploadService:     uploadService,
+		templates:         template.Must(template.ParseGlob("templates/partials/*.html")),
+		Router:            chi.NewRouter(),
+		sessionManager:    sessionManager,
 	}
 
 	sc.registerRoutes()
@@ -95,24 +94,13 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 	defer file.Close()
 
 	//receive the user id from their session, and use it to get that specialist.
-	userID := strconv.Itoa(s.sessionManager.GetInt(req.Context(), "userID"))
-
-	fmt.Println("User ID from session:", userID)
-	specialistResult := s.specialistService.GetSpecialistByStringId(userID)
-
-	if specialistResult.Err != nil {
-		utils.SendHtmlError(res, specialistResult.StatusCode, specialistResult.Err.Error())
-		return
-	}
-
-	specialistName := specialistResult.ResultData.FirstName + specialistResult.ResultData.LastName
-	uploadResult   := s.uploadService.UploadSchedule(file, specialistName, userID)
+	userID           := strconv.Itoa(s.sessionManager.GetInt(req.Context(), "userID"))
+	uploadResult := s.uploadService.UploadSchedule(file, userID)
 
 	if uploadResult.Err != nil {
 		utils.SendHtmlError(res, http.StatusInternalServerError, uploadResult.Err.Error())
 		return
 	}
-
 
 	data := toastData{
 		ToastClass:   "toast-success",
