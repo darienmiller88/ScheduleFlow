@@ -28,12 +28,12 @@ func NewUploadService() UploadService {
 
 func createFile(specialistName string, specialistId string) (*os.File, error) {
 	// Create an uploads directory if it doesn’t exist
-	if err := os.MkdirAll(filepath.Join(uploadDir, specialistName + specialistId), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Join(uploadDir, specialistId), 0755); err != nil {
 		return nil, err
-	}  
+	}
 
 	// Create an empty excel file in the uploads/schedules directory with a unique name.
-	dst, err := os.Create(filepath.Join(uploadDir, specialistName + specialistId, specialistId + ".xlsx"))
+	dst, err := os.Create(filepath.Join(uploadDir, specialistId, specialistId+".xlsx"))
 
 	if err != nil {
 		return nil, err
@@ -63,9 +63,10 @@ func (u *uploadService) UploadSchedule(file multipart.File, specialistName strin
 
 	defer dst.Close()
 
-	//The destination will receive the contents of the uploaded file. We can use ReadFrom to copy the
-	// contents from the uploaded file to the destination file, which will be "uploads/schedules/<uuid>.xlsx"
-	if _, err := dst.ReadFrom(file); err != nil {
+	// The destination will receive the contents of the uploaded file. We can use ReadFrom to copy the
+	// contents (bytes) from the uploaded file to the destination file, which will be
+	// "uploads/schedules/<specialistId>/<specialistId>.xlsx"
+	if err := f.Write(dst); err != nil {
 		return utils.GetResult(errors.New("Error reading file"), http.StatusInternalServerError, "")
 	}
 

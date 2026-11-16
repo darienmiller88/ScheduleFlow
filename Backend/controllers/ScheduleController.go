@@ -4,8 +4,10 @@ import (
 	"ScheduleFlow/Backend/middlewares"
 	"ScheduleFlow/Backend/services"
 	"ScheduleFlow/Backend/utils"
+	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -93,7 +95,9 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 	defer file.Close()
 
 	//receive the user id from their session, and use it to get that specialist.
-	userID := s.sessionManager.GetString(req.Context(), "userID")
+	userID := strconv.Itoa(s.sessionManager.GetInt(req.Context(), "userID"))
+
+	fmt.Println("User ID from session:", userID)
 	specialistResult := s.specialistService.GetSpecialistByStringId(userID)
 
 	if specialistResult.Err != nil {
