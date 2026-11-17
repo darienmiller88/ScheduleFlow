@@ -55,8 +55,8 @@ func main() {
 	fmt.Println("Server is running on port:", port)
 
 	server := http.Server{
-		Addr:         fmt.Sprintf(":%s", port),
-		Handler:      sm.LoadAndSave(router),
+		Addr:    fmt.Sprintf(":%s", port),
+		Handler: sm.LoadAndSave(router),
 	}
 
 	go func() {
@@ -82,4 +82,3 @@ func main() {
         log.Printf("HTTP server shutdown error: %v", err)
     }
 }
-
