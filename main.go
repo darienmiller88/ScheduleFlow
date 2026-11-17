@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -48,6 +53,33 @@ func main() {
 	port := os.Getenv("PORT")
 
 	fmt.Println("Server is running on port:", port)
-	http.ListenAndServe(fmt.Sprintf(":%s", port), sm.LoadAndSave(router))
+
+	server := http.Server{
+		Addr:         fmt.Sprintf(":%s", port),
+		Handler:      sm.LoadAndSave(router),
+	}
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal(err)
+		}
+	}()
+
+	//Listen for OS signals to gracefully shut down the server
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	// Wait for the OS signal to shut down the server gracefully
+	<-ctx.Done()
+
+	// Create a new context with a timeout of 10 seconds for the shutdown process
+    ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
+    defer cancel()
+
+	// Gracefully shut down the server with a timeout of 10 seconds. If the server does not shut down
+	// within this time, it will forcefully close.
+    if err := server.Shutdown(ctx); err != nil {
+        log.Printf("HTTP server shutdown error: %v", err)
+    }
 }
 
