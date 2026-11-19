@@ -94,13 +94,16 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 	defer file.Close()
 
 	//receive the user id from their session.
-	userID           := strconv.Itoa(s.sessionManager.GetInt(req.Context(), "userID"))
+	userID       := strconv.Itoa(s.sessionManager.GetInt(req.Context(), "userID"))
 	uploadResult := s.uploadService.UploadSchedule(file, userID)
 
 	if uploadResult.Err != nil {
 		utils.SendHtmlError(res, http.StatusInternalServerError, uploadResult.Err.Error())
 		return
 	}
+
+	// s.scheduleService.AddSchedule()
+
 
 	data := toastData{
 		ToastClass:   "toast-success",

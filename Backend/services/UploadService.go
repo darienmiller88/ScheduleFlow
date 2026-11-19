@@ -3,11 +3,13 @@ package services
 import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/utils"
+	
 	"errors"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -15,7 +17,7 @@ import (
 const uploadDir string = "uploads/schedules"
 
 type UploadService interface {
-	UploadSchedule(file multipart.File, specialistId string) models.Result[string]
+	UploadSchedule(file multipart.File, specialistId string) models.Result[models.Schedule]
 }
 
 type uploadService struct {
@@ -43,13 +45,13 @@ func createFile(specialistId string) (*os.File, error) {
 }
 
 // UploadSchedule implements [UploadService].
-func (u *uploadService) UploadSchedule(file multipart.File, specialistId string) models.Result[string] {
+func (u *uploadService) UploadSchedule(file multipart.File, specialistId string) models.Result[models.Schedule] {
 
 	//Use excelize to open the uploaded file and check if it is a valid Excel file. If it is not, return an error.
 	f, err := excelize.OpenReader(file)
 
 	if err != nil {
-		return utils.GetResult(errors.New("Error opening Excel file, or not a valid Excel file"), http.StatusBadRequest, "")
+		return utils.GetResult(errors.New("Error opening Excel file, or not a valid Excel file"), http.StatusBadRequest, models.Schedule{})
 	}
 
 	defer f.Close()
@@ -58,7 +60,7 @@ func (u *uploadService) UploadSchedule(file multipart.File, specialistId string)
 	dst, err := createFile(specialistId)
 
 	if err != nil {
-		return utils.GetResult(err, http.StatusInternalServerError, "")
+		return utils.GetResult(err, http.StatusInternalServerError, models.Schedule{})
 	}
 
 	defer dst.Close()
@@ -66,8 +68,19 @@ func (u *uploadService) UploadSchedule(file multipart.File, specialistId string)
 	// Use the excel file to write the contents of the uploaded file to the new file in the
 	// "uploads/schedules/<specialistId>/<specialistId>.xlsx" directory.
 	if err := f.Write(dst); err != nil {
-		return utils.GetResult(errors.New("Error reading file"), http.StatusInternalServerError, "")
+		return utils.GetResult(errors.New("Error reading file"), http.StatusInternalServerError, models.Schedule{})
 	}
 
-	return utils.GetResult(nil, http.StatusOK, "")
+	specialistID, err := strconv.Atoi(specialistId)
+
+	if err != nil {
+		return utils.GetResult(errors.New("Invalid specialist ID"), http.StatusBadRequest, models.Schedule{})
+	}
+
+	schedule := models.Schedule{
+		SpecialistID: specialistID,
+		FilePath:     filepath.Join(uploadDir, specialistId, specialistId + ".xlsx"),
+	}
+
+	return utils.GetResult(nil, http.StatusOK, schedule)
 }

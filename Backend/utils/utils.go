@@ -8,6 +8,35 @@ import (
 	"time"
 )
 
+func GetNextTuesday() time.Time {
+	// Each day of the week is given a number (Sunday = 0, Monday = 1, ... )
+	tuesdayConstant := 2
+	
+	//Subtract the day of the week from tuesday for the absolute distance from tuesday, and add 7
+	//to find how far until the following tuesday.
+	daysUntilTuesday := (tuesdayConstant - time.Now().Day()) + 7
+
+	//create a date month/day/year that represents the following tuesday from today.
+	dateForNextTuesday := time.Now().AddDate(0, 0, daysUntilTuesday)
+
+	//Get the time zone for the east coast
+	loc, _ := time.LoadLocation("America/New_York")
+
+	//Finally, create the date for the next tuesday with the
+	dateWithTime := time.Date(
+		dateForNextTuesday.Year(),
+		dateForNextTuesday.Month(),
+		dateForNextTuesday.Day(),
+		12,
+		0,
+		0,
+		0,
+		loc,
+	)
+
+	return dateWithTime
+}
+
 // WeekOfString returns a "Month D-D, YYYY" style range for the week containing t, where weeks start on Monday.
 func WeekOfString(t time.Time) string {
 	weekday := int(t.Weekday()) // Sunday = 0, Monday = 1, ..., Saturday = 6
