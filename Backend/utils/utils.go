@@ -8,19 +8,46 @@ import (
 	"time"
 )
 
-func GetNextTuesday() time.Time {
-	// Each day of the week is given a number (Sunday = 0, Monday = 1, ... )
-	tuesdayConstant := 2
+const(
+	tuesday   int = 2
+	wednesday int = 3
+)
+
+func getNoon() time.Time{
+	currentTime := time.Now()
+	loc, _ := time.LoadLocation("America/New_York")
+	
+	return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 12, 0, 0, 0, loc)
+}
+
+func GetSendDateForEmail() time.Time {
+	//Get the time zone for the east coast
+	loc, _ := time.LoadLocation("America/New_York")
+
+	currentDay := time.Now().Day()
+	noon := getNoon()
+
+	//If the current time is AFTER 12 PM on Tuesday and BEFORE 12 PM on Wednesday, the send date for the email
+	//with the specialists schedule will be wednesday that week, 12 PM
+	if currentDay == tuesday && time.Now().After(noon) && currentDay == wednesday && time.Now().Before(noon){
+		return time.Date(
+			noon.Year(), 
+			noon.Month(),
+			wednesday, 
+			noon.Hour(), 
+			noon.Minute(), 
+			noon.Second(), 
+			noon.Nanosecond(), 
+			loc,
+		)
+	}
 	
 	//Subtract the day of the week from tuesday for the absolute distance from tuesday, and add 7
 	//to find how far until the following tuesday.
-	daysUntilTuesday := (tuesdayConstant - time.Now().Day()) + 7
+	daysUntilTuesday := (tuesday - currentDay) + 7
 
 	//create a date month/day/year that represents the following tuesday from today.
 	dateForNextTuesday := time.Now().AddDate(0, 0, daysUntilTuesday)
-
-	//Get the time zone for the east coast
-	loc, _ := time.LoadLocation("America/New_York")
 
 	//Finally, create the date for the next tuesday with the
 	dateWithTime := time.Date(
