@@ -3,7 +3,7 @@ package services
 import (
 	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/utils"
-	
+
 	"errors"
 	"mime/multipart"
 	"net/http"
@@ -80,6 +80,7 @@ func (u *uploadService) UploadSchedule(file multipart.File, specialistId string)
 	schedule := models.Schedule{
 		SpecialistID: specialistID,
 		FilePath:     filepath.Join(uploadDir, specialistId, specialistId + ".xlsx"),
+		SendDate:     utils.GetSendDateForEmail(),
 	}
 
 	return utils.GetResult(nil, http.StatusOK, schedule)

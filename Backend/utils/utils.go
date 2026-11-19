@@ -49,7 +49,7 @@ func GetSendDateForEmail() time.Time {
 	//create a date month/day/year that represents the following tuesday from today.
 	dateForNextTuesday := time.Now().AddDate(0, 0, daysUntilTuesday)
 
-	//Finally, create the date for the next tuesday with the
+	//Finally, create the date for the following tuesday with noon as the time for email delivery.
 	dateWithTime := time.Date(
 		dateForNextTuesday.Year(),
 		dateForNextTuesday.Month(),

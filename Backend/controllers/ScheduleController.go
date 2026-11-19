@@ -59,13 +59,23 @@ func (s *ScheduleController) registerRoutes() {
 	s.Router.With(
 		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
-	).Put("/queue-schedule", s.QueueScheduleForSpecialist)
+	).Post("/queue-schedule", s.QueueScheduleForSpecialist)
+
+	// Rate limit to 1 request every 3 seconds per IP address for queuing a schedule
+	s.Router.With(
+		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
+		middlewares.RequireAuth(s.sessionManager),
+	).Put("/dequeue-schedule", s.DequeueScheduleForSpecialist)
 
 	//defaults to rate limiting of 300 requests per minute per IP address
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Get("/get-schedule/{specialistID}", s.GetScheduleForSpecialist)
 }
 
 func (s *ScheduleController) GetScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+
+}
+
+func (s *ScheduleController) DequeueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
 
 }
 
@@ -101,9 +111,6 @@ func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, r
 		utils.SendHtmlError(res, http.StatusInternalServerError, uploadResult.Err.Error())
 		return
 	}
-
-	// s.scheduleService.AddSchedule()
-
 
 	data := toastData{
 		ToastClass:   "toast-success",
