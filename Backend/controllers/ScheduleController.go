@@ -53,7 +53,7 @@ func (s *ScheduleController) registerRoutes() {
 	s.Router.With(
 		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
-	).Post("/add-schedule", s.AddScheduleForSpecialist)
+	).Post("/upload-schedule", s.UploadScheduleForSpecialist)
 
 	// Rate limit to 1 request every 3 seconds per IP address for queuing a schedule
 	s.Router.With(
@@ -83,7 +83,7 @@ func (s *ScheduleController) QueueScheduleForSpecialist(res http.ResponseWriter,
 
 }
 
-func (s *ScheduleController) AddScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+func (s *ScheduleController) UploadScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseMultipartForm(10 << 20); err != nil {
 		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
 		return
