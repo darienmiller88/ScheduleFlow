@@ -92,6 +92,10 @@ func (v *ViewsController) registerViewRoutes() {
 	v.Router.NotFound(v.notFound)
 }
 
+func (v *ViewsController) viewSchedule(res http.ResponseWriter, req *http.Request) { 
+
+}
+
 func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 	userID := v.sessionManger.GetInt(req.Context(), "userID")
 	specialistResult := v.playerService.GetSpecialistById(userID)
