@@ -88,6 +88,11 @@ func (v *ViewsController) registerViewRoutes() {
 		middlewares.CheckNotVerified(v.sessionManger, v.emailVerificationService),
 	).Get("/verification", v.verificationPage)
 
+	v.Router.With(
+		middlewares.RequireAuth(v.sessionManger), 
+		middlewares.CheckNotVerified(v.sessionManger, v.emailVerificationService),
+	).Get("/view-schedule", v.viewSchedule)
+
 	v.Router.With(middlewares.SendBackToHome(v.sessionManger)).Get("/", v.loginPage)
 	v.Router.NotFound(v.notFound)
 }
