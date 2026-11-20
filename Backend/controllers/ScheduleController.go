@@ -53,37 +53,43 @@ func (s *ScheduleController) registerRoutes() {
 	s.Router.With(
 		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
-	).Post("/upload-schedule", s.UploadScheduleForSpecialist)
+	).Post("/upload-schedule", s.uploadScheduleForSpecialist)
 
 	// Rate limit to 1 request every 3 seconds per IP address for queuing a schedule
 	s.Router.With(
 		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
-	).Post("/queue-schedule", s.QueueScheduleForSpecialist)
+	).Post("/queue-schedule", s.queueScheduleForSpecialist)
 
 	// Rate limit to 1 request every 3 seconds per IP address for queuing a schedule
 	s.Router.With(
 		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
-	).Put("/dequeue-schedule", s.DequeueScheduleForSpecialist)
+	).Put("/dequeue-schedule", s.dequeueScheduleForSpecialist)
 
 	//defaults to rate limiting of 300 requests per minute per IP address
-	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Get("/get-schedule/{specialistID}", s.GetScheduleForSpecialist)
+	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Get("/preview-schedule/{specialistID}", s.previewSchedule)
+
+	//defaults to rate limiting of 300 requests per minute per IP address
+	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Get("/get-schedule/{specialistID}", s.getScheduleForSpecialist)
 }
 
-func (s *ScheduleController) GetScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
-
-}
-
-func (s *ScheduleController) DequeueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
-
-}
-
-func (s *ScheduleController) QueueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+func (s *ScheduleController) previewSchedule(res http.ResponseWriter, req *http.Request) {
 
 }
 
-func (s *ScheduleController) UploadScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+func (s *ScheduleController) getScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+}
+
+func (s *ScheduleController) dequeueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+
+}
+
+func (s *ScheduleController) queueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+
+}
+
+func (s *ScheduleController) uploadScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseMultipartForm(10 << 20); err != nil {
 		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
 		return
