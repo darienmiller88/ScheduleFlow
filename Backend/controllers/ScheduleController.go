@@ -51,19 +51,19 @@ func NewScheduleController(
 func (s *ScheduleController) registerRoutes() {
 	// Rate limit to 1 request every 3 seconds per IP address for adding a schedule
 	s.Router.With(
-		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
 	).Post("/upload-schedule", s.uploadScheduleForSpecialist)
 
 	// Rate limit to 1 request every 3 seconds per IP address for queuing a schedule
 	s.Router.With(
-		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
 	).Post("/queue-schedule", s.queueScheduleForSpecialist)
 
 	// Rate limit to 1 request every 3 seconds per IP address for queuing a schedule
 	s.Router.With(
-		httprate.LimitBy(1, 3*time.Second, middlewares.ClientIPKey),
+		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
 	).Put("/dequeue-schedule", s.dequeueScheduleForSpecialist)
 
@@ -79,6 +79,7 @@ func (s *ScheduleController) previewSchedule(res http.ResponseWriter, req *http.
 }
 
 func (s *ScheduleController) getScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+
 }
 
 func (s *ScheduleController) dequeueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
