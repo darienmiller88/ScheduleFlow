@@ -79,6 +79,26 @@
                         </span>
                         Schedule for next Tuesday
                     </button>
+                    <button 
+                        class="base-button stop-btn-color"
+                        hx-put="/schedules/queue-schedule"
+                        hx-indicator="#upload-spinner"
+                        x-show="showSchedule"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:leave="transition ease-in duration-300"
+                        type="submit"
+                        @click="
+                            disabledUpload = true;
+                            setTimeout(() => {
+                                disabledUpload = false
+                            }, 3000);
+                        "
+                    >
+                        <span id="upload-spinner" class="htmx-indicator">
+                            <i class="bi bi-arrow-repeat spinner-icon"></i>
+                        </span>
+                        Stop sending schedule
+                    </button>
                 </form>
                 
                 <div 

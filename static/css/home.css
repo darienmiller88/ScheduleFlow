@@ -97,6 +97,14 @@
     background-color: #3da96f;
 }
 
+.stop-btn-color{
+    background-color: #dc143c;
+}
+
+.stop-btn-color:hover{
+    background-color: #be1335;
+}
+
 /* Slide/fade in whenever a toast is swapped in */
 .upload-result .toast-success,
 .upload-result .toast-error{
