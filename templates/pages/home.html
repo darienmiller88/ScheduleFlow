@@ -6,13 +6,13 @@
 
 {{ define "content"}}
     <div class="page-wrapper">
-        <div class="upload-schedule" x-data="{ fileName: '' }">
+        <div class="upload-schedule" x-data="{ fileName: ''}">
             <div class="upload-title">Upload Schedule</div>
                 <form 
                     hx-encoding="multipart/form-data"
                     hx-target="#upload-result"
                     hx-swap="innerHTML"
-                    x-data="{ disabledUpload: false, showSchedule: true }"
+                    x-data="{ disabledUpload: false, showSchedule: true, toggleQueue: true  }"
                 >
                     <label for="schedule-upload" class="upload-btn">
                         <div class="upload-icon">
@@ -63,12 +63,13 @@
                         class="base-button schedule-btn-color"
                         hx-put="/schedules/queue-schedule"
                         hx-indicator="#upload-spinner"
-                        x-show="showSchedule"
+                        x-show="showSchedule && toggleQueue"
                         x-transition:enter="transition ease-out duration-300"
                         x-transition:leave="transition ease-in duration-300"
-                        type="submit"
+                        type="button"
                         @click="
                             disabledUpload = true;
+                            toggleQueue = false
                             setTimeout(() => {
                                 disabledUpload = false
                             }, 3000);
@@ -81,14 +82,15 @@
                     </button>
                     <button 
                         class="base-button stop-btn-color"
-                        hx-put="/schedules/queue-schedule"
+                        hx-put="/schedules/dequeue-schedule"
                         hx-indicator="#upload-spinner"
-                        x-show="showSchedule"
+                        x-show="showSchedule && !toggleQueue"
                         x-transition:enter="transition ease-out duration-300"
                         x-transition:leave="transition ease-in duration-300"
-                        type="submit"
+                        type="button"
                         @click="
                             disabledUpload = true;
+                            toggleQueue = true
                             setTimeout(() => {
                                 disabledUpload = false
                             }, 3000);
