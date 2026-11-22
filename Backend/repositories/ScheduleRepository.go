@@ -63,7 +63,7 @@ func (s *scheduleRepository) GetScheduleForSpecialist(specialistID string) model
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return utils.GetResult(fmt.Errorf("schedule not found for specialist %s", specialistID), http.StatusNotFound, models.Schedule{})
+			return utils.GetResult(fmt.Errorf("schedule not found for specalist %s", specialistID), http.StatusNotFound, models.Schedule{})
 		}
 
 		return utils.GetResult(err, http.StatusInternalServerError, models.Schedule{})

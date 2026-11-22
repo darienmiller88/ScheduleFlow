@@ -87,7 +87,7 @@ func (s *ScheduleController) dequeueScheduleForSpecialist(res http.ResponseWrite
 }
 
 func (s *ScheduleController) queueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
-
+	// s.scheduleService.GetSchedule()
 }
 
 func (s *ScheduleController) uploadScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
