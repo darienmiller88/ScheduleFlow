@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ScheduleFlow/Backend/middlewares"
+	"ScheduleFlow/Backend/models"
 	"ScheduleFlow/Backend/services"
 	"ScheduleFlow/Backend/utils"
 	"html/template"
@@ -87,7 +88,22 @@ func (s *ScheduleController) dequeueScheduleForSpecialist(res http.ResponseWrite
 }
 
 func (s *ScheduleController) queueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
-	// s.scheduleService.GetSchedule()
+	userIDString      := strconv.Itoa(s.sessionManager.GetInt(req.Context(), "userID"))
+	schedulePath, err := s.uploadService.GetSchedule(userIDString)
+	
+	if err != nil{
+		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
+		return
+	}
+	
+	userId   := s.sessionManager.GetInt(req.Context(), "userID")
+	schedule := models.Schedule{
+		SpecialistID: userId,
+		FilePath: schedulePath,
+		SendDate: utils.GetSendDateForEmail(),
+	}
+
+	s.scheduleService.AddSchedule(schedule)
 }
 
 func (s *ScheduleController) uploadScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {

@@ -72,10 +72,6 @@ func (u *uploadService) UploadSchedule(file multipart.File, specialistId string)
 		return utils.GetResult(errors.New("Error reading file"), http.StatusInternalServerError, "")
 	}
 
-	if err != nil {
-		return utils.GetResult(errors.New("Invalid specialist ID"), http.StatusBadRequest, "")
-	}
-
 	return utils.GetResult(nil, http.StatusOK, "")
 }
 

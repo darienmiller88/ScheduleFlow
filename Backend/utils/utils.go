@@ -20,6 +20,7 @@ func getNoon() time.Time{
 	return time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 12, 0, 0, 0, loc)
 }
 
+//Retrieves the send date for the schedule to be sent.
 func GetSendDateForEmail() time.Time {
 	//Get the time zone for the east coast
 	loc, _ := time.LoadLocation("America/New_York")
