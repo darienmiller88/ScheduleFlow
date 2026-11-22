@@ -18,9 +18,6 @@ type ScheduleRepository interface {
 	//Add a new schedule for a specialist
 	AddNewSchedule(schedule models.Schedule) models.Result[models.Schedule]
 
-	//Update the schedule for a specialist
-	UpdateSchedule(schedule models.Schedule) models.Result[models.Schedule]
-
 	//Remove, or dequeue a specialists schedule from being sent
 	RemoveScheduleForSpecialist(specialistID int) models.Result[bool]
 
@@ -31,7 +28,6 @@ type ScheduleRepository interface {
 type scheduleRepository struct {
 	db *sqlx.DB
 }
-
 
 func NewScheduleRepository(db *sqlx.DB) ScheduleRepository {
 	return &scheduleRepository{
@@ -52,11 +48,6 @@ func (s *scheduleRepository) RemoveScheduleForSpecialist(specialistID int) model
 	}
 
 	return utils.GetResult(nil, http.StatusOK, true)
-}
-
-// UpdateSchedule implements [ScheduleRepository].
-func (s *scheduleRepository) UpdateSchedule(schedule models.Schedule) models.Result[models.Schedule] {
-	panic("unimplemented")
 }
 
 // AddNewSchedule implements [ScheduleRepository].
