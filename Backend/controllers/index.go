@@ -28,6 +28,7 @@ func (c *IndexController) registerRoutes(db *sqlx.DB, sessionManager *scs.Sessio
 	vc := NewViewsController(
 		sessionManager, 
 		services.NewEmailVerificationService(repositories.NewEmailVerificationRepository(db)),
+		services.NewScheduleService(repositories.NewScheduleRepository(db)),
 		services.NewSpecialistService(repositories.NewSpecialistRepository(db)),
 		services.NewSentEmailService(repositories.NewSentEmailRepository(db)),
 	)

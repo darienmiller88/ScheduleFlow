@@ -59,27 +59,8 @@
                         </span>
                         Upload new Schedule
                     </button>
-                    <button 
-                        class="base-button schedule-btn-color"
-                        hx-post="/schedules/queue-schedule"
-                        hx-indicator="#upload-spinner"
-                        x-show="showSchedule && toggleQueue && !toggleCooldown"
-                        type="button"
-                        @click="
-                            disabledUpload = true;
-                            toggleQueue = false
-                            toggleCooldown = true
-                            setTimeout(() => {
-                                disabledUpload = false
-                                toggleCooldown = false
-                            }, 3000);
-                        "
-                    >
-                        <span id="upload-spinner" class="htmx-indicator">
-                            <i class="bi bi-arrow-repeat spinner-icon"></i>
-                        </span>
-                        Schedule for next Tuesday
-                    </button>
+
+                    {{ if .HasScheduleQueued }}
                     <button 
                         class="base-button stop-btn-color"
                         hx-delete="/schedules/dequeue-schedule"
@@ -101,6 +82,29 @@
                         </span>
                         Stop sending schedule
                     </button>
+                    {{ else }}
+                    <button 
+                        class="base-button schedule-btn-color"
+                        hx-post="/schedules/queue-schedule"
+                        hx-indicator="#upload-spinner"
+                        x-show="showSchedule && toggleQueue && !toggleCooldown"
+                        type="button"
+                        @click="
+                            disabledUpload = true;
+                            toggleQueue = false
+                            toggleCooldown = true
+                            setTimeout(() => {
+                                disabledUpload = false
+                                toggleCooldown = false
+                            }, 3000);
+                        "
+                    >
+                        <span id="upload-spinner" class="htmx-indicator">
+                            <i class="bi bi-arrow-repeat spinner-icon"></i>
+                        </span>
+                        Schedule for next Tuesday
+                    </button>
+                    {{ end }}
                 </form>
                 
                 <div 

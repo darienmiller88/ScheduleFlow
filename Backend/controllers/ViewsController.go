@@ -16,9 +16,10 @@ import (
 )
 
 type HomePageData struct {
-	SpecialistData models.Specialist
-	SentEmails     []models.SentEmail
-	NumSentEmails   int
+	SpecialistData    models.Specialist
+	SentEmails      []models.SentEmail
+	NumSentEmails     int
+	HasScheduleQueued bool
 }
 
 type ViewsController struct {
@@ -35,10 +36,11 @@ type ViewsController struct {
 }
 
 func NewViewsController(
-	sessionManager *scs.SessionManager, 
+	sessionManager          *scs.SessionManager, 
 	emailVerificationService services.EmailVerificationService,
-	specialistService services.SpecialistService,
-	sentEmailService services.SentEmailService,
+	scheduleService          services.ScheduleService,
+	specialistService        services.SpecialistService,
+	sentEmailService         services.SentEmailService,
 ) *ViewsController {
 	partials, _ := filepath.Glob("./templates/partials/*.html")
 	pages, _ := filepath.Glob("./templates/pages/*.html")
@@ -117,10 +119,13 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// scheduleResult := v.scheduleService
+
 	pageData := HomePageData{
 		SpecialistData: specialistResult.ResultData,
 		SentEmails:     sentEmailResult.ResultData,
 		NumSentEmails:  len(sentEmailResult.ResultData),
+		// HasScheduleQueued: ,
 	}
 
 	if err := v.pageTemplates["home"].Execute(res, pageData); err != nil {
