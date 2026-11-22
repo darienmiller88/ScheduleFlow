@@ -1,0 +1,1 @@
+ALTER TABLE schedules DROP CONSTRAINT schedules_specialist_id_key;

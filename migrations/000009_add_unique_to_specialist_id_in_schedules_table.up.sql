@@ -1,0 +1,1 @@
+ALTER TABLE schedules ADD CONSTRAINT schedules_specialist_id_key UNIQUE(specialist_id);
