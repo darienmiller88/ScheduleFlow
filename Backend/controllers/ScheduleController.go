@@ -66,7 +66,7 @@ func (s *ScheduleController) registerRoutes() {
 	s.Router.With(
 		httprate.LimitBy(1, 3 * time.Second, middlewares.ClientIPKey),
 		middlewares.RequireAuth(s.sessionManager),
-	).Put("/dequeue-schedule", s.dequeueScheduleForSpecialist)
+	).Delete("/dequeue-schedule", s.dequeueScheduleForSpecialist)
 
 	//defaults to rate limiting of 300 requests per minute per IP address
 	s.Router.With(middlewares.RequireAuth(s.sessionManager)).Get("/preview-schedule/{specialistID}", s.previewSchedule)
@@ -84,7 +84,9 @@ func (s *ScheduleController) getScheduleForSpecialist(res http.ResponseWriter, r
 }
 
 func (s *ScheduleController) dequeueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
+	// userId := s.sessionManager.GetInt(req.Context(), "userID")
 
+	
 }
 
 func (s *ScheduleController) queueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {

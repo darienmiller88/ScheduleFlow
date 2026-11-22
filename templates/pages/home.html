@@ -82,7 +82,7 @@
                     </button>
                     <button 
                         class="base-button stop-btn-color"
-                        hx-put="/schedules/dequeue-schedule"
+                        hx-delete="/schedules/dequeue-schedule"
                         hx-indicator="#upload-spinner"
                         x-show="showSchedule && !toggleQueue && !toggleCooldown"
                         type="button"

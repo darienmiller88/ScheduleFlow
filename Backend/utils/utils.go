@@ -47,6 +47,8 @@ func GetSendDateForEmail() time.Time {
 	//and Normalize by modulo 7 to find out how far until tuesday
 	daysUntilTuesday := ((tuesday - currentDay) + 7) % 7
 
+	fmt.Println("days until tuesday:", daysUntilTuesday)
+
 	//create a date month/day/year that represents the following tuesday from today.
 	dateForNextTuesday := time.Now().AddDate(0, 0, daysUntilTuesday)
 

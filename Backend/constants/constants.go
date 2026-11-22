@@ -68,4 +68,7 @@ const (
 
 	// Query to delete an email verification entry from the database by specialist ID
 	DeleteEmailVerification string = `DELETE FROM email_verification WHERE specialist_id = $1`
+
+	//Query to delete a schedule for a specialist, preventing it from being sent.
+	DeleteSchedule          string = `DELETE FROM schedules WHERE specialist_id = $1`
 )
