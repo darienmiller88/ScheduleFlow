@@ -61,7 +61,7 @@
                     </button>
                     <button 
                         class="base-button schedule-btn-color"
-                        hx-put="/schedules/queue-schedule"
+                        hx-post="/schedules/queue-schedule"
                         hx-indicator="#upload-spinner"
                         x-show="showSchedule && toggleQueue && !toggleCooldown"
                         type="button"
