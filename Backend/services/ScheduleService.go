@@ -11,7 +11,7 @@ type ScheduleService interface {
 	AddSchedule(schedule models.Schedule) models.Result[models.Schedule]
 
 	// GetSchedule retrieves the schedule for a specific specialist by their ID.
-	GetSchedule(specialistID string) models.Result[models.Schedule]
+	GetSchedule(specialistID int) models.Result[models.Schedule]
 
 	//Removes, or dequeues a schedule for a specialist
 	RemoveSchedule(specialistId int) models.Result[bool]
@@ -34,7 +34,7 @@ func (s *scheduleService) RemoveSchedule(specialistId int) models.Result[bool] {
 }
 
 // GetSchedule implements [ScheduleService].
-func (s *scheduleService) GetSchedule(specialistID string) models.Result[models.Schedule] {
+func (s *scheduleService) GetSchedule(specialistID int) models.Result[models.Schedule] {
 	return s.scheduleRepository.GetScheduleForSpecialist(specialistID)
 }
 

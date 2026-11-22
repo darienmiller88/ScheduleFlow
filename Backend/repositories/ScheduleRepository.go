@@ -22,7 +22,7 @@ type ScheduleRepository interface {
 	RemoveScheduleForSpecialist(specialistID int) models.Result[bool]
 
 	//Get schedule for a specialist
-	GetScheduleForSpecialist(specialistID string) models.Result[models.Schedule]
+	GetScheduleForSpecialist(specialistID int) models.Result[models.Schedule]
 }
 
 type scheduleRepository struct {
@@ -75,13 +75,13 @@ func (s *scheduleRepository) AddNewSchedule(schedule models.Schedule) models.Res
 }
 
 // GetScheduleForSpecialist implements [ScheduleRepository].
-func (s *scheduleRepository) GetScheduleForSpecialist(specialistID string) models.Result[models.Schedule] {
+func (s *scheduleRepository) GetScheduleForSpecialist(specialistID int) models.Result[models.Schedule] {
 	schedule := models.Schedule{}
 	err := s.db.Get(&schedule, constants.GetScheduleBySpecialistId, specialistID)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return utils.GetResult(fmt.Errorf("schedule not found for specalist %s", specialistID), http.StatusNotFound, models.Schedule{})
+			return utils.GetResult(fmt.Errorf("schedule not found for specalist %d", specialistID), http.StatusNotFound, models.Schedule{})
 		}
 
 		return utils.GetResult(err, http.StatusInternalServerError, models.Schedule{})

@@ -119,13 +119,13 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// scheduleResult := v.scheduleService.RemoveSchedule(userID)
+	// scheduleResult := v.scheduleService.GetSchedule()
 
 	pageData := HomePageData{
 		SpecialistData: specialistResult.ResultData,
 		SentEmails:     sentEmailResult.ResultData,
 		NumSentEmails:  len(sentEmailResult.ResultData),
-		// HasScheduleQueued: ,
+		HasScheduleQueued: true,
 	}
 
 	if err := v.pageTemplates["home"].Execute(res, pageData); err != nil {
