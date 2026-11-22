@@ -16,21 +16,23 @@ import (
 const UploadDir string = "uploads/schedules"
 
 type UploadService interface {
+	//upload a new schedule to the disk, and create a folder for a specialist for the schedule
 	UploadSchedule(file multipart.File, specialistId string) models.Result[string]
-	GetSchedule(specialistId string) (string, error)
+
+	//Check to see if a specialist has a schedule saved on disk
+	GetScheduleOnDisk(specialistId string) (string, error)
 }
 
 type uploadService struct {
 	// Add any dependencies or configurations needed for the service
 }
 
-
 func NewUploadService() UploadService {
 	return &uploadService{}
 }
 
-// GetSchedule implements [UploadService].
-func (u *uploadService) GetSchedule(specialistId string) (string, error) {
+//Check to see if a specialist has a schedule saved on disk
+func (u *uploadService) GetScheduleOnDisk(specialistId string) (string, error) {
 	pathName := filepath.Join(UploadDir, specialistId, specialistId+".xlsx")
 	_, err := os.Open(pathName)
 
@@ -45,7 +47,7 @@ func (u *uploadService) GetSchedule(specialistId string) (string, error) {
 	return pathName, nil
 }
 
-// UploadSchedule implements [UploadService].
+//upload a new schedule to the disk, and create a folder for a specialist for the schedule
 func (u *uploadService) UploadSchedule(file multipart.File, specialistId string) models.Result[string] {
 
 	//Use excelize to open the uploaded file and check if it is a valid Excel file. If it is not, return an error.

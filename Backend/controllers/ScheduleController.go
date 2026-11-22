@@ -89,7 +89,7 @@ func (s *ScheduleController) dequeueScheduleForSpecialist(res http.ResponseWrite
 
 func (s *ScheduleController) queueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
 	userIDString      := strconv.Itoa(s.sessionManager.GetInt(req.Context(), "userID"))
-	schedulePath, err := s.uploadService.GetSchedule(userIDString)
+	schedulePath, err := s.uploadService.GetScheduleOnDisk(userIDString)
 	
 	if err != nil{
 		utils.SendHtmlError(res, http.StatusBadRequest, err.Error())
@@ -103,7 +103,21 @@ func (s *ScheduleController) queueScheduleForSpecialist(res http.ResponseWriter,
 		SendDate: utils.GetSendDateForEmail(),
 	}
 
-	s.scheduleService.AddSchedule(schedule)
+	result := s.scheduleService.AddSchedule(schedule)
+
+	if result.Err != nil {
+		utils.SendHtmlError(res, http.StatusBadRequest, result.Err.Error())
+		return
+	}
+
+	data := toastData{
+		ToastClass:   "toast-success",
+		ToastMessage: "Schedule queued for next week!",
+	}
+
+	if err := s.templates.ExecuteTemplate(res, "toast", data); err != nil {
+		utils.SendHtmlError(res, http.StatusInternalServerError, err.Error())
+	}
 }
 
 func (s *ScheduleController) uploadScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
@@ -140,7 +154,6 @@ func (s *ScheduleController) uploadScheduleForSpecialist(res http.ResponseWriter
 		ToastMessage: "Schedule uploaded successfully!",
 	}
 
-	// Process the uploaded file...
 	if err := s.templates.ExecuteTemplate(res, "toast", data); err != nil {
 		utils.SendHtmlError(res, http.StatusInternalServerError, err.Error())
 	}
