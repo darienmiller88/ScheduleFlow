@@ -119,7 +119,7 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// scheduleResult := v.scheduleService
+	// scheduleResult := v.scheduleService.RemoveSchedule(userID)
 
 	pageData := HomePageData{
 		SpecialistData: specialistResult.ResultData,

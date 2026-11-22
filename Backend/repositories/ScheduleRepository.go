@@ -22,7 +22,7 @@ type ScheduleRepository interface {
 	UpdateSchedule(schedule models.Schedule) models.Result[models.Schedule]
 
 	//Remove, or dequeue a specialists schedule from being sent
-	RemoveScheduleForSpecialist(specialistID string) models.Result[models.Schedule]
+	RemoveScheduleForSpecialist(specialistID int) models.Result[bool]
 
 	//Get schedule for a specialist
 	GetScheduleForSpecialist(specialistID string) models.Result[models.Schedule]
@@ -40,8 +40,18 @@ func NewScheduleRepository(db *sqlx.DB) ScheduleRepository {
 }
 
 // RemoveScheduleForSpecialist implements [ScheduleRepository].
-func (s *scheduleRepository) RemoveScheduleForSpecialist(specialistID string) models.Result[models.Schedule] {
-	panic("unimplemented")
+func (s *scheduleRepository) RemoveScheduleForSpecialist(specialistID int) models.Result[bool] {
+	_, err := s.db.Exec(constants.DeleteSchedule, specialistID)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows){
+			return utils.GetResult(errors.New("no schedule found for specialist"), http.StatusNotFound, false)
+		}
+
+		return utils.GetResult(err, http.StatusInternalServerError, false)
+	}
+
+	return utils.GetResult(nil, http.StatusOK, true)
 }
 
 // UpdateSchedule implements [ScheduleRepository].
