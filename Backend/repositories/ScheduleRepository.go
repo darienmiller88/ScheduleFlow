@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 )
 
 type ScheduleRepository interface {
@@ -50,6 +51,14 @@ func (s *scheduleRepository) AddNewSchedule(schedule models.Schedule) models.Res
 	).Scan(&schedule.ID)
 
 	if err != nil {
+		if pgErr, ok := err.(*pq.Error); ok {
+			switch string(pgErr.Code) {
+			case "23505": // unique_violation
+				return utils.GetResult(errors.New("schedule is already queued"), http.StatusConflict, models.Schedule{})
+			}
+		}
+
+		//Return 500 for any other general DB error
 		return utils.GetResult(err, http.StatusInternalServerError, models.Schedule{})
 	}
 
