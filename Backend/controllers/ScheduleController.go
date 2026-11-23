@@ -84,9 +84,22 @@ func (s *ScheduleController) getScheduleForSpecialist(res http.ResponseWriter, r
 }
 
 func (s *ScheduleController) dequeueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {
-	// userId := s.sessionManager.GetInt(req.Context(), "userID")
+	userId := s.sessionManager.GetInt(req.Context(), "userID")
+	result := s.scheduleService.RemoveSchedule(userId)
 
-	
+	if result.Err != nil {
+		utils.SendHtmlError(res, http.StatusBadRequest, result.Err.Error())
+		return
+	}
+
+	data := toastData{
+		ToastClass:   "toast-success",
+		ToastMessage: "Schedule will not be sent.",
+	}
+
+	if err := s.templates.ExecuteTemplate(res, "toast", data); err != nil {
+		utils.SendHtmlError(res, http.StatusInternalServerError, err.Error())
+	}
 }
 
 func (s *ScheduleController) queueScheduleForSpecialist(res http.ResponseWriter, req *http.Request) {

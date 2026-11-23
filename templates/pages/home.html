@@ -65,16 +65,15 @@
                         Upload new Schedule
                     </button>
 
-                    {{ if .HasScheduleQueued }}
                     <button 
                         class="base-button stop-btn-color"
                         hx-delete="/schedules/dequeue-schedule"
                         hx-indicator="#upload-spinner"
-                        x-show="showSchedule && !toggleCooldown && hasScheduleQueued"
+                        x-show="!toggleCooldown && hasScheduleQueued"
                         type="button"
                         @click="
                             disabledUpload = true;
-                            toggleQueue = true
+                            hasScheduleQueued = false
                             toggleCooldown = true
                             setTimeout(() => {
                                 disabledUpload = false
@@ -87,16 +86,15 @@
                         </span>
                         Stop sending schedule
                     </button>
-                    {{ else }}
                     <button 
                         class="base-button schedule-btn-color"
                         hx-post="/schedules/queue-schedule"
                         hx-indicator="#upload-spinner"
-                        x-show="showSchedule && !hasScheduleQueued && !toggleCooldown"
+                        x-show="!hasScheduleQueued && !toggleCooldown"
                         type="button"
                         @click="
                             disabledUpload = true;
-                            toggleQueue = false
+                            hasScheduleQueued = true
                             toggleCooldown = true
                             setTimeout(() => {
                                 disabledUpload = false
@@ -109,7 +107,6 @@
                         </span>
                         Schedule for next Tuesday
                     </button>
-                    {{ end }}
                 </form>
                 
                 <div 
