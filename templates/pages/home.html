@@ -12,7 +12,12 @@
                     hx-encoding="multipart/form-data"
                     hx-target="#upload-result"
                     hx-swap="innerHTML"
-                    x-data="{ disabledUpload: false, showSchedule: true, toggleQueue: true, toggleCooldown: false }"
+                    x-data="{ 
+                        disabledUpload: false, 
+                        showSchedule: true, 
+                        hasScheduleQueued: {{ .HasScheduleQueued }},
+                        toggleCooldown: false 
+                    }"
                 >
                     <label for="schedule-upload" class="upload-btn">
                         <div class="upload-icon">
@@ -65,7 +70,7 @@
                         class="base-button stop-btn-color"
                         hx-delete="/schedules/dequeue-schedule"
                         hx-indicator="#upload-spinner"
-                        x-show="showSchedule && !toggleQueue && !toggleCooldown"
+                        x-show="showSchedule && !toggleCooldown && hasScheduleQueued"
                         type="button"
                         @click="
                             disabledUpload = true;
@@ -87,7 +92,7 @@
                         class="base-button schedule-btn-color"
                         hx-post="/schedules/queue-schedule"
                         hx-indicator="#upload-spinner"
-                        x-show="showSchedule && toggleQueue && !toggleCooldown"
+                        x-show="showSchedule && !hasScheduleQueued && !toggleCooldown"
                         type="button"
                         @click="
                             disabledUpload = true;

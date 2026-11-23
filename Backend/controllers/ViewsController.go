@@ -69,9 +69,12 @@ func NewViewsController(
 		pageTemplates:     tmplMap,
 		sessionManger:     sessionManager,
 		standardTemplates: standardTemplates,
+
+		//services
 		emailVerificationService: emailVerificationService,
 		playerService:            specialistService,
 		sentEmailService:         sentEmailService,
+		scheduleService:          scheduleService,
 	}
 
 	vc.registerViewRoutes()
@@ -119,13 +122,18 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// scheduleResult := v.scheduleService.GetSchedule()
+	scheduleResult := v.scheduleService.GetSchedule(userID)
+
+	if scheduleResult.Err != nil && scheduleResult.StatusCode == http.StatusInternalServerError{
+		http.Error(res, scheduleResult.Err.Error(), scheduleResult.StatusCode)
+		return
+	}
 
 	pageData := HomePageData{
 		SpecialistData: specialistResult.ResultData,
 		SentEmails:     sentEmailResult.ResultData,
 		NumSentEmails:  len(sentEmailResult.ResultData),
-		HasScheduleQueued: true,
+		HasScheduleQueued: scheduleResult.ResultData.FilePath != "",
 	}
 
 	if err := v.pageTemplates["home"].Execute(res, pageData); err != nil {
