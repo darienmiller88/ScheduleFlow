@@ -127,7 +127,7 @@
 
         <!-- Schedule Container -->
         <div class="schedule-container">
-            <h2 class="schedule-title">Recent Schedules</h2>
+            <h2 class="schedule-title">Schedules Sent</h2>
         
             <div class="table-responsive">
                 <table class="schedule-table">
@@ -159,9 +159,9 @@
         <!-- Schedule Statistics -->
         <div class="schedule-stats">
             <div class="schedule-stats-title">Schedule Statistics</div>
-            <p>Total Schedules: 1</p>
+            <p>Total Schedules: {{ .NumPendingSchedules }}</p>
             <p>Sent Schedules: {{ .NumSentEmails }}</p>
-            <p>Pending Schedules: 1</p>
+            <p>Pending Schedules: {{ .NumPendingSchedules }}</p>
         </div>
     </div>
 {{ end }}

@@ -16,10 +16,11 @@ import (
 )
 
 type HomePageData struct {
-	SpecialistData    models.Specialist
-	SentEmails      []models.SentEmail
-	NumSentEmails     int
-	HasScheduleQueued bool
+	SpecialistData      models.Specialist
+	SentEmails        []models.SentEmail
+	NumSentEmails       int
+	NumPendingSchedules int
+	HasScheduleQueued   bool
 }
 
 type ViewsController struct {
@@ -129,11 +130,20 @@ func (v *ViewsController) homePage(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	numPendingSchedules := 0
+
+	//If the user has a schedule pending in the schedules table, the specialist has exactly 1 pending
+	//schedule. If not, it stays 0.
+	if scheduleResult.ResultData.FilePath != "" {
+		numPendingSchedules = 1
+	}
+
 	pageData := HomePageData{
 		SpecialistData: specialistResult.ResultData,
 		SentEmails:     sentEmailResult.ResultData,
 		NumSentEmails:  len(sentEmailResult.ResultData),
 		HasScheduleQueued: scheduleResult.ResultData.FilePath != "",
+		NumPendingSchedules: numPendingSchedules,
 	}
 
 	if err := v.pageTemplates["home"].Execute(res, pageData); err != nil {
