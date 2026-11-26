@@ -8,7 +8,7 @@ import (
 )
 
 type EmailSendService interface {
-	SendEmail(emailReq EmailRequest) error
+	SendEmailToSupervisors(emailReq EmailRequest) error
 	SendVerificationEmail(toEmail string, firstName string, verificationCode string) error
 }
 
@@ -105,7 +105,7 @@ func (e *resendEmailService) SendVerificationEmail(toEmail string, firstName str
 }
 
 // Method to send an email using the Resend API
-func (e *resendEmailService) SendEmail(emailReq EmailRequest) error {
+func (e *resendEmailService) SendEmailToSupervisors(emailReq EmailRequest) error {
 	_, err := e.client.Emails.Send(&resend.SendEmailRequest{
 		From:    emailReq.From,
 		To:      emailReq.To,

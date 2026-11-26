@@ -38,6 +38,9 @@ const (
 	// Query to retrieve all schedule entries for a given specialist ID
 	GetScheduleBySpecialistId string = `SELECT * FROM schedules WHERE specialist_id = $1`
 
+	//Query to retreive all schedules
+	GetAllSchedules string = `SELECT * FROM schedules`
+
 
 	// Query to update a specialist's information in the database by their ID
 	UpdateSpecialist     string = `
