@@ -25,7 +25,7 @@ type ScheduleRepository interface {
 	GetScheduleForSpecialist(specialistID int) models.Result[models.Schedule]
 
 	//Get all specialist Schedules
-	GetAllSchedules() models.Result[[]models.Schedule]
+	GetAllSchedulesForSpecialists() models.Result[[]models.Schedule]
 }
 
 type scheduleRepository struct {
@@ -39,7 +39,7 @@ func NewScheduleRepository(db *sqlx.DB) ScheduleRepository {
 }
 
 // GetAllSchedules implements [ScheduleRepository].
-func (s *scheduleRepository) GetAllSchedules() models.Result[[]models.Schedule] {
+func (s *scheduleRepository) GetAllSchedulesForSpecialists() models.Result[[]models.Schedule] {
 	schedules := []models.Schedule{}
 
  	if err := s.db.Select(&schedules, constants.GetAllSchedules); err != nil{
