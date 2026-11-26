@@ -23,6 +23,9 @@ type ScheduleRepository interface {
 
 	//Get schedule for a specialist
 	GetScheduleForSpecialist(specialistID int) models.Result[models.Schedule]
+
+	//Get all specialist Schedules
+	GetAllSchedules() models.Result[[]models.Schedule]
 }
 
 type scheduleRepository struct {
@@ -35,12 +38,23 @@ func NewScheduleRepository(db *sqlx.DB) ScheduleRepository {
 	}
 }
 
+// GetAllSchedules implements [ScheduleRepository].
+func (s *scheduleRepository) GetAllSchedules() models.Result[[]models.Schedule] {
+	schedules := []models.Schedule{}
+
+ 	if err := s.db.Select(&schedules, constants.GetAllSchedules); err != nil{
+		return utils.GetResult(err, http.StatusInternalServerError, schedules)
+	}
+
+	return utils.GetResult(nil, http.StatusOK, schedules)
+}
+
 // RemoveScheduleForSpecialist implements [ScheduleRepository].
 func (s *scheduleRepository) RemoveScheduleForSpecialist(specialistID int) models.Result[bool] {
 	_, err := s.db.Exec(constants.DeleteSchedule, specialistID)
 
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows){
+		if errors.Is(err, sql.ErrNoRows) {
 			return utils.GetResult(errors.New("no schedule found for specialist"), http.StatusNotFound, false)
 		}
 

@@ -9,7 +9,7 @@ import (
 
 func NewSchedulerForSendingEmails(
 	scheduleService services.ScheduleService, 
-	emailService services.EmailSendService,
+	emailSendService services.EmailSendService,
 ) gocron.Scheduler{
 	s, _ := gocron.NewScheduler()
 	date := utils.GetSendDateForEmail()
